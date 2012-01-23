@@ -1,9 +1,17 @@
+/**
+ * Original code from: http://www.bouncycastle.org/csharp/
+ *
+ * Ported from C# to C++ by kizura, 2012-Jan
+ *
+ * License: http://www.gnu.org/licenses/gpl.html
+ *
+ */
+
 #ifndef AUTH_IIMAC_H
 #define AUTH_IIMAC_H
 
 #include "ICipherParameters.h"
 #include "IDigest.h"
-
 
 namespace Org_BouncyCastle_Crypto {
 /**

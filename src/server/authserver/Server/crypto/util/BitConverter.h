@@ -1,10 +1,19 @@
+/**
+ * Not part of the original Org_BouncyCastle_Crypto_Utilities
+ *
+ * Adapted from: // http://www.nextgenupdate.com/forums/computer-programming/394645-java-bitconverter-c.html
+ * Last visit: 2012-01-19
+ *
+ * kizura, 2012-Jan
+ *
+ * License: http://www.gnu.org/licenses/gpl.html
+ *
+ */
+
 #ifndef AUTH_BITCONVERTER_H
 #define AUTH_BITCONVERTER_H
 
 namespace Org_BouncyCastle_Crypto_Utilities {
-
-// http://www.nextgenupdate.com/forums/computer-programming/394645-java-bitconverter-c.html
-// 2012-01-19
 
 class BitConverter {
 public:
