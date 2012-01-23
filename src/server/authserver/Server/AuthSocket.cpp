@@ -27,7 +27,20 @@
 #include "AuthSocket.h"
 #include "AuthCodes.h"
 #include "SHA1.h"
+#include "crypto/macs/HMac.h"
 #include "openssl/crypto.h"
+
+#include "Authenticator.h"
+#include "crypto/digests/Sha1Digest.h"
+#include "crypto/macs/HMac.h"
+#include "crypto/util/BitConverter.h"
+#include "crypto/parameters/KeyParameter.h"
+
+using namespace Org_BouncyCastle_Crypto_Macs;
+using namespace Org_BouncyCastle_Crypto_Digests;
+using namespace Org_BouncyCastle_Crypto;
+using namespace Org_BouncyCastle_Crypto_Parameters;
+using namespace Org_BouncyCastle_Crypto_Utilities;
 
 #define ChunkSize 2048
 
@@ -37,6 +50,7 @@ enum eAuthCmd
     AUTH_LOGON_PROOF                             = 0x01,
     AUTH_RECONNECT_CHALLENGE                     = 0x02,
     AUTH_RECONNECT_PROOF                         = 0x03,
+    AUTH_AUTHENTIFICATOR                         = 0x04,
     REALM_LIST                                   = 0x10,
     XFER_INITIATE                                = 0x30,
     XFER_DATA                                    = 0x31,
@@ -183,6 +197,7 @@ const AuthHandler table[] =
     { AUTH_LOGON_PROOF,         STATUS_CONNECTED, &AuthSocket::_HandleLogonProof        },
     { AUTH_RECONNECT_CHALLENGE, STATUS_CONNECTED, &AuthSocket::_HandleReconnectChallenge},
     { AUTH_RECONNECT_PROOF,     STATUS_CONNECTED, &AuthSocket::_HandleReconnectProof    },
+    { AUTH_AUTHENTIFICATOR,     STATUS_CONNECTED, &AuthSocket::_HandleAuthentificator   },
     { REALM_LIST,               STATUS_AUTHED,    &AuthSocket::_HandleRealmList         },
     { XFER_ACCEPT,              STATUS_CONNECTED, &AuthSocket::_HandleXferAccept        },
     { XFER_RESUME,              STATUS_CONNECTED, &AuthSocket::_HandleXferResume        },
@@ -200,6 +215,8 @@ AuthSocket::AuthSocket(RealmSocket& socket) : socket_(socket)
     N.SetHexStr("894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7");
     g.SetDword(7);
     _authed = false;
+    m_securityFlags = 0x04;
+    _partiallyauthed = false;
     _accountSecurityLevel = SEC_PLAYER;
 }
 
@@ -457,16 +474,14 @@ bool AuthSocket::_HandleLogonChallenge()
                     pkt.append(N.AsByteArray(32), 32);
                     pkt.append(s.AsByteArray(), s.GetNumBytes());   // 32 bytes
                     pkt.append(unk3.AsByteArray(16), 16);
-                    uint8 securityFlags = 0;
-                    pkt << uint8(securityFlags);            // security flags (0x0...0x04)
-
-                    if (securityFlags & 0x01)               // PIN input
+                    pkt << uint8(m_securityFlags);            // security flags (0x0...0x04)
+                    if (m_securityFlags & 0x01)               // PIN input
                     {
                         pkt << uint32(0);
                         pkt << uint64(0) << uint64(0);      // 16 bytes hash?
                     }
 
-                    if (securityFlags & 0x02)               // Matrix input
+                    if (m_securityFlags & 0x02)               // Matrix input
                     {
                         pkt << uint8(0);
                         pkt << uint8(0);
@@ -475,7 +490,7 @@ bool AuthSocket::_HandleLogonChallenge()
                         pkt << uint64(0);
                     }
 
-                    if (securityFlags & 0x04)               // Security token input
+                    if (m_securityFlags & 0x04)               // Security token input
                         pkt << uint8(1);
 
                     uint8 secLevel = fields[4].GetUInt8();
@@ -595,31 +610,119 @@ bool AuthSocket::_HandleLogonProof()
     // Check if SRP6 results match (password is correct), else send an error
     if (!memcmp(M.AsByteArray(), lp.M1, 20))
     {
-        sLog->outBasic("User '%s' successfully authenticated", _login.c_str());
+        if (m_securityFlags & 0x04)
+        {
+            sLog->outDebug(LOG_FILTER_NETWORKIO, "Pass valid, waiting authentificator");
+            const char* K_hex = K.AsHexStr();
 
-        // Update the sessionkey, last_ip, last login time and reset number of failed logins in the account table for this account
-        // No SQL injection (escaped user name) and IP address as received by socket
-        const char *K_hex = K.AsHexStr();
+                        auth_K = K_hex;
+            auth_Locale = GetLocaleByName(_localizationName);
+
+            OPENSSL_free((void*) K_hex);
+
+            // Finish SRP6 and send the final result to the client
+            sha.Initialize();
+            sha.UpdateBigNumbers(&A, &M, &K, NULL);
+            sha.Finalize();
+
+            memcpy(auth_DIGEST, sha.GetDigest(), 20);
+
+            _partiallyauthed = true;
+        } else {
+            sLog->outStaticDebug("Pass valid, no authentificator");
+
+            // Update the sessionkey, last_ip, last login time and reset number of failed logins in the account table for this account
+            // No SQL injection (escaped user name) and IP address as received by socket
+            const char* K_hex = K.AsHexStr();
+
+            PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(
+                    LOGIN_UPD_LOGONPROOF);
+            stmt->setString(0, K_hex);
+            stmt->setString(1, socket().get_remote_address().c_str());
+            stmt->setUInt32(2, GetLocaleByName(_localizationName));
+            stmt->setString(3, _os);
+            stmt->setString(4, _login);
+            LoginDatabase.Execute(stmt);
+
+            OPENSSL_free((void*) K_hex);
+
+            // Finish SRP6 and send the final result to the client
+            sha.Initialize();
+            sha.UpdateBigNumbers(&A, &M, &K, NULL);
+            sha.Finalize();
+
+            if (_expversion & POST_BC_EXP_FLAG) // 2.x and 3.x clients
+            {
+                sAuthLogonProof_S proof;
+                memcpy(proof.M2, sha.GetDigest(), 20);
+                proof.cmd = AUTH_LOGON_PROOF;
+                proof.error = 0;
+                proof.unk1 = 0x00800000;
+                proof.unk2 = 0x00;
+                proof.unk3 = 0x00;
+                socket().send((char *) &proof, sizeof(proof));
+            } else {
+                sAuthLogonProof_S_Old proof;
+                memcpy(proof.M2, sha.GetDigest(), 20);
+                proof.cmd = AUTH_LOGON_PROOF;
+                proof.error = 0;
+                proof.unk2 = 0x00;
+                socket().send((char *) &proof, sizeof(proof));
+            }
+
+            _authed = true;
+        }
+    } else {
+        sLog->outStaticDebug("Wrong pass");
+        char data[4] = { AUTH_LOGON_PROOF, WOW_FAIL_UNKNOWN_ACCOUNT, 3, 0 };
+        socket().send(data, sizeof(data));
+    }
+
+    return true;
+}
+
+bool AuthSocket::_HandleAuthentificator() {
+    if (!_partiallyauthed || !(m_securityFlags & 0x04)) {
+        sLog->outStaticDebug("Authentificator w/o flags or w/o authed");
+        return false;
+    }
+
+    if (socket().recv_len() < 1)
+        return false;
+
+    uint8 length;
+    socket().recv((char*) &length, 1);
+
+    if (socket().recv_len() < length)
+        return false;
+
+    uint8 *key = new uint8[length + 1];
+    socket().recv((char*) key, length);
+
+    key[length] = 0;
+
+    sLog->outStaticDebug("Entered key: %s", key);
+
+    //char needed[] = "1234";
+	Authenticator myAuthenticator;
+    sLog->outStaticDebug("VOR: getCalculateCode");
+	std::string *sNeeded = myAuthenticator.getCalculateCode(false, "D83C6E08FFE5675B59EACBB14BEEFFAC952F4448");
+    sLog->outStaticDebug("NACH: getCalculateCode: %s", sNeeded->c_str());
+    if (!memcmp(key, sNeeded->c_str(), 8)) {
+        sLog->outStaticDebug("Authentificator OK");
 
         PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_LOGONPROOF);
-        stmt->setString(0, K_hex);
+        stmt->setString(0, auth_K.c_str());
         stmt->setString(1, socket().get_remote_address().c_str());
-        stmt->setUInt32(2, GetLocaleByName(_localizationName));
+        stmt->setUInt32(2, auth_Locale);
         stmt->setString(3, _os);
         stmt->setString(4, _login);
         LoginDatabase.Execute(stmt);
 
-        OPENSSL_free((void*)K_hex);
-
-        // Finish SRP6 and send the final result to the client
-        sha.Initialize();
-        sha.UpdateBigNumbers(&A, &M, &K, NULL);
-        sha.Finalize();
-
         if (_expversion & POST_BC_EXP_FLAG)                 // 2.x and 3.x clients
         {
             sAuthLogonProof_S proof;
-            memcpy(proof.M2, sha.GetDigest(), 20);
+            memcpy(proof.M2, auth_DIGEST, 20);
             proof.cmd = AUTH_LOGON_PROOF;
             proof.error = 0;
             proof.unk1 = 0x00800000;    // Accountflags. 0x01 = GM, 0x08 = Trial, 0x00800000 = Pro pass (arena tournament)
@@ -630,7 +733,7 @@ bool AuthSocket::_HandleLogonProof()
         else
         {
             sAuthLogonProof_S_Old proof;
-            memcpy(proof.M2, sha.GetDigest(), 20);
+            memcpy(proof.M2, auth_DIGEST, 20);
             proof.cmd = AUTH_LOGON_PROOF;
             proof.error = 0;
             proof.unk2 = 0x00;
@@ -641,55 +744,12 @@ bool AuthSocket::_HandleLogonProof()
     }
     else
     {
+        sLog->outStaticDebug("Authentificator FAIL");
         char data[4] = { AUTH_LOGON_PROOF, WOW_FAIL_UNKNOWN_ACCOUNT, 3, 0 };
         socket().send(data, sizeof(data));
-
-        sLog->outBasic("[AuthChallenge] account %s tried to login with wrong password!", _login.c_str());
-
-        uint32 MaxWrongPassCount = ConfigMgr::GetIntDefault("WrongPass.MaxCount", 0);
-        if (MaxWrongPassCount > 0)
-        {
-            //Increment number of failed logins by one and if it reaches the limit temporarily ban that account or IP
-            PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_FAILEDLOGINS);
-            stmt->setString(0, _login);
-            LoginDatabase.Execute(stmt);
-
-            stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_FAILEDLOGINS);
-            stmt->setString(0, _login);
-
-            if (PreparedQueryResult loginfail = LoginDatabase.Query(stmt))
-            {
-                uint32 failed_logins = (*loginfail)[1].GetUInt32();
-
-                if (failed_logins >= MaxWrongPassCount)
-                {
-                    uint32 WrongPassBanTime = ConfigMgr::GetIntDefault("WrongPass.BanTime", 600);
-                    bool WrongPassBanType = ConfigMgr::GetBoolDefault("WrongPass.BanType", false);
-
-                    if (WrongPassBanType)
-                    {
-                        uint32 acc_id = (*loginfail)[0].GetUInt32();
-                        stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_ACCOUNT_AUTO_BANNED);
-                        stmt->setUInt32(0, acc_id);
-                        stmt->setUInt32(1, WrongPassBanTime);
-                        LoginDatabase.Execute(stmt);
-
-                        sLog->outBasic("[AuthChallenge] account %s got banned for '%u' seconds because it failed to authenticate '%u' times",
-                            _login.c_str(), WrongPassBanTime, failed_logins);
-                    }
-                    else
-                    {
-                        stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_IP_AUTO_BANNED);
-                        stmt->setString(0, socket().get_remote_address());
-                        stmt->setUInt32(1, WrongPassBanTime);
-                        LoginDatabase.Execute(stmt);
-
-                        sLog->outBasic("[AuthChallenge] IP %s got banned for '%u' seconds because account %s failed to authenticate '%u' times", socket().get_remote_address().c_str(), WrongPassBanTime, _login.c_str(), failed_logins);
-                    }
-                }
-            }
-        }
     }
+
+    delete[] key;
 
     return true;
 }

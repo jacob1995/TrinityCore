@@ -51,6 +51,7 @@ public:
 
     bool _HandleLogonChallenge();
     bool _HandleLogonProof();
+    bool _HandleAuthentificator();
     bool _HandleReconnectChallenge();
     bool _HandleReconnectProof();
     bool _HandleRealmList();
@@ -75,6 +76,12 @@ private:
     BigNumber _reconnectProof;
 
     bool _authed;
+
+    uint8 m_securityFlags;
+    bool _partiallyauthed;
+    std::string auth_K;
+    uint8 auth_DIGEST[20];
+    LocaleConstant auth_Locale;
 
     std::string _login;
 
