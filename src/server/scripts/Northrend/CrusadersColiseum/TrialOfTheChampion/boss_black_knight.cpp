@@ -178,7 +178,7 @@ class boss_black_knight : public CreatureScript
                 deathRespiteTimer = urand(15000, 16000);
                 obliterateTimer = urand(17000, 19000);
                 desecrationTimer = urand(15000, 16000);
-                deathArmyCheckTimer = 7000;
+                deathArmyCheckTimer = 1000;
                 resurrectTimer = 4000;
                 ghoulExplodeTimer = 8000;
                 deathBiteTimer = urand(2000, 4000);
