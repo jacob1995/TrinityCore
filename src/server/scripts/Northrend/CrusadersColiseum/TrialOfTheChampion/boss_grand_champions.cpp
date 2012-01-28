@@ -467,7 +467,8 @@ class boss_grand_champion_toc5 : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
-                //me->CallForHelp(20.0f);
+                DoZoneInCombat(me, 150.0f);
+                me->CallForHelp(20.0f);
 
                 switch (_phase)
                 {
@@ -585,7 +586,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                     case 0:
                         if (_phaseChangeTimer <= diff)
                         {
-                            me->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            me->RestoreFaction();
                             _phase = 3;
                             DoZoneInCombat(me, 150.0f);
                         }

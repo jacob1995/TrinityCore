@@ -170,6 +170,7 @@ class boss_eadric : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
+                DoZoneInCombat(me, 150.0f);
                 DoScriptText(SAY_START_E, me);
 
                 if (_instance)
@@ -422,6 +423,7 @@ class boss_paletress : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
+                DoZoneInCombat(me, 150.0f);
                 DoScriptText(SAY_START_P, me);
 
                 if (_instance)

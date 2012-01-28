@@ -201,6 +201,7 @@ class boss_black_knight : public CreatureScript
             {
                 isAttacked = true;
                 DoScriptText(SAY_AGGRO_2, me);
+                DoZoneInCombat(me, 150.0f);
                 SetEquipmentSlots(false, EQUIP_SWORD, EQUIP_NO_CHANGE, EQUIP_NO_CHANGE);
 
                 if (GameObject* go = GameObject::GetGameObject(*me, _instance->GetData64(DATA_MAIN_GATE)))
