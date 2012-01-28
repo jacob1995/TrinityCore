@@ -1,10 +1,8 @@
 -- fix questchain of 12394 Candy Bucket, there should be no chain
-UPDATE `quest_template` SET `PrevQuestId`=0, `NextQuestId`=0,
-`ExclusiveGroup`=0, `NextQuestInChain`=0 WHERE `Id` IN (12394);
+UPDATE `quest_template` SET `PrevQuestId`=0, `NextQuestId`=0, `ExclusiveGroup`=0 WHERE `Id` IN (12394);
 
 -- fix questchain of 12935 The Amphitheater of Anguish: Tuskarrmageddon!
-UPDATE `quest_template` SET `PrevQuestId`=12934, `NextQuestId`=0,
-`ExclusiveGroup`=0, `NextQuestInChain`=0 WHERE `Id` IN (12935);
+UPDATE `quest_template` SET `PrevQuestId`=12934, `NextQuestId`=0, `ExclusiveGroup`=0 WHERE `Id` IN (12935);
 
 UPDATE creature_template SET ScriptName = 'npc_zeppit' WHERE entry=22484;
 
