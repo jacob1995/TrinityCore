@@ -72,7 +72,7 @@ public:
 
     struct boss_chromaggusAI : public ScriptedAI
     {
-        boss_chromaggusAI(Creature* c) : ScriptedAI(c)
+        boss_chromaggusAI(Creature* creature) : ScriptedAI(creature)
         {
             pInstance = c->GetInstanceScript();
             //Select the 2 breaths that we are going to use until despawned
@@ -118,8 +118,7 @@ public:
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,NOT_STARTED);
         }
 
-        void EnterCombat(Unit* /*who*/)
-        {
+        void EnterCombat(Unit* /*who*/) {}
             if(pInstance)
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,IN_PROGRESS);
         }
@@ -128,7 +127,6 @@ public:
         {
             if(pInstance)
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,DONE);
-        }
 
         void UpdateAI(const uint32 diff)
         {

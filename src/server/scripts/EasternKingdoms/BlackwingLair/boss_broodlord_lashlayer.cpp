@@ -25,14 +25,19 @@ EndScriptData */
 
 #include "ScriptPCH.h"
 #include "blackwing_lair.h"
+enum Say
+{
+    SAY_AGGRO               = -1469000,
+    SAY_LEASH               = -1469001
+};
 
-#define SAY_AGGRO               -1469000
-#define SAY_LEASH               -1469001
-
-#define SPELL_CLEAVE            26350
-#define SPELL_BLASTWAVE         23331
-#define SPELL_MORTALSTRIKE      24573
-#define SPELL_KNOCKBACK         25778
+enum Spells
+{
+    SPELL_CLEAVE            = 26350,
+    SPELL_BLASTWAVE         = 23331,
+    SPELL_MORTALSTRIKE      = 24573,
+    SPELL_KNOCKBACK         = 25778
+};
 
 class boss_broodlord : public CreatureScript
 {
@@ -60,13 +65,13 @@ public:
 
         void Reset()
         {
-            Cleave_Timer = 8000;                                //These times are probably wrong
-            BlastWave_Timer = 12000;
-            MortalStrike_Timer = 20000;
-            KnockBack_Timer = 30000;
+            Cleave_Timer           = 8000;     // These times are probably wrong
+            BlastWave_Timer        = 12000;
+            MortalStrike_Timer     = 20000;
+            KnockBack_Timer        = 30000;
 
-        if(pInstance)
-            pInstance->SetData(ENCOUNTER_LASHLAYER,NOT_STARTED);
+            if(pInstance)
+                pInstance->SetData(ENCOUNTER_LASHLAYER,NOT_STARTED);
         }
 
         void EnterCombat(Unit* /*who*/)
@@ -74,14 +79,14 @@ public:
             DoScriptText(SAY_AGGRO, me);
             DoZoneInCombat();
 
-        if(pInstance)
-            pInstance->SetData(ENCOUNTER_LASHLAYER,IN_PROGRESS);
-    }
+            if(pInstance)
+                pInstance->SetData(ENCOUNTER_LASHLAYER,IN_PROGRESS);
+        }
 
-    void JustDied(Unit *killer)
-    {
-        if(pInstance)
-            pInstance->SetData(ENCOUNTER_LASHLAYER,DONE);
+        void JustDied(Unit *killer)
+        {
+            if(pInstance)
+                pInstance->SetData(ENCOUNTER_LASHLAYER,DONE);
         }
 
         void UpdateAI(const uint32 diff)
@@ -126,7 +131,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 void AddSC_boss_broodlord()
