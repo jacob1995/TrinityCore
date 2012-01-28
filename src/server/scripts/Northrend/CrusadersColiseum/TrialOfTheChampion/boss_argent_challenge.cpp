@@ -68,7 +68,7 @@ enum Spells
     SPELL_FOUNTAIN_OF_LIGHT     = 67194,
 
     // Lightwielder
-    SPELL_BLAZING_LIGHT_H       = 67290,
+  //SPELL_BLAZING_LIGHT_H       = 67290,
     SPELL_BLAZING_LIGHT         = 67247,
     SPELL_UNBALANCING_STRIKE    = 67237,
     SPELL_CLEAVE                = 15284
@@ -792,7 +792,7 @@ class npc_argent_soldier : public CreatureScript
                             _events.ScheduleEvent(EVENT_STRIKE, urand(10000, 12000));
                             break;
                         case EVENT_BLAZINGLIGHT:
-                            DoCast(me, RAID_MODE<uint32>(SPELL_BLAZING_LIGHT, SPELL_BLAZING_LIGHT_H));
+                            DoCast(me, SPELL_BLAZING_LIGHT);
                             _events.ScheduleEvent(EVENT_BLAZINGLIGHT, urand(9000, 13000));
                             break;
                         case EVENT_FLURRY:
@@ -805,7 +805,7 @@ class npc_argent_soldier : public CreatureScript
                             break;
                         case EVENT_HOLYSMITE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f))
-                                DoCast(target, RAID_MODE<uint32>(SPELL_HOLY_SMITE, SPELL_HOLY_SMITE_H));
+                                DoCast(target, DUNGEON_MODE<uint32>(SPELL_HOLY_SMITE, SPELL_HOLY_SMITE_H));
                             _events.ScheduleEvent(EVENT_HOLYSMITE, urand(5000, 7000));
                             break;
                         case EVENT_MINDCONTROL:
@@ -814,8 +814,8 @@ class npc_argent_soldier : public CreatureScript
                             _events.ScheduleEvent(EVENT_MINDCONTROL, urand(20000, 25000));
                             break;
                         case EVENT_PAIN:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 30.0f, false, RAID_MODE<int32>(-SPELL_DOT_PAIN, -SPELL_DOT_PAIN_H)))
-                                DoCast(target, RAID_MODE<uint32>(SPELL_DOT_PAIN, SPELL_DOT_PAIN_H));
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 30.0f, false, DUNGEON_MODE<int32>(-SPELL_DOT_PAIN, -SPELL_DOT_PAIN_H)))
+                                DoCast(target, DUNGEON_MODE<uint32>(SPELL_DOT_PAIN, SPELL_DOT_PAIN_H));
                             _events.ScheduleEvent(EVENT_PAIN, urand(7000, 90000));
                             break;
                         case EVENT_FOUNTAIN:
