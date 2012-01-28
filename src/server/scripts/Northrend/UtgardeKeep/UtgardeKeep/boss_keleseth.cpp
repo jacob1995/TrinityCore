@@ -79,9 +79,19 @@ public:
 
         uint64 FrostTombGUID;
 
-        void SetPrisoner(Unit* uPrisoner)
+        //void SetPrisoner(Unit* uPrisoner)
+        //{
+        //    FrostTombGUID = uPrisoner->GetGUID();
+        //}
+
+        void SetGUID(uint64 guid,uint32 event_id)
         {
-            FrostTombGUID = uPrisoner->GetGUID();
+            switch(event_id)
+            {
+            case 1:
+                FrostTombGUID = guid;
+                break;
+            }
         }
 
         void Reset(){ FrostTombGUID = 0; }
@@ -226,12 +236,13 @@ public:
             if (FrostTombTimer <= diff)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                    if (target->isAlive())
+                    if (target && target->isAlive())
                     {
                         //DoCast(target, SPELL_FROST_TOMB_SUMMON, true);
                         if (Creature* pChains = me->SummonCreature(CREATURE_FROSTTOMB, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000))
                         {
-                            CAST_AI(mob_frost_tomb::mob_frost_tombAI, pChains->AI())->SetPrisoner(target);
+                            pChains->AI()->SetGUID(target->GetGUID(),1);
+                            //CAST_AI(mob_frost_tomb::mob_frost_tombAI, pChains->AI())->SetPrisoner(target);
                             pChains->CastSpell(target, SPELL_FROST_TOMB, true);
 
                             DoScriptText(SAY_FROST_TOMB, me);
