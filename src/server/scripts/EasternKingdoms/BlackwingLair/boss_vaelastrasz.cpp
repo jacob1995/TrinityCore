@@ -94,7 +94,7 @@ public:
             creature->setFaction(35);
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-            pInstance = c->GetInstanceScript();
+            pInstance = creature->GetInstanceScript();
         }
 
         InstanceScript *pInstance;

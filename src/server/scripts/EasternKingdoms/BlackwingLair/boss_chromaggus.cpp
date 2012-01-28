@@ -74,7 +74,7 @@ public:
     {
         boss_chromaggusAI(Creature* creature) : ScriptedAI(creature)
         {
-            pInstance = c->GetInstanceScript();
+            pInstance = creature->GetInstanceScript();
             //Select the 2 breaths that we are going to use until despawned
             //5 possiblities for the first breath, 4 for the second, 20 total possiblites
             //This way we don't end up casting 2 of the same breath
@@ -118,7 +118,8 @@ public:
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,NOT_STARTED);
         }
 
-        void EnterCombat(Unit* /*who*/) {}
+        void EnterCombat(Unit* /*who*/)
+        {
             if(pInstance)
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,IN_PROGRESS);
         }
@@ -127,6 +128,7 @@ public:
         {
             if(pInstance)
                 pInstance->SetData(ENCOUNTER_CHROMAGGUS,DONE);
+        }
 
         void UpdateAI(const uint32 diff)
         {
