@@ -68,14 +68,14 @@ public:
             player->TalkedToCreature(creature->GetEntry(), creature->GetGUID());
 
             player->RemoveAurasDueToSpell(SPELL_KODO_KOMBO_PLAYER_BUFF);
-            
+
             creature->GetMotionMaster()->MoveIdle();
             creature->RemoveAllAuras();
             creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
             creature->CastSpell(creature, SPELL_KODO_KOMBO_GOSSIP, true);
-			player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-			return true;
-            
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+
         }
         else return false;
     }
@@ -112,70 +112,69 @@ public:
                 if (me->IsWithinDistInMap(who, 10.0f))
                 {
                     DoScriptText(RAND(SAY_SMEED_HOME_1, SAY_SMEED_HOME_2, SAY_SMEED_HOME_3), who);
-					me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 }
             }
         }
 
-        void SpellHit(Unit* pCaster, SpellInfo const* pSpell)
+        void SpellHit(Unit* caster, SpellInfo const* spell)
         {
-        
-            if (pSpell->Id == SPELL_KODO_KOMBO_GOSSIP)
+
+            if (spell->Id == SPELL_KODO_KOMBO_GOSSIP)
             {
                 m_uiDespawn = true;
                 m_uiTimeout = false;
             }
-            else if(pSpell->Id == SPELL_KODO_KOMBO_ITEM)
+            else if (spell->Id == SPELL_KODO_KOMBO_ITEM)
             {
-				if (!pCaster->HasAura(SPELL_KODO_KOMBO_PLAYER_BUFF) && !me->HasAura(SPELL_KODO_KOMBO_DESPAWN_BUFF))
-				{
-					pCaster->CastSpell(pCaster, SPELL_KODO_KOMBO_PLAYER_BUFF, true);
-					me->UpdateEntry(NPC_TAMED_KODO);
-					me->CastSpell(me, SPELL_KODO_KOMBO_DESPAWN_BUFF, false);
-					m_uiTimeout = true;
-					me->CombatStop(true);
-					me->DeleteThreatList();
-					me->GetMotionMaster()->MoveFollow(pCaster, PET_FOLLOW_DIST, me->GetFollowAngle());
-				}
-            
+                if (!caster->HasAura(SPELL_KODO_KOMBO_PLAYER_BUFF) && !me->HasAura(SPELL_KODO_KOMBO_DESPAWN_BUFF))
+                {
+                    caster->CastSpell(caster, SPELL_KODO_KOMBO_PLAYER_BUFF, true);
+                    me->UpdateEntry(NPC_TAMED_KODO);
+                    me->CastSpell(me, SPELL_KODO_KOMBO_DESPAWN_BUFF, false);
+                    m_uiTimeout = true;
+                    me->CombatStop(true);
+                    me->DeleteThreatList();
+                    me->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, me->GetFollowAngle());
+                }
             }
         }
 
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
-            
+
             if (m_uiDespawn == true && m_uiDespawnTimer <= diff)
             {
                 Reset();
                 me->ForcedDespawn(0);
                 return;
-            } else if (m_uiDespawn == true) m_uiDespawnTimer -= diff;
+            }
+            else if (m_uiDespawn == true)
+                m_uiDespawnTimer -= diff;
 
-			if (m_uiTimeout == true && m_uiTimeoutTimer <= diff)
-			{
-				Reset();
-				me->ForcedDespawn(0);
-				return;
-			}
-			else if(m_uiTimeout == true) m_uiTimeoutTimer -= diff;
+            if (m_uiTimeout == true && m_uiTimeoutTimer <= diff)
+            {
+                Reset();
+                me->ForcedDespawn(0);
+                return;
+            }
+            else if (m_uiTimeout == true)
+                m_uiTimeoutTimer -= diff;
 
             if (!UpdateVictim())
                 return;
 
-			DoMeleeAttackIfReady();
+            DoMeleeAttackIfReady();
         }
     };
-
 };
-
-
 
 /*######
 ## go_iruxos
 ## Hand of Iruxos
 ######*/
 
-enum 
+enum
 {
     QUEST_HAND_IRUXOS   = 5381,
     NPC_DEMON_SPIRIT    = 11876,
