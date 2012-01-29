@@ -28,6 +28,13 @@ using namespace Org_BouncyCastle_Crypto_Utilities;
 Authenticator::Authenticator() {
     serverTimeDiff = 0;
 }
+Authenticator::~Authenticator() {
+    for (CalculatedCodes::iterator e_itr = mCalculatedCodes.begin(); e_itr
+            != mCalculatedCodes.end(); ++e_itr) {
+        // Free memory
+        delete *e_itr;
+    }
+}
 
 std::string *Authenticator::getCalculateCode(bool resyncTime,
         std::string pSecretKey) {
@@ -85,6 +92,8 @@ std::string *Authenticator::getCalculateCode(bool resyncTime,
     if (retVal->length() != 8) {
         *retVal = "0" + *retVal;
     }
+    // Remember for cleanup
+    mCalculatedCodes.push_back(retVal);
     return retVal;
 }
 

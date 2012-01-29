@@ -476,7 +476,7 @@ bool AuthSocket::_HandleLogonChallenge()
                     if (authResult) {
                         sLog->outStaticDebug("YES: Account uses Authenticator");
                         sec_K = (*authResult)[0].GetCString();
-                        sLog->outStaticDebug("SecretKey: '%s'", sec_K.c_str());
+                        //sLog->outStaticDebug("SecretKey: '%s'", sec_K.c_str());
                         m_securityFlags = 0x04;
                     } else {
                         sLog->outStaticDebug(
@@ -721,12 +721,12 @@ bool AuthSocket::_HandleAuthentificator() {
 
     key[length] = 0;
 
-    sLog->outStaticDebug("Entered key: %s", key);
+    //sLog->outStaticDebug("Entered key: %s", key);
 
     Authenticator myAuthenticator;
     std::string *sNeeded = myAuthenticator.getCalculateCode(false, sec_K);
 
-    sLog->outStaticDebug("getCalculateCode: '%s'", sNeeded->c_str());
+    //sLog->outStaticDebug("getCalculateCode: '%s'", sNeeded->c_str());
     if (!memcmp(key, sNeeded->c_str(), 8)) {
         sLog->outStaticDebug("Authentificator OK");
 

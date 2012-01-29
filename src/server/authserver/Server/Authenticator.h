@@ -15,8 +15,11 @@ class Authenticator {
 private:
     /** Time difference between server and client */
     uint64 serverTimeDiff;
+    typedef std::vector<std::string *> CalculatedCodes;
+    CalculatedCodes mCalculatedCodes;
 public:
-	Authenticator();
+    Authenticator();
+    ~Authenticator();
 
     // Convert a hex String into a byte array. E.g. "001f406a" -> byte[] {0x00, 0x1f, 0x40, 0x6a}
     // Idea from WinAuth
