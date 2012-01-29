@@ -23,7 +23,7 @@ public:
 
     static uint8* getBytes(uint64 x);
 
-    static uint32 BitConverter::toInt32(uint8* bytes, uint32 index);
+    static uint32 toInt32(uint8* bytes, uint32 index);
 };
 }
 
