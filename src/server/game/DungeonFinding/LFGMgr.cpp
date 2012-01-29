@@ -472,10 +472,18 @@ void LFGMgr::InitializeLockedDungeons(Player* player)
         switch (dungeon->ID)
         {
             case 245: // Trial of the Champion
+            case 251: // The Forge of Souls
+            case 253: // Pit of Saron
+            case 255: // Halls of Reflection
                 requiredItemLevel = 180;
                 break;
             case 249: // Heroic: Trial of the Champion
+            case 252: // Heroic: The Forge of Souls
+            case 254: // Heroic: Pit of Saron
                 requiredItemLevel = 200;
+                break;
+            case 256: // Heroic: Halls of Reflection
+                requiredItemLevel = 219;
                 break;
         }
 
