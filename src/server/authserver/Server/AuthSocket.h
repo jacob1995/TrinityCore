@@ -80,6 +80,8 @@ private:
     uint8 m_securityFlags;
     bool _partiallyauthed;
     std::string auth_K;
+    // secretkey
+    std::string sec_K;
     uint8 auth_DIGEST[20];
     LocaleConstant auth_Locale;
 

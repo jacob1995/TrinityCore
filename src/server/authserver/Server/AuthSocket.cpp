@@ -50,7 +50,7 @@ enum eAuthCmd
     AUTH_LOGON_PROOF                             = 0x01,
     AUTH_RECONNECT_CHALLENGE                     = 0x02,
     AUTH_RECONNECT_PROOF                         = 0x03,
-    AUTH_AUTHENTIFICATOR                         = 0x04,
+    AUTH_AUTHENTIFICATOR                         = 0x08,
     REALM_LIST                                   = 0x10,
     XFER_INITIATE                                = 0x30,
     XFER_DATA                                    = 0x31,
@@ -215,7 +215,7 @@ AuthSocket::AuthSocket(RealmSocket& socket) : socket_(socket)
     N.SetHexStr("894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7");
     g.SetDword(7);
     _authed = false;
-    m_securityFlags = 0x04;
+    m_securityFlags = 0x00; // 0x04 -> Authenticator
     _partiallyauthed = false;
     _accountSecurityLevel = SEC_PLAYER;
 }
@@ -466,6 +466,24 @@ bool AuthSocket::_HandleLogonChallenge()
                     // Fill the response packet with the result
                     pkt << uint8(WOW_SUCCESS);
 
+                    // Determine kind of login
+                    sLog->outStaticDebug(
+                            "Reading database - see if account uses Authenticator");
+                    stmt = LoginDatabase.GetPreparedStatement(
+                            LOGIN_SEL_ACCOUNT_AUTHENTICATOR);
+                    stmt->setUInt32(0, fields[1].GetUInt32());
+                    PreparedQueryResult authResult = LoginDatabase.Query(stmt);
+                    if (authResult) {
+                        sLog->outStaticDebug("YES: Account uses Authenticator");
+                        sec_K = (*authResult)[0].GetCString();
+                        sLog->outStaticDebug("SecretKey: '%s'", sec_K.c_str());
+                        m_securityFlags = 0x04;
+                    } else {
+                        sLog->outStaticDebug(
+                                "NO: Account does not use Authenticator");
+                        m_securityFlags = 0x00;
+                    }
+
                     // B may be calculated < 32B so we force minimal length to 32B
                     pkt.append(B.AsByteArray(32), 32);      // 32 bytes
                     pkt << uint8(1);
@@ -682,6 +700,8 @@ bool AuthSocket::_HandleLogonProof()
 }
 
 bool AuthSocket::_HandleAuthentificator() {
+    sLog->outStaticDebug("Entering _HandleAuthentificator");
+
     if (!_partiallyauthed || !(m_securityFlags & 0x04)) {
         sLog->outStaticDebug("Authentificator w/o flags or w/o authed");
         return false;
@@ -703,15 +723,15 @@ bool AuthSocket::_HandleAuthentificator() {
 
     sLog->outStaticDebug("Entered key: %s", key);
 
-    //char needed[] = "1234";
-	Authenticator myAuthenticator;
-    sLog->outStaticDebug("VOR: getCalculateCode");
-	std::string *sNeeded = myAuthenticator.getCalculateCode(false, "D83C6E08FFE5675B59EACBB14BEEFFAC952F4448");
-    sLog->outStaticDebug("NACH: getCalculateCode: %s", sNeeded->c_str());
+    Authenticator myAuthenticator;
+    std::string *sNeeded = myAuthenticator.getCalculateCode(false, sec_K);
+
+    sLog->outStaticDebug("getCalculateCode: '%s'", sNeeded->c_str());
     if (!memcmp(key, sNeeded->c_str(), 8)) {
         sLog->outStaticDebug("Authentificator OK");
 
-        PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_LOGONPROOF);
+        PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(
+                LOGIN_UPD_LOGONPROOF);
         stmt->setString(0, auth_K.c_str());
         stmt->setString(1, socket().get_remote_address().c_str());
         stmt->setUInt32(2, auth_Locale);
@@ -719,31 +739,27 @@ bool AuthSocket::_HandleAuthentificator() {
         stmt->setString(4, _login);
         LoginDatabase.Execute(stmt);
 
-        if (_expversion & POST_BC_EXP_FLAG)                 // 2.x and 3.x clients
+        if (_expversion & POST_BC_EXP_FLAG) // 2.x and 3.x clients
         {
             sAuthLogonProof_S proof;
             memcpy(proof.M2, auth_DIGEST, 20);
             proof.cmd = AUTH_LOGON_PROOF;
             proof.error = 0;
-            proof.unk1 = 0x00800000;    // Accountflags. 0x01 = GM, 0x08 = Trial, 0x00800000 = Pro pass (arena tournament)
-            proof.unk2 = 0x00;          // SurveyId
+            proof.unk1 = 0x00800000; // Accountflags. 0x01 = GM, 0x08 = Trial, 0x00800000 = Pro pass (arena tournament)
+            proof.unk2 = 0x00; // SurveyId
             proof.unk3 = 0x00;
-            socket().send((char *)&proof, sizeof(proof));
-        }
-        else
-        {
+            socket().send((char *) &proof, sizeof(proof));
+        } else {
             sAuthLogonProof_S_Old proof;
             memcpy(proof.M2, auth_DIGEST, 20);
             proof.cmd = AUTH_LOGON_PROOF;
             proof.error = 0;
             proof.unk2 = 0x00;
-            socket().send((char *)&proof, sizeof(proof));
+            socket().send((char *) &proof, sizeof(proof));
         }
 
         _authed = true;
-    }
-    else
-    {
+    } else {
         sLog->outStaticDebug("Authentificator FAIL");
         char data[4] = { AUTH_LOGON_PROOF, WOW_FAIL_UNKNOWN_ACCOUNT, 3, 0 };
         socket().send(data, sizeof(data));

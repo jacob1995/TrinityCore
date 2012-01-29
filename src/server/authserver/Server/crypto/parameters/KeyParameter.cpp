@@ -21,7 +21,6 @@ using namespace Org_BouncyCastle_Crypto;
 namespace Org_BouncyCastle_Crypto_Parameters {
 
 KeyParameter::KeyParameter(uint8* pKey, int keyLen) {
-    puts("KeyParameter::KeyParameter");
     /*
     if (key == NULL)
         throw new ArgumentNullException("key");
@@ -33,7 +32,6 @@ KeyParameter::KeyParameter(uint8* pKey, int keyLen) {
 }
 
 KeyParameter::KeyParameter(uint8* key, int keyOff, int keyLen) {
-    puts("KeyParameter::KeyParameter uint8* key");
     /*
     if (key == NULL)
         throw new ArgumentNullException("key");
@@ -48,16 +46,12 @@ KeyParameter::KeyParameter(uint8* key, int keyOff, int keyLen) {
 }
 
 uint8* KeyParameter::GetKey() {
-    puts("KeyParameter::GetKey");
     uint8* retKey = new uint8[key_Length];
-    printf("KeyParameter::GetKey 2:: key: %ld, Length: %d\n", key, key_Length);
     Array::Copy(this->key, 0, retKey, 0, (uint32)key_Length );
-    puts("KeyParameter::GetKey 3");
     return retKey;
     //return (uint8*) key.Clone();
 }
 uint32 KeyParameter::GetKeyLength() {
-    puts("KeyParameter::GetKeyLength");
     return key_Length;
 }
 }

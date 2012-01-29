@@ -43,7 +43,7 @@ public:
 
     virtual std::string getAlgorithmName();
     virtual int GetDigestSize();
-    virtual void ProcessWord(uint8* input, int inOff);
+    virtual void ProcessWord(uint8* input, uint32 inOff);
     virtual void ProcessLength(long bitLength);
     virtual int DoFinal(uint8* output, int outOff);
 

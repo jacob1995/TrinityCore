@@ -25,7 +25,7 @@ GeneralDigest::GeneralDigest() {
 
 GeneralDigest::GeneralDigest(GeneralDigest* t) {
     xBuf = new uint8[xBuf_Length];
-    Array::Copy(t->xBuf, 0, xBuf, 0, (uint32)xBuf_Length);
+    Array::Copy(t->xBuf, 0, xBuf, 0, (uint32) xBuf_Length);
 
     xBufOff = t->xBufOff;
     byteCount = t->byteCount;

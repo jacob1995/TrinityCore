@@ -31,7 +31,8 @@ Authenticator::Authenticator() {
 
 std::string *Authenticator::getCalculateCode(bool resyncTime,
         std::string pSecretKey) {
-    sLog->outStaticDebug("1: getCalculateCode");
+    sLog->outStaticDebug("getCalculateCode: SecretKey '%s'\n",
+            pSecretKey.c_str());
 
     long ServerTimeDiff = 0; //getServerTimeDiff();
 
@@ -40,95 +41,51 @@ std::string *Authenticator::getCalculateCode(bool resyncTime,
         //Sync();
     }
 
-    sLog->outStaticDebug("2: getCalculateCode");
     uint8* stb = StringToByteArray(pSecretKey);
-    for (int i = 0; i < 20; i++) {
-        printf("stb:: %d", stb[i]);
-    }
-    printf("\n");
-    sLog->outStaticDebug("_2a: stb; %ld", stb);
-    sLog->outStaticDebug("2a: getCalculateCode");
     HMac *hmac = new HMac(new Sha1Digest());
-    sLog->outStaticDebug("2b: getCalculateCode:: SecretKey.length %d",
-            pSecretKey.length());
     hmac->Init(new KeyParameter(stb, pSecretKey.length() / 2));
-    sLog->outStaticDebug("3: getCalculateCode");
 
-    time_t mytime = time((time_t*) 0);
-    struct tm *mytm = localtime(&mytime);
-    uint64 curtime = 1;
-    sLog->outStaticDebug("3a: codeInterval: %u", curtime);
-
-    printf("CodeInterval: %d\n", getCodeInterval());
     uint8* codeIntervalArray = BitConverter::getBytes(
             (uint64) getCodeInterval()); //getCodeInterval())
-    for (int i = 0; i < 4; i++) {
-        printf("codeIntervalArray:: %d", codeIntervalArray[i]);
-    }
-    printf("\n");
-    sLog->outStaticDebug("4: getCalculateCode");
-    //
-    //if (BitConverter.IsLittleEndian) {
-    //  Array.Reverse(codeIntervalArray);
-    //}
+#if TRINITY_ENDIAN == TRINITY_BIGENDIAN
+    Array::Reverse(codeIntervalArray, 8);
+#endif
 
     hmac->BlockUpdate(codeIntervalArray, 0, 8); //codeIntervalArray.length);
-    sLog->outStaticDebug("5: getCalculateCode: MacSize %ld", hmac->GetMacSize());
 
     uint8* mac = new uint8[hmac->GetMacSize()];
     hmac->DoFinal(mac, 0);
-    sLog->outStaticDebug("6: getCalculateCode");
 
     // the last 4 bits of the mac say where the code starts (e.g. if last 4 bit are 1100, we start at byte 12)
     int start = mac[19] & 0x0f;
-    printf("start: %d\n", start);
 
-    sLog->outStaticDebug("7: getCalculateCode");
     // extract those 4 bytes
     uint8* bytes = new uint8[4];
     Array::Copy(mac, start, bytes, 0, 4);
-    for (int i = 0; i < 4; i++) {
-        printf("(mac:: %d /", mac[start + i]);
-        printf("bytes:: %d)", bytes[i]);
-        printf("--");
-    }
-    printf("\n");
-    sLog->outStaticDebug("8: getCalculateCode");
-    //
-    //if (BitConverter.IsLittleEndian) {
-    //  Array.Reverse(bytes);
-    //}
+#if TRINITY_ENDIAN == TRINITY_BIGENDIAN
+    Array::Reverse(bytes, 4);
+#endif
 
     std::ostringstream *oss = new std::ostringstream();
     IntegerToBinary(BitConverter::toInt32(bytes, 0), oss);
-    sLog->outStaticDebug("9: getCalculateCode");
     uint32 fullcode = BitConverter::toInt32(bytes, 0) & 0x7fffffff;
-    printf("BitConverter::toInt32: %d\n", BitConverter::toInt32(bytes, 0));
-    printf("BitConverter::toInt32: %s\n", oss->str().c_str());
-    printf("FULLCODE: %d\n", fullcode);
-    printf("fullcode % 100000000: %d\n", fullcode % 100000000);
 
     delete oss;
-    printf("hmac\n");
     delete hmac;
-    printf("mac\n");
     delete[] mac;
-    printf("bytes\n");
     delete[] bytes;
-    sLog->outStaticDebug("stb");
     delete[] stb;
 
     // we use the last 8 digits of this code in radix 10
     //std::string code = std::string.valueOf(fullcode % 100000000);
     std::ostringstream oss2;
-    printf("Vor ostringstream 2: %ld\n", (fullcode % 100000000));
     oss2 << (fullcode % 100000000) << std::dec;
 
-	std::string *retVal = new std::string(oss2.str());
-	if( retVal->length() != 8 ) {
-		*retVal = "0" + *retVal;
-	}
-	return retVal;
+    std::string *retVal = new std::string(oss2.str());
+    if (retVal->length() != 8) {
+        *retVal = "0" + *retVal;
+    }
+    return retVal;
 }
 
 uint8* Authenticator::StringToByteArray(const std::string& pHex) {
@@ -162,7 +119,7 @@ uint64 Authenticator::getCodeInterval() {
 uint64 Authenticator::getCurrentTime() {
     std::time_t t = std::time(0); // t is an integer type
     //std::cout << t << " seconds since 01-Jan-1970\n";
-    printf("getCurrentTime: %d\n", t);
+    //printf("getCurrentTime: %d\n", t);
     return t;
 }
 

@@ -32,7 +32,7 @@ Sha1Digest::Sha1Digest() {
  * message digest.
  */
 Sha1Digest::Sha1Digest(Sha1Digest *t) :
-        GeneralDigest(t) {
+    GeneralDigest(t) {
     H1 = t->H1;
     H2 = t->H2;
     H3 = t->H3;
@@ -51,7 +51,7 @@ int Sha1Digest::GetDigestSize() {
     return DigestLength;
 }
 
-void Sha1Digest::ProcessWord(uint8* input, int inOff) {
+void Sha1Digest::ProcessWord(uint8* input, uint32 inOff) {
     X[xOff] = Pack::BE_To_UInt32(input, inOff);
 
     if (++xOff == 16) {
@@ -64,8 +64,8 @@ void Sha1Digest::ProcessLength(long bitLength) {
         ProcessBlock();
     }
 
-    X[14] = (uint32)((uint64) bitLength >> 32);
-    X[15] = (uint32)((uint64) bitLength);
+    X[14] = (uint32) ((uint64) bitLength >> 32);
+    X[15] = (uint32) ((uint64) bitLength);
 }
 
 int Sha1Digest::DoFinal(uint8* output, int outOff) {
@@ -118,6 +118,7 @@ void Sha1Digest::ProcessBlock() {
         uint32 t = X[i - 3] ^ X[i - 8] ^ X[i - 14] ^ X[i - 16];
         X[i] = t << 1 | t >> 31;
     }
+    printf("\n");
 
     //
     // set up working variables.

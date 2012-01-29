@@ -38,7 +38,7 @@ public:
     void Reset();
     int GetByteLength();
 
-    virtual void ProcessWord(uint8* input, int inOff) = 0;
+    virtual void ProcessWord(uint8* input, uint32 inOff) = 0;
     virtual void ProcessLength(long bitLength) = 0;
     virtual void ProcessBlock() = 0;
     virtual std::string getAlgorithmName() = 0;
