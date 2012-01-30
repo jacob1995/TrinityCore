@@ -1846,15 +1846,15 @@ public:
         {
             case GOSSIP_ACTION_INFO_DEF+0:
                 player->CastSpell(player, SPELL_FORCEITEM_GOREGEK, true);
-				player->CLOSE_GOSSIP_MENU();
+                player->CLOSE_GOSSIP_MENU();
                 break;
             case GOSSIP_ACTION_INFO_DEF+1:
                 player->CastSpell(player, SPELL_FORCEITEM_DAJIK, true);
-				player->CLOSE_GOSSIP_MENU();
+                player->CLOSE_GOSSIP_MENU();
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
                 player->CastSpell(player, SPELL_FORCEITEM_ZEPIK, true);
-				player->CLOSE_GOSSIP_MENU();
+                player->CLOSE_GOSSIP_MENU();
                 break;
         }
         return true;
