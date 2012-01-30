@@ -839,6 +839,62 @@ public:
 
 };
 
+/*######
+## npc_item_worg_disguise
+######*/
+
+#define GOSSIP_WORGEN_DISGUISE  "Bitte gib mir eine neue Worgenverkleidung."
+
+enum eWorgDisguise_Quests
+{
+	// Alliance
+	QUEST_IN_WORGENS_CLOTHING_A	= 11325,
+	QUEST_ALPHA_WORG_A			= 11326,
+
+	// Horde
+	QUEST_IN_WORGENS_CLOTHING_H	= 11323,
+	QUEST_ALPHA_WORG_H			= 11324,
+
+	ITEM_WORG_DISGUISE			= 33618,
+	SPELL_CREATE_WORG_DISGUISE	= 43379,
+};
+
+class npc_item_worg_disguise : public CreatureScript
+{
+public:
+    npc_item_worg_disguise() : CreatureScript("npc_item_worg_disguise") { }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+		if (creature->isQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+	
+		if (!player->HasItemCount(ITEM_WORG_DISGUISE, 1, true)
+			&& ((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A)== QUEST_STATUS_REWARDED)
+			|| (player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H)== QUEST_STATUS_REWARDED)))
+			player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WORGEN_DISGUISE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+
+		if (player->GetQuestStatus(QUEST_ALPHA_WORG_A) == QUEST_STATUS_REWARDED || player->GetQuestStatus(QUEST_ALPHA_WORG_H) == QUEST_STATUS_REWARDED)
+			return false;
+
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        switch (uiAction)
+        {
+            case GOSSIP_ACTION_INFO_DEF+0:
+                player->CastSpell(player, SPELL_CREATE_WORG_DISGUISE, true);
+				player->CLOSE_GOSSIP_MENU();
+                break;
+        }
+        return true;
+    }
+};
+
 void AddSC_howling_fjord()
 {
     new npc_apothecary_hanes();
@@ -852,4 +908,5 @@ void AddSC_howling_fjord()
     new npc_alliance_banner();
     new mob_riven_widow_cocoon();
     new npc_greer_orehammer();
+    new npc_item_worg_disguise();
 }
