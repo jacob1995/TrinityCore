@@ -119,12 +119,12 @@ public:
 
         void SpellHit(Unit* caster, SpellInfo const* spell)
         {
-
             if (spell->Id == SPELL_KODO_KOMBO_GOSSIP)
             {
                 m_uiDespawn = true;
                 m_uiTimeout = false;
             }
+
             else if (spell->Id == SPELL_KODO_KOMBO_ITEM)
             {
                 if (!caster->HasAura(SPELL_KODO_KOMBO_PLAYER_BUFF) && !me->HasAura(SPELL_KODO_KOMBO_DESPAWN_BUFF))
@@ -142,7 +142,6 @@ public:
 
         void UpdateAI(uint32 const diff)
         {
-
             if (m_uiDespawn == true && m_uiDespawnTimer <= diff)
             {
                 Reset();

@@ -224,7 +224,6 @@ public:
             {
                 case 0:
                     DoScriptText(SAY_BREAKOUT1, me);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 case 1:
                     me->SetStandState(UNIT_STAND_STATE_KNEEL);
@@ -237,13 +236,14 @@ public:
                     break;
                 case 3:
                     SetEscortPaused(true);
-                me->SetReactState(REACT_PASSIVE);
+                    me->SetReactState(REACT_PASSIVE);
                     me->SetStandState(UNIT_STAND_STATE_KNEEL);
                     DoScriptText(SAY_BREAKOUT2, me);
                     DoCast(me, SPELL_ANTI_MAGIC_ZONE);  // cast again that makes bubble up
                     break;
                 case 4:
                     SetRun(true);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 case 9:
                     me->Mount(MODEL_DEATH_KNIGHT_MOUNT);
@@ -329,7 +329,7 @@ public:
                         case 5:
                             DoScriptText(SAY_BREAKOUT9, me);
                             me->RemoveAurasDueToSpell(SPELL_ANTI_MAGIC_ZONE);
-                        me->SetReactState(REACT_DEFENSIVE);
+                            me->SetReactState(REACT_DEFENSIVE);
                             // i do not know why the armor will also be removed
                             m_uiWave_Timer = 2500;
                             break;
