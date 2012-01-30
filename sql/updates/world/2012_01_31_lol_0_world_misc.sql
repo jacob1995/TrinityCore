@@ -1,4 +1,4 @@
-UPDATE `creature_template` SET `AIName`='SmartAI',`ScriptName`='npc_item_worg_disguise' WHERE `entry` IN (24186,24273);
+UPDATE `creature_template` SET `AIName`='',`ScriptName`='npc_item_worg_disguise' WHERE `entry` IN (24186,24273);
 
 -- cleanup - moved all to hardcode
 DELETE FROM `gossip_menu_option` WHERE `menu_id` IN (8908,8918);

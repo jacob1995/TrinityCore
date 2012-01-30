@@ -1811,6 +1811,80 @@ public:
     };
 };
 
+/*######
+## npc_elder_harkek
+######*/
+
+enum eElderHarkek_Misc
+{
+    ITEM_GOREGEKS_SHACKLES              = 38619,
+    ITEM_DAJIKS_WORN_CHALK              = 38621,
+    ITEM_ZEPIKS_HUNTING_HORN            = 38512,
+        
+    SPELL_FORCEITEM_GOREGEK             = 52542,
+    SPELL_FORCEITEM_DAJIK               = 52544,
+    SPELL_FORCEITEM_ZEPIK               = 52545,
+
+    QUEST_PLAYING_ALONG                 = 12528,
+    QUEST_THE_WHASP_HUNTERS_APPRENTICE  = 12533,
+    QUEST_ROUGH_RIDE                    = 12536,
+};
+
+#define GOSSIP_GOREGEK_ITEM "I need to find Goregek, do you have his shackles?"
+#define GOSSIP_DAJIK_ITEM   "I need to find Dajik, do you have his chalk?"
+#define GOSSIP_ZEPIK_ITEM   "I need to find Zepik, do you have his horn?"
+
+class npc_elder_harkek : public CreatureScript
+{
+public:
+    npc_elder_harkek() : CreatureScript("npc_elder_harkek") { }
+
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        switch (uiAction)
+        {
+            case GOSSIP_ACTION_INFO_DEF+0:
+                player->CastSpell(player, SPELL_FORCEITEM_GOREGEK, true);
+				player->CLOSE_GOSSIP_MENU();
+                break;
+            case GOSSIP_ACTION_INFO_DEF+1:
+                player->CastSpell(player, SPELL_FORCEITEM_DAJIK, true);
+				player->CLOSE_GOSSIP_MENU();
+                break;
+            case GOSSIP_ACTION_INFO_DEF+2:
+                player->CastSpell(player, SPELL_FORCEITEM_ZEPIK, true);
+				player->CLOSE_GOSSIP_MENU();
+                break;
+        }
+        return true;
+    }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (creature->isQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+
+        if (player->GetQuestStatus(QUEST_PLAYING_ALONG) == QUEST_STATUS_REWARDED
+            && !player->HasItemCount(ITEM_GOREGEKS_SHACKLES, 1, true))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_GOREGEK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+
+        if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE 
+            || player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_REWARDED)
+            && !player->HasItemCount(ITEM_DAJIKS_WORN_CHALK, 1, true))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DAJIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+        if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE 
+            || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE 
+            || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_REWARDED)
+            && !player->HasItemCount(ITEM_ZEPIKS_HUNTING_HORN, 1, true))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ZEPIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature),creature->GetGUID());
+        return true;
+    }
+};
+
 void AddSC_sholazar_basin()
 {
     new npc_injured_rainspeaker_oracle();
@@ -1832,4 +1906,5 @@ void AddSC_sholazar_basin()
     new npc_stormwatcher();
     new npc_rejek_first_blood();
     new vehicle_haiphoon();
+    new npc_elder_harkek();
 }
