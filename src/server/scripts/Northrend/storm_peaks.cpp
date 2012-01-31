@@ -1284,6 +1284,55 @@ public:
     }
 };
 
+/*######
+## npc_item_branns_communicator
+######*/
+
+enum BrannsCommunicator_Misc
+{
+    ITEM_BRANNS_COMMUNICATOR            = 40971,
+    
+    QUEST_CATCHING_UP_WITH_BRANN        = 12920, // Horde
+    QUEST_SNIFFING_OUT_THE_PERPETRATOR  = 12855, // Alliance
+};
+
+#define GOSSIP_COMMUNICATOR_ITEM        "Bitte gib mir einen neuen Kommunikator."
+
+class npc_item_branns_communicator : public CreatureScript
+{
+public:
+    npc_item_branns_communicator() : CreatureScript("npc_item_branns_communicator") { }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (creature->isQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+            
+        if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true) 
+            && (player->GetQuestStatus(QUEST_SNIFFING_OUT_THE_PERPETRATOR) == QUEST_STATUS_REWARDED
+            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
+            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
+            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+      
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        switch (action)
+        {
+            case GOSSIP_ACTION_INFO_DEF+0:
+                player->AddItem(ITEM_BRANNS_COMMUNICATOR, 1);
+                player->CLOSE_GOSSIP_MENU();
+                break;
+        }
+        return true;
+    }
+};
+
 void AddSC_storm_peaks()
 {
     new npc_agnetta_tyrsdottar();
@@ -1304,4 +1353,5 @@ void AddSC_storm_peaks()
     new npc_dead_irongiant();
     new npc_snowblind_follower();
     new npc_archivist_mechaton();
+    new npc_item_branns_communicator();
 }

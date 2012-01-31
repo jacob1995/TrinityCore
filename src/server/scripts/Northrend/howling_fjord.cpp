@@ -848,15 +848,15 @@ public:
 enum eWorgDisguise_Quests
 {
 	// Alliance
-	QUEST_IN_WORGENS_CLOTHING_A	= 11325,
-	QUEST_ALPHA_WORG_A			= 11326,
+	QUEST_IN_WORGENS_CLOTHING_A = 11325,
+	QUEST_ALPHA_WORG_A          = 11326,
 
 	// Horde
-	QUEST_IN_WORGENS_CLOTHING_H	= 11323,
-	QUEST_ALPHA_WORG_H			= 11324,
+	QUEST_IN_WORGENS_CLOTHING_H = 11323,
+	QUEST_ALPHA_WORG_H          = 11324,
 
-	ITEM_WORG_DISGUISE			= 33618,
-	SPELL_CREATE_WORG_DISGUISE	= 43379
+	ITEM_WORG_DISGUISE          = 33618,
+	SPELL_CREATE_WORG_DISGUISE  = 43379
 };
 
 class npc_item_worg_disguise : public CreatureScript
@@ -888,7 +888,7 @@ public:
         {
             case GOSSIP_ACTION_INFO_DEF+0:
                 player->CastSpell(player, SPELL_CREATE_WORG_DISGUISE, true);
-				player->CLOSE_GOSSIP_MENU();
+                player->CLOSE_GOSSIP_MENU();
                 break;
         }
         return true;
