@@ -437,7 +437,10 @@ public:
             if (Creature* boss = me->SummonCreature(NPC_TO_SUMMON_1, SpawnPosition))
             {
                 if (instance)
+                {
                     instance->SetData64(DATA_GRAND_CHAMPION_1 - 1 + summonTimes, boss->GetGUID());
+                    instance->SetData(DATA_GRAND_CHAMPION_ENTRY, boss->GetEntry());
+                }
 
                 boss->AI()->SetData(summonTimes, 0);
 

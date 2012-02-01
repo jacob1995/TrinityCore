@@ -71,13 +71,17 @@ enum Spells
   //SPELL_BLAZING_LIGHT_H       = 67290,
     SPELL_BLAZING_LIGHT         = 67247,
     SPELL_UNBALANCING_STRIKE    = 67237,
-    SPELL_CLEAVE                = 15284
+    SPELL_CLEAVE                = 15284,
+
+    SPELL_CONFESSOR_ACHIEVEMENT = 68206,
+    SPELL_ARGENT_CREDIT         = 68573,
+    SPELL_PALETRESS_CREDIT      = 68574,
+    SPELL_EADRIC_CREDIT         = 68575
 };
 
 enum Misc
 {
     DATA_FACEROLLER = 1,
-    //ACHIEV_CONF                 = 3802
 };
 
 enum Enums
@@ -210,7 +214,10 @@ class boss_eadric : public CreatureScript
                         _done = false;
 
                         if (_faceroller)
-                            DoCast(SPELL_EADRIC_ACHIEVEMENT);
+                            DoCast(me, SPELL_EADRIC_ACHIEVEMENT, true);
+
+                        DoCast(me, SPELL_ARGENT_CREDIT, true);
+                        DoCast(me, SPELL_EADRIC_CREDIT, true);
                     }
                     else
                         _resetTimer -= diff;
@@ -396,6 +403,7 @@ class boss_paletress : public CreatureScript
 
             void Reset()
             {
+                _events.Reset();
                 _summons.DespawnAll();
                 me->RemoveAllAuras();
                 _resetTimer = 5000;
@@ -437,6 +445,9 @@ class boss_paletress : public CreatureScript
             {
                 _summons.Summon(summon);
                 DoZoneInCombat(summon, 150.0f);
+
+                if (_instance)
+                    _instance->SetData(DATA_MEMORY_ENTRY, summon->GetEntry());
             }
 
             void SummonedCreatureDies(Creature* /*summon*/, Unit* /*killer*/)
@@ -464,8 +475,11 @@ class boss_paletress : public CreatureScript
                         _done = false;
                         me->DespawnOrUnsummon(1000);
 
-                        //if (IsHeroic())
-                        //    instance->DoCompleteAchievement(ACHIEV_CONF);
+                        if (IsHeroic())
+                            DoCast(me, SPELL_CONFESSOR_ACHIEVEMENT, true);
+
+                        DoCast(me, SPELL_ARGENT_CREDIT, true);
+                        DoCast(me, SPELL_PALETRESS_CREDIT, true);
                     }
                     else
                         _resetTimer -= diff;

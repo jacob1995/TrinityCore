@@ -111,12 +111,6 @@ enum Misc
     NPC_RISEN_CHAMPION      = 35590,
     NPC_RISEN_BRIGHTSTAR    = 35564,
     NPC_RISEN_SUNSWORN      = 35545,
-
-    //ACHIEV_WORSE            = 3804,
-    //ACHIEV_HEROIC_DONE_H    = 4297,
-    //ACHIEV_HEROIC_DONE_A    = 4298,
-    //ACHIEV_NORMAL_DONE_H    = 4296,
-    //ACHIEV_NORMAL_DONE_A    = 3778
 };
 
 class boss_black_knight : public CreatureScript
@@ -261,7 +255,7 @@ class boss_black_knight : public CreatureScript
 
             void JustDied(Unit* /*killer*/)
             {
-                DoCast(me, SPELL_KILL_CREDIT);
+                DoCast(me, SPELL_KILL_CREDIT, true);
                 DoScriptText(SAY_DEATH_3, me);
 
                 if (GameObject* go = GameObject::GetGameObject(*me, _instance->GetData64(DATA_PORTCULLIS)))
