@@ -1183,7 +1183,7 @@ class npc_power_spark : public CreatureScript
                     me->SetFlying(false);
                     me->SetReactState(REACT_PASSIVE);
                     me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MoveFall(FLOOR_Z);
+                    me->GetMotionMaster()->MoveFall();
                     me->ForcedDespawn(60*IN_MILLISECONDS);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                 }

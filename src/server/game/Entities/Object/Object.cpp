@@ -2760,7 +2760,7 @@ void WorldObject::DestroyForNearbyPlayers()
         return;
 
     std::list<Player*> targets;
-    Trinity::AnyPlayerInObjectRangeCheck check(this, GetVisibilityRange(), true);
+    Trinity::AnyPlayerInObjectRangeCheck check(this, GetVisibilityRange(), false);
     Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(this, targets, check);
     VisitNearbyWorldObject(GetVisibilityRange(), searcher);
     for (std::list<Player*>::const_iterator iter = targets.begin(); iter != targets.end(); ++iter)
