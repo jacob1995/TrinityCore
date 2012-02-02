@@ -109,7 +109,7 @@ enum Misc
     NPC_RISEN_CHAMPION      = 35590,
     NPC_RISEN_BRIGHTSTAR    = 35564,
     NPC_RISEN_SUNSWORN      = 35545,
-    DATA_IVE_HAD_WORSE      = 1
+    DATA_I_VE_HAD_WORSE     = 1
 };
 
 class boss_black_knight : public CreatureScript
@@ -251,13 +251,13 @@ class boss_black_knight : public CreatureScript
 
             void DoAction(int32 const param)
             {
-                if (param == DATA_IVE_HAD_WORSE)
+                if (param == DATA_I_VE_HAD_WORSE)
                     iveHadWorse = false;
             }
 
             uint32 GetData(uint32 type)
             {
-                if (type == DATA_IVE_HAD_WORSE)
+                if (type == DATA_I_VE_HAD_WORSE)
                     return iveHadWorse ? 1 : 0;
 
                 return 0;
@@ -470,7 +470,7 @@ class npc_risen_ghoul : public CreatureScript
             {
                 if (spell->Id == DUNGEON_MODE<uint32>(SPELL_EXPLODE, SPELL_EXPLODE_H) && target->GetTypeId() == TYPEID_PLAYER)
                     if (Creature* knight = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetData64(DATA_BLACK_KNIGHT) : 0))
-                        knight->AI()->DoAction(DATA_IVE_HAD_WORSE);
+                        knight->AI()->DoAction(DATA_I_VE_HAD_WORSE);
             }
 
             void DoAction(int32 const action)
@@ -584,7 +584,7 @@ class achievement_i_ve_had_worse : public AchievementCriteriaScript
 
             if (InstanceScript* instance = player->GetInstanceScript())
                 if (Creature* knight = ObjectAccessor::GetCreature(*player, instance->GetData64(DATA_BLACK_KNIGHT)))
-                    if (knight->AI()->GetData(DATA_IVE_HAD_WORSE))
+                    if (knight->AI()->GetData(DATA_I_VE_HAD_WORSE))
                         return true;
 
             return false;

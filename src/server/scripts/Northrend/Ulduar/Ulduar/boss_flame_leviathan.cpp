@@ -440,6 +440,8 @@ class boss_flame_leviathan : public CreatureScript
                             break;
                         case EVENT_MISSILE:
                             DoCast(me, SPELL_MISSILE_BARRAGE, true);
+                            // temporary update passengers
+                            me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                             events.ScheduleEvent(EVENT_MISSILE, 1500);
                             break;
                         case EVENT_VENT:
