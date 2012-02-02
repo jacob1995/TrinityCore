@@ -21935,6 +21935,9 @@ void Player::UpdateVisibilityOf(T* target, UpdateData& data, std::set<Unit*>& vi
             //if (target->isType(TYPEMASK_UNIT) && ((Unit*)target)->m_Vehicle)
             //    UpdateVisibilityOf(((Unit*)target)->m_Vehicle, data, visibleNow);
 
+            // DEBUG
+            sLog->outError("Player::UpdateVisibilityOf | target (%s) GUIDLow (%u) type (%u) entry (%u) this (%s) GUIDLow (%u)", target->GetName(), target->GetGUIDLow(), target->GetTypeId(), target->GetEntry(), this->GetName(), GetGUIDLow());
+
             target->BuildCreateUpdateBlockForPlayer(&data, this);
             UpdateVisibilityOf_helper(m_clientGUIDs, target, visibleNow);
 
