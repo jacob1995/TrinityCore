@@ -74,7 +74,6 @@ enum Spells
     SPELL_CLEAVE                = 15284,
 
     SPELL_CONFESSOR_ACHIEVEMENT = 68206,
-    SPELL_ARGENT_CREDIT         = 68573,
     SPELL_PALETRESS_CREDIT      = 68574,
     SPELL_EADRIC_CREDIT         = 68575
 };

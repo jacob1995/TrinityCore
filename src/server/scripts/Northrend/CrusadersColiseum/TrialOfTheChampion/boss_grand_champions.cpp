@@ -352,8 +352,8 @@ class boss_grand_champion_toc5 : public CreatureScript
             {
                 _phase = 0;
                 _phaseChangeTimer = 20000;
-                me->setFaction(35);
                 EnterEvadeMode();
+                me->setFaction(35);
             }
 
             void SetData(uint32 type, uint32 /*data*/)
@@ -531,7 +531,6 @@ class boss_grand_champion_toc5 : public CreatureScript
                             if (_instance)
                                 _instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
                             me->SetReactState(REACT_PASSIVE);
-                            _phase = 2;
                             break;
                     }
                 }

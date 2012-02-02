@@ -51,6 +51,7 @@ public:
         uint64 grandChampion3GUID;
         uint64 championLootGUID;
         uint64 argentChampionGUID;
+        uint64 blackKnightGUID;
 
         std::list<uint64> vehicleList;
         std::string str_data;
@@ -74,6 +75,7 @@ public:
             grandChampion3GUID = 0;
             championLootGUID = 0;
             argentChampionGUID = 0;
+            blackKnightGUID = 0;
 
             vehicleList.clear();
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
@@ -162,6 +164,9 @@ public:
                 case NPC_PALETRESS:
                     argentChampionGUID = creature->GetGUID();
                     break;
+                case NPC_BLACK_KNIGHT:
+                    blackKnightGUID = creature->GetGUID();
+                    break;
             }
         }
 
@@ -195,9 +200,9 @@ public:
                     }
                     break;
                 case BOSS_GRAND_CHAMPIONS:
-                    m_auiEncounter[0] = data;
                     if (data == IN_PROGRESS)
                     {
+                        m_auiEncounter[0] = data;
                         for (std::list<uint64>::const_iterator itr = vehicleList.begin(); itr != vehicleList.end(); ++itr)
                             if (Creature* summon = instance->GetCreature(*itr))
                                 summon->RemoveFromWorld();
@@ -210,6 +215,8 @@ public:
                             for (uint8 i = 0; i < 3; ++i)
                                 if (Creature* GrandChampion = instance->GetCreature(GetData64(DATA_GRAND_CHAMPION_1 + i)))
                                     GrandChampion->AI()->SetData(11, 0);
+
+                            UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_GRAND_CHAMPION_CREDIT, NULL);
 
                             if (Creature* announcer = instance->GetCreature(announcerGUID))
                             {
@@ -246,6 +253,8 @@ public:
                     }
                     else if (data == DONE)
                     {
+                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ARGENT_CREDIT, NULL);
+
                         if (Creature* announcer = instance->GetCreature(announcerGUID))
                         {
                             announcer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
@@ -265,6 +274,8 @@ public:
                     }
                     else if (data == DONE)
                     {
+                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ARGENT_CREDIT, NULL);
+
                         if (Creature* announcer = instance->GetCreature(announcerGUID))
                         {
                             announcer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
@@ -276,6 +287,8 @@ public:
                     break;
                 case BOSS_BLACK_KNIGHT:
                     m_auiEncounter[3] = data;
+                    if (data == DONE)
+                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_BLACK_KNIGHT_CREDIT, NULL);
                     break;
                 case DATA_GRAND_CHAMPION_ENTRY:
                     for (uint8 i = 0; i < 3; ++i)
@@ -324,6 +337,7 @@ public:
                 case DATA_GRAND_CHAMPION_1: return grandChampion1GUID;
                 case DATA_GRAND_CHAMPION_2: return grandChampion2GUID;
                 case DATA_GRAND_CHAMPION_3: return grandChampion3GUID;
+                case DATA_BLACK_KNIGHT: return blackKnightGUID;
             }
 
             return 0;
