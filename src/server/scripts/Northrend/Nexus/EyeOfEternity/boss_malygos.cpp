@@ -164,9 +164,14 @@ enum MovePoints
     POINT_PHASE_3
 };
 
-//enum Achievements
-//{
-//};
+enum Light
+{
+    LIGHT_DEFAULT      = 1773,
+    LIGHT_RUNES        = 1824, // during phase 2
+    LIGHT_SPACE_FLIGHT = 1823, // right after phase 2 ends
+    LIGHT_CLOUDY       = 1822, // begin of phase 3
+    LIGHT_CLOUDY_RUNES = 1825  // during phase 3
+};
 
 static Position Locations[]=
 {
@@ -216,11 +221,12 @@ class boss_malygos : public CreatureScript
 
                 step = 0;
                 phase = PHASE_NONE;
+                SendLightOverride(LIGHT_DEFAULT, 1000);
                 addsCount = 0;
 
                 me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
                 me->SetFlying(true);
-                me->SetSpeed(MOVE_FLIGHT, 2.0f);
+                me->SetSpeed(MOVE_FLIGHT, 2.0f, true);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_PASSIVE);
 
@@ -322,7 +328,7 @@ class boss_malygos : public CreatureScript
                     {
                         _EnterCombat();
                         me->SetInCombatWithZone();
-                        me->GetMotionMaster()->MovePoint(POINT_START, Locations[0]);
+                        me->GetMotionMaster()->MoveLand(POINT_START, Locations[0], 12.0f);
 
                         while (Creature* dragon = me->FindNearestCreature(NPC_WYRMREST_SKYTALON, 250.0f))
                             dragon->ForcedDespawn();
@@ -593,7 +599,7 @@ class boss_malygos : public CreatureScript
 
             void MovementInform(uint32 type, uint32 id)
             {
-                if (type != POINT_MOTION_TYPE)
+                if (type != POINT_MOTION_TYPE && type != EFFECT_MOTION_TYPE)
                     return;
 
                 switch (id)
@@ -745,7 +751,7 @@ class boss_malygos : public CreatureScript
                             SparkMovement(false);
                             me->SetFlying(true);
                             me->SetReactState(REACT_PASSIVE);
-                            me->GetMotionMaster()->MovePoint(POINT_VORTEX, Locations[1]);
+                            me->GetMotionMaster()->MoveTakeoff(POINT_VORTEX, Locations[1], 10.0f);
                             events.CancelEvent(EVENT_STORM);
                             events.CancelEvent(EVENT_SPARK);
                             events.CancelEvent(EVENT_BREATH);
@@ -756,13 +762,8 @@ class boss_malygos : public CreatureScript
                             events.ScheduleEvent(EVENT_VORTEXFLYDOWN, 12*IN_MILLISECONDS);
                             break;
                         case EVENT_VORTEXFLYDOWN:
-                            if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                            {
-                                float x, y, z;
-                                victim->GetPosition(x, y, z);
-                                me->GetMotionMaster()->MovePoint(POINT_FLYDOWN, x, y, z);
-                                phase = PHASE_IDLE;
-                            }
+                            me->GetMotionMaster()->MoveLand(POINT_FLYDOWN, Locations[5], 8.0f);
+                            phase = PHASE_IDLE;
                             break;
                         case EVENT_ENRAGE:
                             if (!me->HasAura(SPELL_ENRAGE))
@@ -821,6 +822,7 @@ class boss_malygos : public CreatureScript
                             {
                                 case 1:
                                 {
+                                    SendLightOverride(LIGHT_CLOUDY, 1000);
                                     DoCast(me, SPELL_DESTROY_PLATFORM_BOOM, true);
                                     DoCast(SPELL_DESTROY_PLATFORM_EVENT);
                                     events.ScheduleEvent(EVENT_IDLE, 2*IN_MILLISECONDS);
@@ -833,6 +835,7 @@ class boss_malygos : public CreatureScript
                                         if (GameObject* platform = instance->instance->GetGameObject(instance->GetData64(DATA_PLATFORM)))
                                             platform->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
 
+                                    me->SetSpeed(MOVE_FLIGHT, 2.0f);
                                     me->GetMotionMaster()->MovePoint(POINT_PHASE_3, Locations[4]);
                                     DoAction(ACTION_SPAWN_MOUNTS);
                                     events.ScheduleEvent(EVENT_IDLE, 3*IN_MILLISECONDS);
@@ -847,6 +850,7 @@ class boss_malygos : public CreatureScript
                                     events.ScheduleEvent(EVENT_CHECKPLAYER, 5*IN_MILLISECONDS);
                                     events.ScheduleEvent(EVENT_STATICFIELD, 20*IN_MILLISECONDS);
                                     events.ScheduleEvent(EVENT_PULSE, 10*IN_MILLISECONDS);
+                                    SendLightOverride(LIGHT_CLOUDY_RUNES, 20000);
                                     phase = PHASE_DRAGONS;
                                     ++step;
                                     break;
@@ -866,11 +870,12 @@ class boss_malygos : public CreatureScript
                         DoScriptText(SAY_PHASE1_END, me);
                         me->SetFlying(true);
                         me->SetReactState(REACT_PASSIVE);
-                        me->GetMotionMaster()->MovePoint(POINT_PHASE_2, Locations[3]);
+                        me->GetMotionMaster()->MoveTakeoff(POINT_PHASE_2, Locations[3], 2.5f);
                         events.CancelEvent(EVENT_STORM);
                         events.CancelEvent(EVENT_SPARK);
                         events.CancelEvent(EVENT_BREATH);
                         events.CancelEvent(EVENT_VORTEXFLYUP);
+                        SendLightOverride(LIGHT_RUNES, 3000);
                         phase = PHASE_IDLE;
                     }
                 }
@@ -879,10 +884,12 @@ class boss_malygos : public CreatureScript
                 if (phase == PHASE_ADDS && addsCount == RAID_MODE<uint8>(6, 12))
                 {
                     DoScriptText(SAY_PHASE2_END, me);
+                    me->SetSpeed(MOVE_FLIGHT, 0.3f, true);
                     me->GetMotionMaster()->MovePoint(POINT_DESTROYFLOOR, Locations[1]);
                     summons.DespawnAll(); // remove remaining anti-magic shells and discs
                     events.CancelEvent(EVENT_SURGEOFPOWER);
                     events.CancelEvent(EVENT_OVERLOAD);
+                    SendLightOverride(LIGHT_SPACE_FLIGHT, 1000);
                     phase = PHASE_IDLE;
                 }
 
@@ -898,6 +905,24 @@ class boss_malygos : public CreatureScript
             uint8 step;
             uint8 phase;
             uint8 addsCount;
+
+            void SendLightOverride(uint32 overrideId, uint32 fadeInTime) const
+            {
+                WorldPacket data(SMSG_OVERRIDE_LIGHT, 12);
+                data << uint32(1773);
+                data << uint32(overrideId);
+                data << uint32(fadeInTime);
+                SendPacketToPlayers(&data);
+            }
+
+            void SendPacketToPlayers(WorldPacket const* data) const
+            {
+                Map::PlayerList const& players = me->GetMap()->GetPlayers();
+                if (!players.isEmpty())
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                        if (Player* player = itr->getSource())
+                            player->GetSession()->SendPacket(data);
+            }
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -1278,6 +1303,7 @@ class npc_hover_disc : public CreatureScript
             {
                 _move = false;
                 _checkTimer = 1*IN_MILLISECONDS;
+                _relocateTimer = 1*IN_MILLISECONDS;
                 me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_ARCANE_BOMB_KNOCKBACK, true);
             }
 
@@ -1330,6 +1356,14 @@ class npc_hover_disc : public CreatureScript
                         _count = 16;
                 }
 
+                if (_relocateTimer <= diff)
+                {
+                    me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                    _relocateTimer = 1*IN_MILLISECONDS;
+                }
+                else
+                    _relocateTimer -= diff;
+
                 if (!UpdateVictim())
                     return;
 
@@ -1359,6 +1393,7 @@ class npc_hover_disc : public CreatureScript
             bool _move;
             uint32 _count;
             uint32 _checkTimer;
+            uint32 _relocateTimer;
         };
 
         CreatureAI* GetAI(Creature* creature) const
