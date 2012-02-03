@@ -1146,7 +1146,7 @@ void AuraEffect::UpdatePeriodic(Unit* caster)
                     if((m_tickNumber-1) % 5 == 0 && (m_tickNumber-1) > 0)
                         SetAmount(GetAmount() * 2);
                     break;
-                default: 
+                default:
                     break;
             }
             break;
@@ -1377,12 +1377,6 @@ void AuraEffect::PeriodicTick(AuraApplication * aurApp, Unit* caster) const
                         target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
                         target->RemoveAurasByType(SPELL_AURA_FLY);
                     }
-                    break;
-                case 68614: // Concentrated Irresistible Cologne Spill
-                    caster->CastSpell(target, 68934, false);
-                    break;
-                case 68798: // Concentrated Alluring Perfume Spill
-                    caster->CastSpell(target, 68927, false);
                     break;
             }
         default:
@@ -1991,13 +1985,13 @@ void AuraEffect::HandleAuraModShapeshift(AuraApplication const* aurApp, uint8 mo
             break;
         case FORM_ZOMBIE:                                   // 0x15
             //Effekt 1 : 43945 - Verringert Speed, Aura die langsam einen Schaden macht, Bite als nahkampf procc
-            //Effekt 2 : 44305 - Faction Override, Languarge Override, 
+            //Effekt 2 : 44305 - Faction Override, Languarge Override,
             //Effekt 3 : 48050 - Kein PvP Ziel, Items ignorieren, Angreifbar
             //Effekt 4 : 54059 - Disarm
             //Effekt 5 : 54145 - Attackpower 1, Resessitenzen �nderung
             //Effekt 6 : 54147 - Modifizier Skill 95, Immun 85
             //Effekt 7 : 54162 - Legt HP Fest, Regeneration unterbrechen, Vollheilen
-            
+
             //Tansform 1 : 43964 - normal ?
             //Tansform 1 : 43966 - gro�
             //Tansform 1 : 43967 - klein
@@ -5908,6 +5902,14 @@ void AuraEffect::HandlePeriodicDummyAuraTick(Unit* target, Unit* caster) const
                         target->RemoveAura(64821);
                     }
                     break;
+                case 68614: // Concentrated Irresistible Cologne Spill
+                    if (!target->HasAura(68530))
+                        caster->CastSpell(target, 68934, true);
+                    break;
+                case 68798: // Concentrated Alluring Perfume Spill
+                    if (!target->HasAura(68529))
+                        caster->CastSpell(target, 68927, true);
+                    break;
             }
             break;
         case SPELLFAMILY_MAGE:
@@ -6461,7 +6463,7 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
         {
             case 43093: case 31956: case 38801:  // Grievous Wound
             case 35321: case 38363: case 39215:  // Gushing Wound
-            case 48920:                          // Grievous Bite 
+            case 48920:                          // Grievous Bite
                 if (target->IsFullHealth())
                 {
                     target->RemoveAurasDueToSpell(GetSpellInfo()->Id);

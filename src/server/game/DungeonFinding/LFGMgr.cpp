@@ -1866,6 +1866,11 @@ void LFGMgr::TeleportPlayer(Player* player, bool out, bool fromOpcode /*= false*
                         orientation = 2.108f;
                         break;
                     case 288: // The Crown Chemical Co.
+                        mapid = 33;
+                        x = -234.948f;
+                        y = 2149.66f;
+                        z = 91.53f;
+                        orientation = 2.29f;
                         break;
                     // normal dungeons
                     case 14: // Gnomeregan
