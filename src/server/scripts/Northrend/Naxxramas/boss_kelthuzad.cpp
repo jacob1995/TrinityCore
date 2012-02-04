@@ -515,7 +515,7 @@ public:
                     else uiGuardiansOfIcecrownTimer -= diff;
                 }
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 if (uint32 eventId = events.GetEvent())

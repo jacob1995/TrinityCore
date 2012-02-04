@@ -417,7 +417,7 @@ public:
             if (BlastNova_Timer <= diff)
             {
                 // to avoid earthquake interruption
-                if (!me->HasUnitState(UNIT_STAT_STUNNED))
+                if (!me->HasUnitState(UNIT_STATE_STUNNED))
                 {
                     DoScriptText(EMOTE_BLASTNOVA, me);
                     DoCast(me, SPELL_BLASTNOVA);

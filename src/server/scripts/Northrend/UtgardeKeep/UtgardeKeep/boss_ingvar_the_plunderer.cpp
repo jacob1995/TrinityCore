@@ -110,7 +110,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
                 if (_isUndead)
                     me->UpdateEntry(NPC_INGVAR_HUMAN);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
 
                 _events.Reset();
@@ -206,7 +206,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())

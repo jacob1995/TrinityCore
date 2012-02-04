@@ -233,7 +233,7 @@ public:
             events.Update(diff);
             _DoAggroPulse(diff);
 
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (uiCheckIntenseColdTimer < diff && !bMoreThanTwoIntenseCold)
@@ -511,7 +511,7 @@ public:
 
         void UpdateAI(const uint32 uiDiff)
         {
-            if (!UpdateVictim() || me->HasUnitState(UNIT_STAT_STUNNED))
+            if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_STUNNED))
                 return;
 
             if (HealthBelowPct(35))
@@ -591,7 +591,7 @@ public:
 
         void UpdateAI(const uint32 uiDiff)
         {
-            if (!UpdateVictim() || me->HasUnitState(UNIT_STAT_STUNNED))
+            if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_STUNNED))
                 return;
 
             if (StormTimer <= uiDiff)
@@ -654,7 +654,7 @@ public:
 
         void UpdateAI(const uint32 uiDiff)
         {
-            if (!UpdateVictim() || me->HasUnitState(UNIT_STAT_STUNNED))
+            if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_STUNNED))
                 return;
 
             if (StarlightTimer <= uiDiff)
@@ -711,7 +711,7 @@ public:
 
         void UpdateAI(const uint32 uiDiff)
         {
-            if (!UpdateVictim() || me->HasUnitState(UNIT_STAT_STUNNED))
+            if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_STUNNED))
                 return;
 
             if (FireTimer <= uiDiff)

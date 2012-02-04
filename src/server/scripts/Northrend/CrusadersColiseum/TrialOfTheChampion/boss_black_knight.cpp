@@ -151,7 +151,7 @@ class boss_black_knight : public CreatureScript
                 _summons.DespawnAll();
 
                 me->SetDisplayId(me->GetNativeDisplayId());
-                me->ClearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
 
                 isResurrecting = false;
                 isSummoningArmy = false;
@@ -303,7 +303,7 @@ class boss_black_knight : public CreatureScript
                         ++phase;
                         resurrectTimer = 4000;
                         isResurrecting = false;
-                        me->ClearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                        me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                     }
                     else
                         resurrectTimer -= diff;
@@ -360,7 +360,7 @@ class boss_black_knight : public CreatureScript
                                 if (!isSummoningArmy)
                                 {
                                     isSummoningArmy = true;
-                                    me->AddUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                                    me->AddUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                                     DoCast(me, SPELL_ARMY_DEAD);
                                 }
 
@@ -368,7 +368,7 @@ class boss_black_knight : public CreatureScript
                                 {
                                     if (deathArmyCheckTimer <= diff)
                                     {
-                                        me->ClearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                                        me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                                         deathArmyCheckTimer = 0;
                                         ghoulExplodeTimer = urand(3000, 5000);
                                         isDeathArmySummoned = true;
@@ -421,7 +421,7 @@ class boss_black_knight : public CreatureScript
                     }
                 }
 
-                if (!me->HasUnitState(UNIT_STAT_STUNNED))
+                if (!me->HasUnitState(UNIT_STATE_STUNNED))
                     DoMeleeAttackIfReady();
             }
         };

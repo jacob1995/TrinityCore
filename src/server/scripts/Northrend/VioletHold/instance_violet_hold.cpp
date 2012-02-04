@@ -241,7 +241,7 @@ public:
                     if (uiCountErekemGuards < 2)
                     {
                         uiErekemGuard[uiCountErekemGuards++] = creature->GetGUID();
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                     }
                     break;
                 case CREATURE_MORAGG:
@@ -249,7 +249,7 @@ public:
                     break;
                 case CREATURE_CYANIGOSA:
                     uiCyanigosa = creature->GetGUID();
-                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 case CREATURE_SINCLARI:
                     uiSinclari = creature->GetGUID();
@@ -481,18 +481,18 @@ public:
                     if (Creature* Guard1 = instance->GetCreature(uiErekemGuard[0]))
                     {
                         if (bForceRespawn)
-                            Guard1->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                            Guard1->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                         else
-                            Guard1->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                            Guard1->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                         Guard1->GetMotionMaster()->MovePoint(0, BossStartMove21);
                     }
 
                     if (Creature* Guard2 = instance->GetCreature(uiErekemGuard[1]))
                     {
                         if (bForceRespawn)
-                            Guard2->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                            Guard2->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                         else
-                            Guard2->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                            Guard2->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                         Guard2->GetMotionMaster()->MovePoint(0, BossStartMove22);
                     }
                     break;
@@ -525,7 +525,7 @@ public:
             // generic boss state changes
             if (Boss)
             {
-                Boss->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                Boss->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                 Boss->SetReactState(REACT_AGGRESSIVE);
 
                 if (!bForceRespawn)
@@ -536,7 +536,7 @@ public:
                         Boss->Respawn();
                         Boss->RemoveLootMode(1);
                     }
-                    Boss->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                    Boss->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                     uiWaveCount = 0;
                 }
             }
@@ -748,7 +748,7 @@ public:
                         case 3:
                             cyanigosa->RemoveAurasDueToSpell(CYANIGOSA_BLUE_AURA);
                             cyanigosa->CastSpell(cyanigosa, CYANIGOSA_SPELL_TRANSFORM, 0);
-                            cyanigosa->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE|UNIT_FLAG_NON_ATTACKABLE);
+                            cyanigosa->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
                             cyanigosa->SetReactState(REACT_AGGRESSIVE);
                             uiCyanigosaEventTimer = 2*IN_MILLISECONDS;
                             ++uiCyanigosaEventPhase;
