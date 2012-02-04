@@ -876,6 +876,7 @@ class npc_runic_colossus : public CreatureScript
 
                 me->setActive(false);
                 me->GetMotionMaster()->MoveTargetedHome();
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
                 // Runed Door closed
                 if (instance)
@@ -925,6 +926,7 @@ class npc_runic_colossus : public CreatureScript
             {
                 RunicSmashPhase = 0;
                 me->InterruptNonMeleeSpells(true);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             }
 
             void UpdateAI(uint32 const diff)
@@ -1068,6 +1070,7 @@ public:
             DetonationTimer = 25000;
 
             me->GetMotionMaster()->MoveTargetedHome();
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             // Stone Door closed
             if (instance)
@@ -1088,6 +1091,7 @@ public:
         {
             me->MonsterTextEmote(EMOTE_MIGHT, 0, true);
             DoCast(me, SPELL_RUNIC_FORTIFICATION, true);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
         void JustDied(Unit* /*victim*/)

@@ -86,7 +86,7 @@ class boss_drakkari_colossus : public CreatureScript
                 if (_instance)
                     _instance->SetData(DATA_DRAKKARI_COLOSSUS_EVENT, NOT_STARTED);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 DoDespawnMojo();
                 DoSpawnMojo();
 
@@ -183,7 +183,7 @@ class boss_drakkari_colossus : public CreatureScript
                     _instance->SetData(DATA_DRAKKARI_COLOSSUS_EVENT, IN_PROGRESS);
 
                 me->RemoveAura(SPELL_FREEZE_ANIM);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 _phase = 1;
             }
 
