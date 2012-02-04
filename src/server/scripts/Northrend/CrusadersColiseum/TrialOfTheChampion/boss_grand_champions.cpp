@@ -525,6 +525,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                                 announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) + 1);
                             break;
                         case 3:
+                            _phase = 2;
                             DoScriptText(SAY_START_1, me);
                             me->InterruptNonMeleeSpells(true);
                             DoCast(me, SPELL_KNEEL, true);
