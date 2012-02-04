@@ -166,7 +166,7 @@ public:
 
             events.Update(diff);
 
-            if (me->HasUnitState(UNIT_STAT_CASTING) && Phase != PHASE_1)
+            if (me->HasUnitState(UNIT_STATE_CASTING) && Phase != PHASE_1)
                 return;
 
             while (uint32 eventId = events.ExecuteEvent())

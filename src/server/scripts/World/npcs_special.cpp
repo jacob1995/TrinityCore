@@ -1644,7 +1644,7 @@ class npc_winter_reveler : public CreatureScript
 
             void ReceiveEmote(Player* player, uint32 emote)
             {
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 if (player->HasAura(SPELL_MISTLETOE_DEBUFF))
@@ -2471,7 +2471,7 @@ class npc_wormhole : public CreatureScript
             npc_wormholeAI(Creature* c) : PassiveAI(c)
             {
                 _random = urand(0, 9);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
             }
 
             uint32 GetData(uint32 type)

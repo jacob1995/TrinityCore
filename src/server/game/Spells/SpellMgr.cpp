@@ -2891,18 +2891,6 @@ void SpellMgr::LoadSpellCustomAttr()
             case 56908: // Fire Breath - Sartharion
             case 58956: // Fire Breath - Sartharion
             case 57874: // Twilight Shift Damage - Sartharion
-            case 64590: // Shield Breaker
-            case 62626: // Shield Breaker
-            case 64342: // Shield Breaker
-            case 64686: // Shield Breaker
-            case 68321: // Charge
-            case 63010: // Charge
-            case 63003: // Charge
-            case 68498: // Charge
-            case 62544: // Trust
-            case 64588: // Trust
-            case 66479: // Trust
-            case 68505: // Trust
                 // ToC Spells
             case 65767: // Light Surge
             case 66013: // Penetrating Cold

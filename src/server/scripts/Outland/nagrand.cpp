@@ -148,7 +148,7 @@ class mob_lump : public CreatureScript
             {
                 _resetTimer = 60000;
                 _spearThrowTimer = 2000;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PASSIVE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC);
             }
 
             void DamageTaken(Unit* attacker, uint32& damage)

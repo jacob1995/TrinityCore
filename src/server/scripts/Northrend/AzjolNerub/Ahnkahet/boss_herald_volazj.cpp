@@ -177,7 +177,7 @@ public:
         void EnterEvadeMode()
         {
             me->RemoveAllAuras();
-            me->SetControlled(false, UNIT_STAT_STUNNED);
+            me->SetControlled(false, UNIT_STATE_STUNNED);
             ScriptedAI::EnterEvadeMode();
         }
 

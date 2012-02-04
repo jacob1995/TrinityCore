@@ -118,7 +118,7 @@ class boss_krik_thir : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 if (_summonTimer <= diff)
@@ -451,7 +451,7 @@ class npc_krikthir_watcher : public CreatureScript
                         _enwrapTimer -= diff;
                 }
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 if (_webWrapTimer <= diff)

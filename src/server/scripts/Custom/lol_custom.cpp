@@ -561,7 +561,7 @@ public:
             if(!explosion)
             {
 
-                if(!me->HasUnitState(UNIT_STAT_FOLLOW))
+                if(!me->HasUnitState(UNIT_STATE_FOLLOW))
                 {
                     if(me->GetOwner())
                     {
@@ -1571,7 +1571,7 @@ bool OnGossipHello(Player *player, GameObject* _GO)
     {Creature* panth = GetClosestCreatureWithEntry(player,N_ENRAGED_PANTHER,50);
         if(panth)
         {
-            panth->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            panth->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_IMMUNE_TO_PC);
             panth->Attack(player,true);
             return false;
         }
@@ -2172,7 +2172,7 @@ public:
         {
             if(breath)
             {
-                if(!me->HasUnitState(UNIT_STAT_STUNNED))
+                if(!me->HasUnitState(UNIT_STATE_STUNNED))
                 {
                     me->CastSpell(me,SPELL_ONYXIAN_WHELPLING_BREATH,false);
                     breath = false;

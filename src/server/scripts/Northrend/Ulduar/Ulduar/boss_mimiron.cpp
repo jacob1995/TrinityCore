@@ -872,7 +872,7 @@ public:
             switch (action)
             {
                 case DO_START_ENCOUNTER:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_AGGRESSIVE);
                     phase = PHASE_LEVIATHAN_SOLO;
                     events.SetPhase(PHASE_LEVIATHAN_SOLO);
@@ -906,7 +906,7 @@ public:
             _DoAggroPulse(diff);
             events.Update(diff);
 
-            if (me->HasUnitState(UNIT_STAT_CASTING) || me->HasUnitState(UNIT_STAT_STUNNED))
+            if (me->HasUnitState(UNIT_STATE_CASTING) || me->HasUnitState(UNIT_STATE_STUNNED))
                 return;
 
             if (phase == PHASE_LEVIATHAN_SOLO || phase == PHASE_LEVIATHAN_ASSEMBLED)
@@ -1161,7 +1161,7 @@ public:
             switch (action)
             {
                 case DO_START_VX001:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_PC);
                     phase = PHASE_VX001_SOLO;
                     events.SetPhase(PHASE_VX001_SOLO);
                     DoZoneInCombat();
@@ -1259,7 +1259,7 @@ public:
             _DoAggroPulse(diff);
             events.Update(diff);
 
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (phase == PHASE_VX001_SOLO || phase == PHASE_VX001_ASSEMBLED)
@@ -1480,7 +1480,7 @@ public:
             switch (action)
             {
                 case DO_START_AERIAL:
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_AGGRESSIVE);
                     phase = PHASE_AERIAL_SOLO;
                     events.SetPhase(PHASE_AERIAL_SOLO);
@@ -1525,7 +1525,7 @@ public:
             _DoAggroPulse(diff);
             events.Update(diff);
 
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (phase == PHASE_AERIAL_SOLO || phase == PHASE_AERIAL_ASSEMBLED)
@@ -1857,7 +1857,7 @@ class npc_mimiron_flame_trigger : public CreatureScript
             {
                 _instance = creature->GetInstanceScript();
                 _flameTimer = 2000;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);

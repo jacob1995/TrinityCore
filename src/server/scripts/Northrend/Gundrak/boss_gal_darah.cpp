@@ -124,7 +124,7 @@ public:
 
         void EnterEvadeMode()
         {
-            me->ClearUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+            me->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
             me->SetReactState(REACT_AGGRESSIVE);
             ScriptedAI::EnterEvadeMode();
         }

@@ -194,7 +194,7 @@ public:
                 DoResetThreat();
                 me->RemoveUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
                 me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_UNK_6);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_UNK_6);
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->SetInCombatWithZone();
                 if (me->getVictim())

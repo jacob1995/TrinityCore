@@ -228,7 +228,7 @@ class boss_malygos : public CreatureScript
                 me->SetFlying(true);
                 me->SetSpeed(MOVE_FLIGHT, 2.0f, true);
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_PASSIVE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
 
                 sparkList.clear();
                 mounts.clear();
@@ -249,7 +249,7 @@ class boss_malygos : public CreatureScript
                         summon->SetDisplayId(11686);
                         summon->SetFlying(true);
                         summon->SetInCombatWithZone();
-                        summon->AddUnitState(UNIT_STAT_ROOT);
+                        summon->AddUnitState(UNIT_STATE_ROOT);
                         summon->SetReactState(REACT_PASSIVE);
                         summon->ForcedDespawn(30*IN_MILLISECONDS);
                         summon->CastSpell(summon, SPELL_STATIC_FIELD, true);
@@ -380,7 +380,7 @@ class boss_malygos : public CreatureScript
                         {
                             if (!urand(0, 2))
                                 DoScriptText(SAY_ANTI_MAGIC_SHELL, me);
-                            overload->AddUnitState(UNIT_STAT_ROOT);
+                            overload->AddUnitState(UNIT_STATE_ROOT);
                             overload->SetReactState(REACT_PASSIVE);
                             overload->SetInCombatWithZone();
                             overload->GetMotionMaster()->MoveIdle();
@@ -612,7 +612,7 @@ class boss_malygos : public CreatureScript
                             instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
 
                         me->SetFlying(false);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_PASSIVE);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->SetInCombatWithZone();
                         events.ScheduleEvent(EVENT_ENRAGE, 10*MINUTE*IN_MILLISECONDS);
@@ -1117,7 +1117,7 @@ class npc_alexstrasza : public CreatureScript
                                 temporary->setFaction(7);
                                 temporary->SetDisplayId(856);
                                 temporary->GetMotionMaster()->MoveRandom(7.0f);
-                                temporary->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PASSIVE);
+                                temporary->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
                                 DoCast(temporary, 1130, true);
 
                                 if (Is25ManRaid())

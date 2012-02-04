@@ -134,7 +134,7 @@ public:
                     if (!UpdateVictim())
                         return;
 
-                    if (me->HasUnitState(UNIT_STAT_CASTING))
+                    if (me->HasUnitState(UNIT_STATE_CASTING))
                         return;
 
                     if (!bYelled && HealthBelowPct(30))

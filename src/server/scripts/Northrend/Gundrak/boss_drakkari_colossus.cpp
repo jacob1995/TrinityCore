@@ -86,7 +86,7 @@ class boss_drakkari_colossus : public CreatureScript
                 if (_instance)
                     _instance->SetData(DATA_DRAKKARI_COLOSSUS_EVENT, NOT_STARTED);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 DoDespawnMojo();
                 DoSpawnMojo();
 
@@ -147,7 +147,7 @@ class boss_drakkari_colossus : public CreatureScript
 
             void EnterEvadeMode()
             {
-                me->ClearUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+                me->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                 ScriptedAI::EnterEvadeMode();
             }
 
@@ -165,11 +165,11 @@ class boss_drakkari_colossus : public CreatureScript
                 {
                     case ACTION_FREEZE:
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        me->AddUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+                        me->AddUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                         DoCast(SPELL_FREEZE_ANIM);
                         break;
                     case ACTION_UNFREEZE:
-                        me->ClearUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+                        me->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                         me->RemoveAura(SPELL_FREEZE_ANIM);
                         DoCast(SPELL_MORTAL_STRIKE);
@@ -183,7 +183,7 @@ class boss_drakkari_colossus : public CreatureScript
                     _instance->SetData(DATA_DRAKKARI_COLOSSUS_EVENT, IN_PROGRESS);
 
                 me->RemoveAura(SPELL_FREEZE_ANIM);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 _phase = 1;
             }
 
@@ -241,7 +241,7 @@ class boss_drakkari_colossus : public CreatureScript
                     me->RemoveAllAuras();
                 }
 
-                if (me->HasUnitState(UNIT_STAT_STUNNED))
+                if (me->HasUnitState(UNIT_STATE_STUNNED))
                     return;
 
                 if (_mightyBlowTimer <= diff)

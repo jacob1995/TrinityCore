@@ -123,7 +123,7 @@ class boss_varos : public CreatureScript
                 for (uint8 i = 0; i < 8; ++i)
                     if (Creature* core = me->SummonCreature(NPC_CENTRIFUGE_CORE, corePositions[i]))
                     {
-                        core->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PASSIVE);
+                        core->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC);
                         core->SetDisplayId(core->GetCreatureInfo()->Modelid2);
                         core->AddAura(SPELL_CENTRIFUGE_CORE_PASSIVE, core);
                     }
