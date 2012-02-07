@@ -598,7 +598,7 @@ public:
 ## Quest: Cold Hearted (12856)
 ######*/
 
-enum eColdHearted
+enum ColdHearted
 {
     SPELL_KILL_CREDIT_PRISONER = 55144,
     SPELL_KILL_CREDIT_DRAKE    = 55143,
@@ -625,25 +625,27 @@ public:
         npc_freed_protodrakeAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
         bool movementStarted;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
             movementStarted = false;
+            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 5)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else // reached village, give credits
             {
@@ -669,18 +671,27 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
             if (!me->isCharmed() && !movementStarted)
             {
                 me->SetSpeed(MOVE_FLIGHT, 5.0f);
                 movementStarted = true;
-                wp_reached = true;
+                wpReached = true;
             }
 
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, FreedDrakeWaypoints[count]);
             }
         }
@@ -712,15 +723,15 @@ public:
     {
         npc_brunnhildar_prisonerAI(Creature* creature) : ScriptedAI(creature) {}
 
-        uint32 uiCheckTimer;
+        uint32 checkTimer;
 
         void Reset()
         {
-            uiCheckTimer = 10*IN_MILLISECONDS;
+            checkTimer = 10*IN_MILLISECONDS;
             DoCast(me, SPELL_ICE_BLOCK, true);
         }
 
-        void DoAction(const int32 /*param*/)
+        void DoAction(int32 const /*param*/)
         {
             me->Kill(me);
             me->Respawn();
@@ -740,14 +751,13 @@ public:
 
                     me->EnterVehicle(caster);
                     me->RemoveAurasDueToSpell(SPELL_ICE_BLOCK);
-                    caster->SetSpeed(MOVE_FLIGHT, 3.0f);
                 }
             }
         }
 
         void UpdateAI(uint32 const diff)
         {
-            if (uiCheckTimer < diff)
+            if (checkTimer < diff)
             {
                 if (!me->HasUnitState(UNIT_STATE_ONVEHICLE))
                 {
@@ -766,8 +776,10 @@ public:
                     }
                 }
 
-                uiCheckTimer = 10*IN_MILLISECONDS;
-            }else uiCheckTimer -= diff;
+                checkTimer = 10*IN_MILLISECONDS;
+            }
+            else
+                checkTimer -= diff;
         }
     };
 
@@ -823,7 +835,7 @@ public:
             if (who->GetTypeId() != TYPEID_PLAYER)
                 return;
 
-            if (who->ToPlayer()->GetQuestStatus(QUEST_LAST_OF_HER_KIND) == QUEST_STATUS_INCOMPLETE && !who->HasUnitState(UNIT_STATE_ONVEHICLE) && who->GetDistance(me) < 5.0f)
+            if (who->ToPlayer()->GetQuestStatus(QUEST_LAST_OF_HER_KIND) == QUEST_STATUS_INCOMPLETE && !who->HasUnitState(UNIT_STATE_ONVEHICLE) && who->GetDistance(me) < 7.0f)
             {
                 who->CastSpell(who, SPELL_HARNESSED_ICEMAW, true);
                 // disable player control
@@ -832,7 +844,6 @@ public:
                         base->RemoveCharmedBy(base->GetCharmer());
             }
         }
-
     };
 
     CreatureAI* GetAI(Creature* creature) const
@@ -851,25 +862,27 @@ public:
         npc_harnessed_icemawAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
         bool movementStarted;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
             movementStarted = false;
+            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 16)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else // reached questgiver, give credit
             {
@@ -882,17 +895,26 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
             if (!me->isCharmed() && !movementStarted)
             {
                 movementStarted = true;
-                wp_reached = true;
+                wpReached = true;
             }
 
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, HarnessedIcemawWaypoints[count]);
             }
         }
@@ -939,19 +961,21 @@ public:
         npc_hyldsmeet_protodrake_transportAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
+            relocateTimer = 1000;
         }
 
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
         {
             if (who && apply)
             {
-                    wp_reached = true;
+                    wpReached = true;
                     me->SetFlying(true);
                     me->SetSpeed(MOVE_FLIGHT, 5.0f);
             }
@@ -959,13 +983,13 @@ public:
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 10)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else
             {
@@ -980,11 +1004,20 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, HyldsmeetProtodrakeWaypoints[count]);
             }
         }

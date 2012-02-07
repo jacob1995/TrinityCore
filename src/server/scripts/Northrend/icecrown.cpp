@@ -2777,29 +2777,30 @@ class vehicle_black_knights_gryphon : public CreatureScript
 public:
     vehicle_black_knights_gryphon() : CreatureScript("vehicle_black_knights_gryphon") { }
 
-    CreatureAI* GetAI(Creature *_Creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new  vehicle_black_knights_gryphonAI(_Creature);
+        return new vehicle_black_knights_gryphonAI(creature);
     }
 
     struct vehicle_black_knights_gryphonAI : public VehicleAI
     {
-        vehicle_black_knights_gryphonAI(Creature *c) : VehicleAI(c)
+        vehicle_black_knights_gryphonAI(Creature* creature) : VehicleAI(creature)
         {
              if (VehicleSeatEntry* vehSeat = const_cast<VehicleSeatEntry*>(sVehicleSeatStore.LookupEntry(3548)))
                 vehSeat->m_flags |= VEHICLE_SEAT_FLAG_UNCONTROLLED;
         }
 
         bool isInUse;
-
-        bool wp_reached;
+        bool wpReached;
         uint8 count;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
             isInUse = false;
+            relocateTimer = 1000;
         }
 
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
@@ -2807,7 +2808,7 @@ public:
             if (who && apply)
             {
                 isInUse = apply;
-                wp_reached = true;
+                wpReached = true;
                 me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
                 me->SetSpeed(MOVE_RUN, 2.0f);
                 me->SetSpeed(MOVE_FLIGHT, 3.5f);
@@ -2816,12 +2817,12 @@ public:
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 18)
             {
-                if(id > 11)
+                if (id > 11)
                 {
                     me->SetUnitMovementFlags(MOVEMENTFLAG_LEVITATING);
                     me->SetSpeed(MOVE_RUN, 5.0f);
@@ -2829,30 +2830,40 @@ public:
                 }
 
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else
             {
                 Unit* player = me->GetVehicleKit()->GetPassenger(0);
                 if (player && player->GetTypeId() == TYPEID_PLAYER)
                 {
-                    player->ToPlayer()->KilledMonsterCredit(me->GetEntry(),me->GetGUID());
+                    player->ToPlayer()->KilledMonsterCredit(me->GetEntry(), 0);
                     player->ExitVehicle();
                     me->DespawnOrUnsummon(5000);
                 }
             }
         }
 
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
-            if(!me->IsVehicle())
+            if (!me->IsVehicle())
                 return;
 
-            if(!isInUse) return;
+            if (!isInUse)
+                return;
 
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+            
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, BlackKnightGryphonWaypoints[count]);
             }
         }
