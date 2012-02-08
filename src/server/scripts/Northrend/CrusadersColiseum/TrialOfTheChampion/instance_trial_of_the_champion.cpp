@@ -189,6 +189,9 @@ public:
 
         void SetData(uint32 type, uint32 data)
         {
+            // debug
+            sLog->outError("ToC SetData | type (%u) data (%u) current (%u)", type, data, GetData(type));
+
             switch (type)
             {
                 case DATA_MOVEMENT_DONE:

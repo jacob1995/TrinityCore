@@ -524,13 +524,19 @@ public:
 
         void StartEncounter()
         {
-            if (!instance)
+            if (!instance || !me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
                 return;
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
             if (GameObject* go = GameObject::GetGameObject(*me, instance->GetData64(DATA_PORTCULLIS)))
                 instance->HandleGameObject(go->GetGUID(), false);
+
+            // debug
+            sLog->outError("ToC StartEncounter | (%u) (%u) (%u) (%u)", instance->GetData(BOSS_GRAND_CHAMPIONS),
+                                                                       instance->GetData(BOSS_ARGENT_CHALLENGE_E),
+                                                                       instance->GetData(BOSS_ARGENT_CHALLENGE_P),
+                                                                       instance->GetData(BOSS_BLACK_KNIGHT));
 
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
             {
@@ -542,8 +548,7 @@ public:
                     if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE)
                         DoStartArgentChampionEncounter();
                 }
-
-                if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE && (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE ||
+                else if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE && (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE ||
                     instance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE))
                 {
                     me->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0);
@@ -552,6 +557,11 @@ public:
                         instance->HandleGameObject(go->GetGUID(), false);
 
                     DoScriptText(SAY_START5, me);
+                }
+                else
+                {
+                    // debug
+                    sLog->outError("ToC StartEncounter | nothing to start");
                 }
             }
         }
