@@ -274,7 +274,7 @@ class boss_flame_leviathan : public CreatureScript
                 me->RemoveLootMode(LOOT_MODE_DEFAULT);
             }
 
-            // installing accessorys to creatures that have different vehicle ids in there difficulty modes seems nyi
+            // installing accessorys to creatures that have different vehicle ids in each difficulty mode seems nyi
             // so remove 2 unecessary turrets/overload devices in 10 man mode
             void ClearSeats()
             {
@@ -672,6 +672,8 @@ class npc_flame_leviathan_seat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisplayId(me->GetCreatureInfo()->Modelid1);
                 me->setActive(true);
+                _loaded = false;
+                _relocateTimer = 1000;
             }
 
             void SetImmunitys(Unit* target, bool apply)
@@ -688,11 +690,9 @@ class npc_flame_leviathan_seat : public CreatureScript
 
             void PassengerBoarded(Unit* who, int8 seatId, bool apply)
             {
-                //if (!me->GetVehicle())
-                //    return;
-
                 if (seatId == SEAT_PLAYER)
                 {
+                    _loaded = apply;
                     SetImmunitys(who, apply);
 
                     if (apply)
@@ -710,10 +710,28 @@ class npc_flame_leviathan_seat : public CreatureScript
                         who->GetMotionMaster()->MoveJump(me->GetPositionX() + 20.0f, me->GetPositionY(), me->GetPositionZ() + 30.0f, 5.0f, 5.0f);
                     }
                 }
+                else if (apply)
+                    who->UpdateObjectVisibility();
+            }
+
+            void UpdateAI(uint32 const diff)
+            {
+                if (!_loaded)
+                    return;
+
+                if (_relocateTimer <= diff)
+                {
+                    me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                    _relocateTimer = 1000;
+                }
+                else
+                    _relocateTimer -= diff;
             }
 
         private:
             Vehicle* _vehicle;
+            uint32 _relocateTimer;
+            bool _loaded;
         };
 
         CreatureAI* GetAI(Creature* creature) const
