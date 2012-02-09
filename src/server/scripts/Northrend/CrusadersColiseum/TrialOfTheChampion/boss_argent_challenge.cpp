@@ -164,15 +164,18 @@ class boss_eadric : public CreatureScript
                     me->setFaction(35);
                     DoScriptText(SAY_DEATH_E, me);
 
-                    if (GameObject* go = GameObject::GetGameObject(*me, _instance->GetData64(DATA_MAIN_GATE)))
+                    if (GameObject* go = GameObject::GetGameObject(*me, _instance ? _instance->GetData64(DATA_MAIN_GATE) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
-                    if (GameObject* go = GameObject::GetGameObject(*me, _instance->GetData64(DATA_PORTCULLIS)))
+                    if (GameObject* go = GameObject::GetGameObject(*me, _instance ? _instance->GetData64(DATA_PORTCULLIS) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
                 }
             }
 
             void EnterCombat(Unit* /*who*/)
             {
+                if (_done)
+                    return;
+
                 DoZoneInCombat(me, 150.0f);
                 DoScriptText(SAY_START_E, me);
 
@@ -210,13 +213,13 @@ class boss_eadric : public CreatureScript
                             _instance->SetData(BOSS_ARGENT_CHALLENGE_E, DONE);
 
                         me->DespawnOrUnsummon(1000);
-                        _done = false;
 
                         if (_faceroller)
                             DoCast(me, SPELL_EADRIC_ACHIEVEMENT, true);
 
                         DoCast(me, SPELL_ARGENT_CREDIT, true);
                         DoCast(me, SPELL_EADRIC_CREDIT, true);
+                        _resetTimer = 5000;
                     }
                     else
                         _resetTimer -= diff;
@@ -395,29 +398,27 @@ class boss_paletress : public CreatureScript
             boss_paletressAI(Creature* creature) : ScriptedAI(creature), _summons(me)
             {
                 _instance = creature->GetInstanceScript();
+                _resetTimer = 5000;
+                _done = false;
                 creature->SetReactState(REACT_PASSIVE);
                 creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                creature->RestoreFaction();
             }
 
             void Reset()
             {
                 _events.Reset();
                 _summons.DespawnAll();
-                me->RemoveAllAuras();
-                _resetTimer = 5000;
                 _health = false;
-                _done = false;
             }
 
             void DamageTaken(Unit* /*attacker*/, uint32 &damage)
             {
                 if (damage >= me->GetHealth())
                 {
+                    _done = true;
                     damage = 0;
                     EnterEvadeMode();
                     me->setFaction(35);
-                    _done = true;
 
                     DoScriptText(SAY_DEATH_P, me);
 
@@ -430,6 +431,9 @@ class boss_paletress : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
+                if (_done)
+                    return;
+
                 DoZoneInCombat(me, 150.0f);
                 DoScriptText(SAY_START_P, me);
 
@@ -471,7 +475,6 @@ class boss_paletress : public CreatureScript
                         if (_instance)
                             _instance->SetData(BOSS_ARGENT_CHALLENGE_P, DONE);
 
-                        _done = false;
                         me->DespawnOrUnsummon(1000);
 
                         if (IsHeroic())
@@ -479,6 +482,7 @@ class boss_paletress : public CreatureScript
 
                         DoCast(me, SPELL_ARGENT_CREDIT, true);
                         DoCast(me, SPELL_PALETRESS_CREDIT, true);
+                        _resetTimer = 5000;
                     }
                     else
                         _resetTimer -= diff;
