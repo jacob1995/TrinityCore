@@ -880,7 +880,7 @@ public:
 
         void Reset()
         {
-            if (Unit* target = me->SelectNearbyTarget(100))
+            if (Unit* target = me->SelectNearbyTarget(NULL,100.0f))
                 AttackStart(target);
 
             Flame_Lash_Timer = urand(2000, 5000);
@@ -961,7 +961,7 @@ public:
             me->SetCorpseDelay(20);
             Tidal_Wave_Timer = 20000;
 
-            if (Unit* target = me->SelectNearbyTarget(100))
+            if (Unit* target = me->SelectNearbyTarget(NULL,100.0f))
                 me->AI()->AttackStart(target);
         }
 
@@ -1030,7 +1030,7 @@ public:
             Lightning_Lash_Timer = 6000;
             Stormbolt_Timer = 3000;
 
-            if (Unit* target = me->SelectNearbyTarget(100))
+            if (Unit* target = me->SelectNearbyTarget(NULL,100.0f))
                 me->AI()->AttackStart(target);
         }
 
@@ -1099,7 +1099,7 @@ public:
         void Reset()
         {
             me->SetCorpseDelay(20);
-            if (Unit* target = me->SelectNearbyTarget(100))
+            if (Unit* target = me->SelectNearbyTarget(NULL,100.0f))
                 me->AI()->AttackStart(target);
         }
 
@@ -1152,7 +1152,7 @@ class mob_ancient_conservator : public CreatureScript
                 _naturesFuryTimer = 10000;
                 _healthySporeSpawnTimer = urand(15000, 23000);
 
-                if (Unit* target = me->SelectNearbyTarget(100.0f))
+                if (Unit* target = me->SelectNearbyTarget(NULL,100.0f))
                     AttackStart(target);
             }
 

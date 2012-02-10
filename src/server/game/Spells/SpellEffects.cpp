@@ -7436,7 +7436,6 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
     float radius = 5.0f;
     int32 duration = m_spellInfo->GetDuration();
 
-        case 48739: // Winterfin First Responder
     if (Player* modOwner = m_originalCaster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
 

@@ -153,7 +153,7 @@ struct mob_wyrm_dragonmaw_peonAI : public ScriptedAI
         {
             eating = true;
             EatTimer = 5000;
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_EAT_NOSHEATHE);
+            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_EAT_NO_SHEATHE);
         }
     }
 
