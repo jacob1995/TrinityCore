@@ -1080,6 +1080,46 @@ public:
     }
 };
 
+#define GOSSIP_ROANAUK1 "Greetings, High Chief. Would you do me the honor of accepting my invitation to join the horde as an official member and leader of the Taunka ?."
+#define GOSSIP_ROANAUK2 "It is you who honor me, High Chief. Please read form this scroll. It is the oath of alegiance."
+#define QUEST_ALL_HAIL_ROANAUK 12140
+#define NPC_ROANAUK 26810
+
+class npc_roanauk : public CreatureScript
+{
+public:
+    npc_roanauk() : CreatureScript("npc_roanauk") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        switch (uiAction)
+        {
+        case GOSSIP_ACTION_INFO_DEF:
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ROANAUK1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            player->SEND_GOSSIP_MENU(268100, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF+1:
+            player->SEND_GOSSIP_MENU(268101, creature->GetGUID());
+            player->KilledMonsterCredit(NPC_ROANAUK, creature->GetGUID());
+        }
+        return true;
+    }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (creature->isQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+
+        if (player->GetQuestStatus(QUEST_ALL_HAIL_ROANAUK) == QUEST_STATUS_INCOMPLETE)
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ROANAUK1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+
+        player->SEND_GOSSIP_MENU(268100, creature->GetGUID());
+            return true;
+    }
+
+};
+
 void AddSC_dragonblight()
 {
     new npc_alexstrasza_wr_gate();
@@ -1095,4 +1135,5 @@ void AddSC_dragonblight()
     new npc_7th_legion_siege_engineer();
     new vehicle_alliance_steamtank();
     new mob_woodlands_walker();
+	new npc_roanauk();
 }
