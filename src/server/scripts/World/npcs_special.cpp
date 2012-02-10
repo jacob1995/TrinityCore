@@ -3808,6 +3808,41 @@ class npc_wild_turkey : public CreatureScript
         }
 };
 
+enum Rustrocket
+{
+    ITEM_SNIVELS_LEDGER = 49915,
+    QUEST_A_FRIENDLY_CHAT_H = 24576,
+    QUEST_A_FRIENDLY_CHAT_A = 24657
+    
+};
+
+class npc_snivel_rustrocket : public CreatureScript
+{
+    public:
+        npc_snivel_rustrocket() : CreatureScript("npc_snivel_rustrocket") { }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (player->GetQuestStatus(QUEST_A_FRIENDLY_CHAT_H) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_A_FRIENDLY_CHAT_A) == QUEST_STATUS_INCOMPLETE)
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Ich hoere Dir zu, Flenni", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                
+
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+
+            if (action == GOSSIP_ACTION_INFO_DEF + 1)
+                player->AddItem(ITEM_SNIVELS_LEDGER, 1);
+               
+            player->CLOSE_GOSSIP_MENU();
+            return true;
+        }
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -3851,4 +3886,5 @@ void AddSC_npcs_special()
     new npc_fire_elemental;
     new npc_earth_elemental;
     new npc_firework;
+	new npc_snivel_rustrocket();
 }
