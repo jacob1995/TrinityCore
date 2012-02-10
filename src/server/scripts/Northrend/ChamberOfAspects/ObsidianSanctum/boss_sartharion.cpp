@@ -467,6 +467,7 @@ public:
                 bCanUseWill = true;
                 if(!pFetchTene->isInCombat())
                 {
+                    DoCast(me, SPELL_POWER_OF_TENEBRON);
                     AddDrakeLootMode();
                     achievProgress++;
                 }
@@ -481,6 +482,7 @@ public:
                 bCanUseWill = true;
                 if(!pFetchShad->isInCombat())
                 {
+                    DoCast(me, SPELL_POWER_OF_SHADRON);
                     AddDrakeLootMode();
                     achievProgress++;
                 }
@@ -495,6 +497,7 @@ public:
                 bCanUseWill = true;
                 if(!pFetchVesp->isInCombat())
                 {
+                    DoCast(me, SPELL_POWER_OF_VESPERON);
                     AddDrakeLootMode();
                     achievProgress++;
                 }
@@ -1167,7 +1170,6 @@ public:
         {
             DoScriptText(SAY_TENEBRON_AGGRO, me);
             DoZoneInCombat();
-            DoCast(me, SPELL_POWER_OF_TENEBRON);
         }
 
         void KilledUnit(Unit* /*pVictim*/)
@@ -1284,7 +1286,6 @@ public:
         {
             DoScriptText(SAY_SHADRON_AGGRO,me);
             DoZoneInCombat();
-            DoCast(me, SPELL_POWER_OF_SHADRON);
         }
 
         void KilledUnit(Unit* /*pVictim*/)
@@ -1404,7 +1405,6 @@ public:
         {
             DoScriptText(SAY_VESPERON_AGGRO,me);
             DoZoneInCombat();
-            DoCast(me, SPELL_POWER_OF_VESPERON);
         }
 
         void KilledUnit(Unit* /*pVictim*/)

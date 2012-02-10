@@ -843,7 +843,7 @@ class npc_mechanolift : public CreatureScript
                     {
                         float x, y, z;
                         me->GetPosition(x, y, z);
-                        z = me->GetMap()->GetHeight(x, y, MAX_HEIGHT);
+                        z = me->GetMap()->GetHeight(me->GetPhaseMask(), x, y, MAX_HEIGHT);
 
                         liquid->SetFlying(true);
                         liquid->GetMotionMaster()->MovePoint(0, x, y, z);

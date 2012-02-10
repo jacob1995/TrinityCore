@@ -982,6 +982,8 @@ void World::LoadConfigSettings(bool reload)
     if (m_int_configs[CONFIG_QUEST_HIGH_LEVEL_HIDE_DIFF] > MAX_LEVEL)
         m_int_configs[CONFIG_QUEST_HIGH_LEVEL_HIDE_DIFF] = MAX_LEVEL;
     m_bool_configs[CONFIG_QUEST_IGNORE_RAID] = ConfigMgr::GetBoolDefault("Quests.IgnoreRaid", false);
+    m_bool_configs[CONFIG_QUEST_IGNORE_AUTO_ACCEPT] = ConfigMgr::GetBoolDefault("Quests.IgnoreAutoAccept", false);
+    m_bool_configs[CONFIG_QUEST_IGNORE_AUTO_COMPLETE] = ConfigMgr::GetBoolDefault("Quests.IgnoreAutoComplete", false);
 
     m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR] = ConfigMgr::GetIntDefault("Battleground.Random.ResetHour", 6);
     if (m_int_configs[CONFIG_RANDOM_BG_RESET_HOUR] > 23)
@@ -1261,6 +1263,8 @@ bool World::PvPCanTradeItem(uint32 item_id) {
     return false;
 }
 
+extern void LoadGameObjectModelList();
+
 /// Initialize the World
 void World::SetInitialWorldSettings()
 {
@@ -1339,6 +1343,9 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading spell custom attributes...");
     sSpellMgr->LoadSpellCustomAttr();
 
+    sLog->outString("Loading GameObject models...");
+    LoadGameObjectModelList();
+    
     sLog->outString("Loading Script Names...");
     sObjectMgr->LoadScriptNames();
 

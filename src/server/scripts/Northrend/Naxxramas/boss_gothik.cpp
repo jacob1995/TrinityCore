@@ -389,7 +389,7 @@ class boss_gothik : public CreatureScript
                 }
                 if (spellId && me->isInCombat())
                 {
-                    me->HandleEmoteCommand(EMOTE_ONESHOT_SPELLCAST);
+                    me->HandleEmoteCommand(EMOTE_ONESHOT_SPELL_CAST);
                     if (Creature* RandomDeadTrigger = Unit::GetCreature(*me, DeadTriggerGUID[rand() % POS_DEAD]))
                         me->CastSpell(RandomDeadTrigger, spellId, true);
                 }
