@@ -532,12 +532,6 @@ public:
             if (GameObject* go = GameObject::GetGameObject(*me, instance->GetData64(DATA_PORTCULLIS)))
                 instance->HandleGameObject(go->GetGUID(), false);
 
-            // debug
-            sLog->outError("ToC StartEncounter | (%u) (%u) (%u) (%u)", instance->GetData(BOSS_GRAND_CHAMPIONS),
-                                                                       instance->GetData(BOSS_ARGENT_CHALLENGE_E),
-                                                                       instance->GetData(BOSS_ARGENT_CHALLENGE_P),
-                                                                       instance->GetData(BOSS_BLACK_KNIGHT));
-
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
             {
                 if (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED && instance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED)
@@ -557,11 +551,6 @@ public:
                         instance->HandleGameObject(go->GetGUID(), false);
 
                     DoScriptText(SAY_START5, me);
-                }
-                else
-                {
-                    // debug
-                    sLog->outError("ToC StartEncounter | nothing to start");
                 }
             }
         }

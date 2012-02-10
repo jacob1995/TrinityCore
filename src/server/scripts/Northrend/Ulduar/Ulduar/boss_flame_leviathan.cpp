@@ -455,7 +455,7 @@ class boss_flame_leviathan : public CreatureScript
                         case EVENT_SHUTDOWN:
                             DoScriptText(RAND(SAY_OVERLOAD_1, SAY_OVERLOAD_2, SAY_OVERLOAD_3), me);
                             me->MonsterTextEmote(EMOTE_OVERLOAD, 0, true);
-                            me->GetMotionMaster()->Clear();
+                            me->GetMotionMaster()->Clear(false);
                             me->GetMotionMaster()->MoveIdle();
                             me->CastSpell(me, SPELL_SYSTEMS_SHUTDOWN, true);
                             events.DelayEvents(20*IN_MILLISECONDS);
@@ -707,6 +707,7 @@ class npc_flame_leviathan_seat : public CreatureScript
                     {
                         who->RemoveAurasDueToSpell(SPELL_FORCE_REACTION);
                         who->CastSpell(who, SPELL_SMOKE_TRAIL, true);
+                        who->GetMotionMaster()->Clear(false);
                         who->GetMotionMaster()->MoveJump(me->GetPositionX() + 20.0f, me->GetPositionY(), me->GetPositionZ() + 30.0f, 5.0f, 5.0f);
                     }
                 }

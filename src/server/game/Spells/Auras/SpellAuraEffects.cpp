@@ -6482,18 +6482,10 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
             }
             case 22682: // Shadow Flame
             {
-                if(m_tickNumber == GetTotalTicks())
-                   caster->CastSpell(target,22993,true);
+                if (m_tickNumber == GetTotalTicks())
+                   caster->CastSpell(target, 22993, true);
                 break;
             }
-            //case 68948: // Irresistible Cologne Spray
-            //    if (target->HasAura(68530))
-            //        m_amount = 0;
-            //break;
-            //case 68607: // Alluring Perfume Spray
-            //    if (target->HasAura(68529))
-            //        m_amount = 0;
-            //break;
         }
     }
 
