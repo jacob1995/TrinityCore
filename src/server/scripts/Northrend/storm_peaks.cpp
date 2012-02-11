@@ -1333,37 +1333,37 @@ enum BrannsCommunicator_Misc
 
 class npc_item_branns_communicator : public CreatureScript
 {
-public:
-    npc_item_branns_communicator() : CreatureScript("npc_item_branns_communicator") { }
+    public:
+        npc_item_branns_communicator() : CreatureScript("npc_item_branns_communicator") { }
 
-    bool OnGossipHello(Player* player, Creature* creature)
-    {
-        if (creature->isQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-            
-        if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true) 
-            && (player->GetQuestStatus(QUEST_SNIFFING_OUT_THE_PERPETRATOR) == QUEST_STATUS_REWARDED
-            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
-            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
-            || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
-      
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
-    {
-        player->PlayerTalkClass->ClearMenus();
-        switch (action)
+        bool OnGossipHello(Player* player, Creature* creature)
         {
-            case GOSSIP_ACTION_INFO_DEF+0:
-                player->AddItem(ITEM_BRANNS_COMMUNICATOR, 1);
-                player->CLOSE_GOSSIP_MENU();
-                break;
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+            
+            if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true) 
+                && (player->GetQuestStatus(QUEST_SNIFFING_OUT_THE_PERPETRATOR) == QUEST_STATUS_REWARDED
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+      
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
         }
-        return true;
-    }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 uiAction)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF+0:
+                    player->AddItem(ITEM_BRANNS_COMMUNICATOR, 1);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+            }
+            return true;
+        }
 };
 
 void AddSC_storm_peaks()

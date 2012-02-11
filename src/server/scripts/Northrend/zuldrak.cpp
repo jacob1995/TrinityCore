@@ -2035,6 +2035,65 @@ public:
     }
 };
 
+/*####
+ ## npc_stefan_vadu
+ ####*/
+
+enum StefanVaduMisc
+{
+    SPELL_SUMMON_NASS                   = 51865,
+    QUEST_KICKIN_NASS_AND_TAKIN_MANES   = 12630,
+    
+    SPELL_PUSH_ENSORCELLED_CHOKER       = 53810,
+    ITEM_ENSORCELLED_CHOKER             = 38699,
+    QUEST_DRESSING_DOWN                 = 12648,
+    QUEST_SUIT_UP                       = 12649,
+    QUEST_BETRAYAL                      = 12713
+};
+
+#define GOSSIP_NASS     "I've lost Nass."
+#define GOSSIP_CHOKER   "I've lost my choker, please give me a new one."
+
+class npc_stefan_vadu : public CreatureScript
+{
+    public:
+        npc_stefan_vadu() : CreatureScript("npc_stefan_vadu") { }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (player->GetQuestStatus(QUEST_KICKIN_NASS_AND_TAKIN_MANES) == QUEST_STATUS_INCOMPLETE)
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_NASS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
+        
+            if (!player->HasItemCount(ITEM_ENSORCELLED_CHOKER, 1, true)
+                && (player->GetQuestStatus(QUEST_DRESSING_DOWN) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_DRESSING_DOWN) == QUEST_STATUS_REWARDED
+                || player->GetQuestStatus(QUEST_SUIT_UP) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_SUIT_UP) == QUEST_STATUS_REWARDED)
+                && !player->GetQuestRewardStatus(QUEST_BETRAYAL))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_CHOKER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+        {
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 0:
+                    player->CLOSE_GOSSIP_MENU();
+                    player->CastSpell(player, SPELL_SUMMON_NASS);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 1:
+                    player->CLOSE_GOSSIP_MENU();
+                    player->CastSpell(player, SPELL_PUSH_ENSORCELLED_CHOKER);
+                    break;
+            }
+            return true;
+        }
+};
+
 void AddSC_zuldrak()
 {
     new npc_drakuru_shackles();
@@ -2056,4 +2115,5 @@ void AddSC_zuldrak()
     new npc_bloodrose_datura();
     new npc_nass();
     new npc_commander_kunz();
+    new npc_stefan_vadu();
 }

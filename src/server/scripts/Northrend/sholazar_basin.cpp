@@ -1836,53 +1836,52 @@ enum eElderHarkek_Misc
 
 class npc_elder_harkek : public CreatureScript
 {
-public:
-    npc_elder_harkek() : CreatureScript("npc_elder_harkek") { }
+    public:
+        npc_elder_harkek() : CreatureScript("npc_elder_harkek") { }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
-    {
-        player->PlayerTalkClass->ClearMenus();
-        switch (uiAction)
+        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
         {
-            case GOSSIP_ACTION_INFO_DEF+0:
-                player->CastSpell(player, SPELL_FORCEITEM_GOREGEK, true);
-                player->CLOSE_GOSSIP_MENU();
-                break;
-            case GOSSIP_ACTION_INFO_DEF+1:
-                player->CastSpell(player, SPELL_FORCEITEM_DAJIK, true);
-                player->CLOSE_GOSSIP_MENU();
-                break;
-            case GOSSIP_ACTION_INFO_DEF+2:
-                player->CastSpell(player, SPELL_FORCEITEM_ZEPIK, true);
-                player->CLOSE_GOSSIP_MENU();
-                break;
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF+0:
+                    player->CastSpell(player, SPELL_FORCEITEM_GOREGEK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+                case GOSSIP_ACTION_INFO_DEF+1:
+                    player->CastSpell(player, SPELL_FORCEITEM_DAJIK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+                case GOSSIP_ACTION_INFO_DEF+2:
+                    player->CastSpell(player, SPELL_FORCEITEM_ZEPIK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+            }
+            return true;
         }
-        return true;
-    }
 
-    bool OnGossipHello(Player* player, Creature* creature)
-    {
-        if (creature->isQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(QUEST_PLAYING_ALONG) == QUEST_STATUS_REWARDED
-            && !player->HasItemCount(ITEM_GOREGEKS_SHACKLES, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_GOREGEK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+            if (player->GetQuestStatus(QUEST_PLAYING_ALONG) == QUEST_STATUS_REWARDED
+                && !player->HasItemCount(ITEM_GOREGEKS_SHACKLES, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_GOREGEK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
 
-        if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE 
-            || player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_REWARDED)
-            && !player->HasItemCount(ITEM_DAJIKS_WORN_CHALK, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DAJIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE 
+                || player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_REWARDED)
+                && !player->HasItemCount(ITEM_DAJIKS_WORN_CHALK, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DAJIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-        if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE 
-            || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE 
-            || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_REWARDED)
-            && !player->HasItemCount(ITEM_ZEPIKS_HUNTING_HORN, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ZEPIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+            if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE 
+                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE 
+                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_REWARDED)
+                && !player->HasItemCount(ITEM_ZEPIKS_HUNTING_HORN, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ZEPIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature),creature->GetGUID());
-        return true;
-    }
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature),creature->GetGUID());
+            return true;
+        }
 };
 
 /*######

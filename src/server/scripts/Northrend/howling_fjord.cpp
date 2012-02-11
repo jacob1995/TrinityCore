@@ -861,38 +861,34 @@ enum eWorgDisguise_Quests
 
 class npc_item_worg_disguise : public CreatureScript
 {
-public:
-    npc_item_worg_disguise() : CreatureScript("npc_item_worg_disguise") { }
+    public:
+        npc_item_worg_disguise() : CreatureScript("npc_item_worg_disguise") { }
 
-    bool OnGossipHello(Player* player, Creature* creature)
-    {
-        if (creature->isQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-
-        if (!player->HasItemCount(ITEM_WORG_DISGUISE, 1, true)
-            && ((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A)== QUEST_STATUS_REWARDED)
-            || (player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H)== QUEST_STATUS_REWARDED)))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WORGEN_DISGUISE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
-
-        if (player->GetQuestStatus(QUEST_ALPHA_WORG_A) == QUEST_STATUS_REWARDED || player->GetQuestStatus(QUEST_ALPHA_WORG_H) == QUEST_STATUS_REWARDED)
-            return false;
-
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
-    {
-        player->PlayerTalkClass->ClearMenus();
-        switch (uiAction)
+        bool OnGossipHello(Player* player, Creature* creature)
         {
-            case GOSSIP_ACTION_INFO_DEF+0:
-                player->CastSpell(player, SPELL_CREATE_WORG_DISGUISE, true);
-                player->CLOSE_GOSSIP_MENU();
-                break;
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (!player->HasItemCount(ITEM_WORG_DISGUISE, 1, true)
+                && (((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_ALPHA_WORG_A))
+                || ((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_ALPHA_WORG_H))))            
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WORGEN_DISGUISE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
         }
-        return true;
-    }
+
+        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+        {
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF+0:
+                    player->CastSpell(player, SPELL_CREATE_WORG_DISGUISE, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+            }
+            return true;
+        }
 };
 
 void AddSC_howling_fjord()
