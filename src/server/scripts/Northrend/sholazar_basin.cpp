@@ -1972,7 +1972,6 @@ void AddSC_sholazar_basin()
     new npc_avatar_of_freya();
     new npc_bushwhacker();
     new npc_engineer_helice();
-    new npc_adventurous_dwarf();
     new npc_jungle_punch_target();
     new spell_q12620_the_lifewarden_wrath();
     new npc_high_oracle_soo_say();
