@@ -505,8 +505,10 @@ VALUES(@CT_SAVAGE_GLADIATOR,'','','Grausamer Gladiator Alles','','','','','',
 DELETE FROM npc_vendor WHERE entry = @CT_SAVAGE_GLADIATOR;
 INSERT INTO `npc_vendor` (`entry`, `slot`, `item`)
 VALUES
-(@CT_SAVAGE_GLADIATOR,'0','40778'),
-(@CT_SAVAGE_GLADIATOR,'0','40779'), (@CT_SAVAGE_GLADIATOR,'0','40780'), (@CT_SAVAGE_GLADIATOR,'0','40797'), 
+(@CT_SAVAGE_GLADIATOR,'0','40778'), -- Plattenbrustharnisch des grausamen Gladiators -- Schlachtrüstung des Gladiators - itemset 
+(@CT_SAVAGE_GLADIATOR,'0','40779'), -- Schreckensplattenbrustharnisch des grausamen Gladiators -- Entweihung des Gladiators -- itemset 
+(@CT_SAVAGE_GLADIATOR,'0','40780'), -- Schuppenharnisch des grausamen Gladiators -- Rechtschaffenheit des Gladiators -- itemset 
+(@CT_SAVAGE_GLADIATOR,'0','40797'), 
 (@CT_SAVAGE_GLADIATOR,'0','40798'), (@CT_SAVAGE_GLADIATOR,'0','40799'), (@CT_SAVAGE_GLADIATOR,'0','40816'), 
 (@CT_SAVAGE_GLADIATOR,'0','40817'), (@CT_SAVAGE_GLADIATOR,'0','40818'), (@CT_SAVAGE_GLADIATOR,'0','40836'), 
 (@CT_SAVAGE_GLADIATOR,'0','40837'), (@CT_SAVAGE_GLADIATOR,'0','40838'), (@CT_SAVAGE_GLADIATOR,'0','40856'), 
@@ -515,11 +517,21 @@ VALUES
 (@CT_SAVAGE_GLADIATOR,'0','40960'), (@CT_SAVAGE_GLADIATOR,'0','40986'), (@CT_SAVAGE_GLADIATOR,'0','40987'), 
 (@CT_SAVAGE_GLADIATOR,'0','40998'), (@CT_SAVAGE_GLADIATOR,'0','41004'), (@CT_SAVAGE_GLADIATOR,'0','41010'), 
 (@CT_SAVAGE_GLADIATOR,'0','41016'), (@CT_SAVAGE_GLADIATOR,'0','41023'), (@CT_SAVAGE_GLADIATOR,'0','41024'), 
-(@CT_SAVAGE_GLADIATOR,'0','41030'), (@CT_SAVAGE_GLADIATOR,'0','41041'), (@CT_SAVAGE_GLADIATOR,'0','41078'), 
-(@CT_SAVAGE_GLADIATOR,'0','41084'), (@CT_SAVAGE_GLADIATOR,'0','41134'), (@CT_SAVAGE_GLADIATOR,'0','41140'), 
-(@CT_SAVAGE_GLADIATOR,'0','41148'), (@CT_SAVAGE_GLADIATOR,'0','41154'), (@CT_SAVAGE_GLADIATOR,'0','41160'), 
-(@CT_SAVAGE_GLADIATOR,'0','41202'), (@CT_SAVAGE_GLADIATOR,'0','41208'), (@CT_SAVAGE_GLADIATOR,'0','41214'), 
-(@CT_SAVAGE_GLADIATOR,'0','41268'), (@CT_SAVAGE_GLADIATOR,'0','41269'), (@CT_SAVAGE_GLADIATOR,'0','41270'), 
+(@CT_SAVAGE_GLADIATOR,'0','41030'), -- Schamane Beine (Zauber) -- Panzergamaschen des grausamen Gladiators -- Set: Donnerfaust des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41041'), -- Schamane Kopf (Zauber) -- Panzerschiftung des grausamen Gladiators -- Set: Donnerfaust des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41078'), -- Schamane Brust -- Gekettelte Rüstung des grausamen Gladiators -- Set: Erderschütterer des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41084'), -- Jäger Brust -- Kettenrüstung des grausamen Gladiators -- Set: Jagdtracht des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41134'), -- Hände Schamane -- Gekettelte Stulpen des grausamen Gladiators -- Set: Erderschütterer des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41140'), -- Jäger Hände -- Kettenstulpen des grausamen Gladiators -- Set: Jagdtracht des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41148'), -- Schamane Kopf -- Gekettelter Helm des grausamen Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41154'), -- Jäger Kopf, Kettenhelm des grausamen Gladiators -- Set: Jagdtracht des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41160'), -- Schamane Kopf, Gekettelte Gamaschen des grausamen Gladiators -- Set: Erderschütterer des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41202'), -- Jäger Beine, Kettengamaschen des grausamen Gladiators -- Set: Jagdtracht des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41208'), -- Schamane Schulter, Gekettelte Schiftung des grausamen Gladiators -- Set: Erderschütterer des Gladiators 
+(@CT_SAVAGE_GLADIATOR,'0','41214'), -- Jäger Schulter, Kettenschiftung des grausamen Gladiators -- Set: Jagdtracht des Gladiators
+(@CT_SAVAGE_GLADIATOR,'0','41268'), -- Druide Hände, Kodobalghandschuhe des grausamen Gladiators -- Set: Zuflucht des Gladiators 
+(@CT_SAVAGE_GLADIATOR,'0','41269'), -- Druide Kopf, Kodobalghelm des grausamen Gladiators -- Set: Zuflucht des Gladiators 
+(@CT_SAVAGE_GLADIATOR,'0','41270'),  -- Druide Beine, Kodobalgbeinschützer des grausamen Gladiators -- Set: Zuflucht des Gladiators 
 (@CT_SAVAGE_GLADIATOR,'0','41271'), (@CT_SAVAGE_GLADIATOR,'0','41272'), (@CT_SAVAGE_GLADIATOR,'0','41278'), 
 (@CT_SAVAGE_GLADIATOR,'0','41290'), (@CT_SAVAGE_GLADIATOR,'0','41301'), (@CT_SAVAGE_GLADIATOR,'0','41313'), 
 (@CT_SAVAGE_GLADIATOR,'0','41324'), (@CT_SAVAGE_GLADIATOR,'0','41643'), (@CT_SAVAGE_GLADIATOR,'0','41644'), 
