@@ -3893,5 +3893,4 @@ void AddSC_npcs_special()
     new npc_earth_elemental;
     new npc_firework;
     new npc_snivel_rustrocket();
-    new npc_spring_rabbit();
 }
