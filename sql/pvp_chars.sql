@@ -558,8 +558,10 @@ VALUES
 (@CT_SAVAGE_GLADIATOR,'0','42557'), (@CT_SAVAGE_GLADIATOR,'0','42568'), (@CT_SAVAGE_GLADIATOR,'0','42574'), 
 (@CT_SAVAGE_GLADIATOR,'0','42575'), (@CT_SAVAGE_GLADIATOR,'0','42576'), (@CT_SAVAGE_GLADIATOR,'0','42593'), 
 (@CT_SAVAGE_GLADIATOR,'0','42594'), (@CT_SAVAGE_GLADIATOR,'0','42595'), (@CT_SAVAGE_GLADIATOR,'0','42611'), 
-(@CT_SAVAGE_GLADIATOR,'0','42612'), (@CT_SAVAGE_GLADIATOR,'0','42618'), (@CT_SAVAGE_GLADIATOR,'0','44415'), 
-(@CT_SAVAGE_GLADIATOR,'0','44416');
+(@CT_SAVAGE_GLADIATOR,'0','42612'), -- Savage Gladiator's Libram of Justice. Erhöht die Zaubermacht Eures Zaubers 'Lichtblitz' um 204.
+(@CT_SAVAGE_GLADIATOR,'0','42618'),
+(@CT_SAVAGE_GLADIATOR,'0','44415'), -- Savage Gladiator's War Staff.... Erhöht Tempowertung
+(@CT_SAVAGE_GLADIATOR,'0','44416'); -- Savage Gladiator's Focus Staff.... Erhöht Eure Trefferwertung
 
 ---
 -- Crafted PvP Gear - Item Level 187: START
