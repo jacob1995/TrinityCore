@@ -140,8 +140,8 @@ class boss_varos : public CreatureScript
                     }
                     else
                         _spawntextTimer -= diff;
-                }                
-            
+                }
+
                 if (!UpdateVictim())
                     return;
 
@@ -187,7 +187,7 @@ class boss_varos : public CreatureScript
                 _JustDied();
                 DoCast(me, SPELL_DEATH_SPELL, true);
             }
-            
+
             void KilledUnit(Unit* /*victim*/)
             {
                 Talk(SAY_KILL);

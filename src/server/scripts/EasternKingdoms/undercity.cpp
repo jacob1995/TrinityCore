@@ -48,14 +48,14 @@ enum SylvanasMisc
     SPELL_HIGHBORNE_AURA        = 37090,
     SPELL_SYLVANAS_CAST         = 36568,
     SPELL_RIBBON_OF_SOULS       = 34432,                   //the real one to use might be 37099
-    
+
     // abilities
     SPELL_FADE              = 20672,
     SPELL_BLACK_ARROW       = 59712,
     SPELL_MULTI_SHOT        = 59713,
     SPELL_SHOOT             = 59710,
     SPELL_SUMMON_SKELETON   = 59711,
-    
+
     NPC_SKELETON            = 6412,
 
     SAY_AGGRO               = 1,
@@ -100,7 +100,7 @@ public:
         uint32  LamentEvent_Timer;
         bool    LamentEvent;
         uint64  targetGUID;
-        
+
         void Reset()
         {
             LamentEvent_Timer = 5000;
@@ -116,7 +116,7 @@ public:
             summons.DespawnAll();
         }
 
-        void EnterCombat(Unit* /*who*/) 
+        void EnterCombat(Unit* /*who*/)
         {
             Talk(SAY_AGGRO);
         }
@@ -154,8 +154,8 @@ public:
                         DoScriptText(EMOTE_LAMENT_END, me);
                         LamentEvent = false;
                     }
-                } 
-                else 
+                }
+                else
                     LamentEvent_Timer -= diff;
             }
 

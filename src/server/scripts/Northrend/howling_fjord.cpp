@@ -871,7 +871,7 @@ class npc_item_worg_disguise : public CreatureScript
 
             if (!player->HasItemCount(ITEM_WORG_DISGUISE, 1, true)
                 && (((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_A) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_ALPHA_WORG_A))
-                || ((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_ALPHA_WORG_H))))            
+                || ((player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_WORGENS_CLOTHING_H) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_ALPHA_WORG_H))))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WORGEN_DISGUISE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
 
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());

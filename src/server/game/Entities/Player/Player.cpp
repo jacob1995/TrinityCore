@@ -15044,7 +15044,7 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
     uint16 log_slot = FindQuestSlot(0);
 
     if (log_slot >= MAX_QUEST_LOG_SIZE) // Player does not have any free slot in the quest log
-        return; 
+        return;
 
     uint32 quest_id = quest->GetQuestId();
 
@@ -18923,7 +18923,7 @@ void Player::SaveToDB(bool create /*=false*/)
             stmt->setString(index++, ss.str());
         }
         stmt->setUInt32(index++, GetUInt32Value(PLAYER_AMMO_ID));
-       
+
         {
             std::ostringstream ss;
             for (uint32 i = 0; i < KNOWN_TITLES_SIZE*2; ++i)

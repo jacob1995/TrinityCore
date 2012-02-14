@@ -1221,7 +1221,7 @@ public:
 
     struct npc_archivist_mechatonAI : public ScriptedAI
     {
-        npc_archivist_mechatonAI(Creature* pCreature) : ScriptedAI(pCreature) 
+        npc_archivist_mechatonAI(Creature* pCreature) : ScriptedAI(pCreature)
         {
             if(me->isSummon())
             {
@@ -1239,16 +1239,16 @@ public:
         void Reset()
         {
             saytimer = 0;
-        
+
             if(FirstTime)
                 saycount = 1;
             else
-            {   
+            {
                 saycount = 0;
                 me->DespawnOrUnsummon();
             }
         }
-        
+
         void DoNextText(uint32 timer)
         {
             saytimer = timer;
@@ -1257,10 +1257,10 @@ public:
 
         void UpdateAI(uint32 const diff)
         {
-            if(saytimer <= diff)    
-            {            
+            if(saytimer <= diff)
+            {
                 Unit* pSummoner = me->ToTempSummon()->GetSummoner();
-                
+
                 switch(saycount)
                 {
                     case 1:
@@ -1308,7 +1308,7 @@ public:
 
             if (!UpdateVictim())
                 return;
-        }  
+        }
     };
 
     CreatureAI* GetAI(Creature* pCreature) const
@@ -1324,7 +1324,7 @@ public:
 enum BrannsCommunicator_Misc
 {
     ITEM_BRANNS_COMMUNICATOR            = 40971,
-    
+
     QUEST_CATCHING_UP_WITH_BRANN        = 12920, // Horde
     QUEST_SNIFFING_OUT_THE_PERPETRATOR  = 12855, // Alliance
 };
@@ -1340,14 +1340,14 @@ class npc_item_branns_communicator : public CreatureScript
         {
             if (creature->isQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
-            
-            if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true) 
+
+            if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true)
                 && (player->GetQuestStatus(QUEST_SNIFFING_OUT_THE_PERPETRATOR) == QUEST_STATUS_REWARDED
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
-      
+
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }

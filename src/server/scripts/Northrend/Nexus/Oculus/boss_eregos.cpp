@@ -190,8 +190,8 @@ class boss_eregos : public CreatureScript
                     }
                     else
                         _spawntextTimer -= diff;
-                }                
-            
+                }
+
                 if (!UpdateVictim())
                     return;
 

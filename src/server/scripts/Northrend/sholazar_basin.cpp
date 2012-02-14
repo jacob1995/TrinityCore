@@ -1675,7 +1675,7 @@ class npc_rejek_first_blood : public CreatureScript
 
             uint32 uiFlipAttack_Timer;
             uint32 uiCharge_Timer;
-            
+
             bool Frenzied;
 
             void Reset()
@@ -1784,14 +1784,14 @@ public:
         void SpellHitTarget(Unit* target,SpellInfo const* spell)
         {
             if(target == me)
-                return;       
-        
+                return;
+
             if(spell->Id == SPELL_DEVOUR_WIND)
             {
                 if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                 {
                     player->KilledMonsterCredit(29009, 0);
-                    me->UpdateEntry(NPC_HAIPHOON_AIR);                    
+                    me->UpdateEntry(NPC_HAIPHOON_AIR);
                     player->VehicleSpellInitialize();
                     me->setFaction(player->getFaction());
                 }
@@ -1801,7 +1801,7 @@ public:
             {
                 if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                 {
-                    player->KilledMonsterCredit(29008, 0);                    
+                    player->KilledMonsterCredit(29008, 0);
                     me->UpdateEntry(NPC_HAIPHOON_WATER);
                     player->VehicleSpellInitialize();
                     me->setFaction(player->getFaction());
@@ -1820,7 +1820,7 @@ enum eElderHarkek_Misc
     ITEM_GOREGEKS_SHACKLES              = 38619,
     ITEM_DAJIKS_WORN_CHALK              = 38621,
     ITEM_ZEPIKS_HUNTING_HORN            = 38512,
-        
+
     SPELL_FORCEITEM_GOREGEK             = 52542,
     SPELL_FORCEITEM_DAJIK               = 52544,
     SPELL_FORCEITEM_ZEPIK               = 52545,
@@ -1868,13 +1868,13 @@ class npc_elder_harkek : public CreatureScript
                 && !player->HasItemCount(ITEM_GOREGEKS_SHACKLES, 1, true))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_GOREGEK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
 
-            if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE 
+            if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE
                 || player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_REWARDED)
                 && !player->HasItemCount(ITEM_DAJIKS_WORN_CHALK, 1, true))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DAJIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-            if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE 
-                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE 
+            if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE
+                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE
                 || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_REWARDED)
                 && !player->HasItemCount(ITEM_ZEPIKS_HUNTING_HORN, 1, true))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ZEPIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
@@ -1895,7 +1895,7 @@ enum MiscLifewarden
     NPC_SERVANT = 28320, // Servant of Freya
 
     WHISPER_ACTIVATE = 0,
-    
+
     SPELL_FREYA_DUMMY = 51318,
     SPELL_LIFEFORCE = 51395,
     SPELL_FREYA_DUMMY_TRIGGER = 51335,

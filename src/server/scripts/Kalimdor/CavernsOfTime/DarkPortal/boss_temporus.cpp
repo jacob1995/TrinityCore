@@ -72,7 +72,7 @@ public:
             SpellReflection_Timer = 40000;
 
             if (pInstance)
-                if(!HeroicMode) pInstance->SetData(DATA_TEMPORUSDEATH, 0); 
+                if(!HeroicMode) pInstance->SetData(DATA_TEMPORUSDEATH, 0);
         }
 
         void EnterCombat(Unit* /*who*/)
@@ -94,7 +94,7 @@ public:
             DoScriptText(SAY_DEATH, me);
 
             if (pInstance)
-                pInstance->SetData(DATA_TEMPORUSDEATH, 1); 
+                pInstance->SetData(DATA_TEMPORUSDEATH, 1);
         }
 
         void MoveInLineOfSight(Unit* who)

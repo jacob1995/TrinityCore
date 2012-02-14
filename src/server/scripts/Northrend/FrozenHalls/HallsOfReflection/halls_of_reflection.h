@@ -25,7 +25,7 @@ enum Data
     DATA_LICHKING_EVENT,
     DATA_WAVE_COUNT,
     DATA_TEAM_IN_INSTANCE,
-    
+
     DATA_ESCAPE_LIDER       = 101,
     DATA_LIDER              = 102,
     DATA_SUMMONS            = 103,

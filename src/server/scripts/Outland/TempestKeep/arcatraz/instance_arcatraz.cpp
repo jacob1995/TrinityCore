@@ -135,7 +135,7 @@ public:
         {
             switch(pGo->GetEntry())
             {
-                case CONTAINMENT_CORE_SECURITY_FIELD_ALPHA: 
+                case CONTAINMENT_CORE_SECURITY_FIELD_ALPHA:
                     Containment_Core_Security_Field_Alpha = pGo->GetGUID();
                     if(socco_dead == DONE)
                         HandleGameObject(Containment_Core_Security_Field_Alpha,true,pGo);
@@ -336,7 +336,7 @@ public:
                 dalli_dead = data2;
             }else sLog->outError("SD2: Arcatraz: corrupted save data.");
         }
-    
+
     /*###
     Randomly Spawn Eredar Deathbringer and Souleater
     ###*/

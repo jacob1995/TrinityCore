@@ -1045,7 +1045,7 @@ public:
     class spell_q14112_14145_chum_the_water_SpellScript : public SpellScript
     {
         PrepareSpellScript(spell_q14112_14145_chum_the_water_SpellScript);
-    
+
         bool Validate(SpellInfo const* /*spellEntry*/)
         {
             if (!sSpellMgr->GetSpellInfo(SUMMON_ANGRY_KVALDIR))

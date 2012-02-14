@@ -611,7 +611,7 @@ public:
                 if(!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
                     DoScriptText(DESI_SAY_RECAP, me);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            
+
             }
             else
             {

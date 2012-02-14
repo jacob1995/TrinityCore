@@ -57,9 +57,9 @@ public:
 
         bool Spawn;
 
-        void Reset() 
-        { 
-            Spawn = false; 
+        void Reset()
+        {
+            Spawn = false;
         }
 
         void SpellHit(Unit* Hitter, const SpellInfo* Spellkind)

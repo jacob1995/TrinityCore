@@ -121,7 +121,7 @@ public:
                             c->Respawn(true);
                     }
                 }
-            
+
                 GetCreatureListWithEntryInGrid(list,me,ENTRY_FLAMEWALKER_ELITE,150.0f);
                 for (std::list<Creature*>::iterator iter = list.begin(); iter != list.end(); ++iter)
                 {

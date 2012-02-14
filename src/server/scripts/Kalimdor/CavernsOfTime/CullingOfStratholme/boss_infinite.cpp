@@ -53,7 +53,7 @@ public:
         }
 
         InstanceScript* pInstance;
-        
+
         uint32 uiBlightTimer;
         uint32 uiEscapeTimer;
         uint32 uiVoidStrikeTimer;
@@ -97,7 +97,7 @@ public:
                         pInstance->SetData(DATA_INFINITE_EVENT, DONE);
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_CORRUPTING_BLIGHT);
                     }
-                    
+
                     bEscaped = true;
                     me->DisappearAndDie();
                 }

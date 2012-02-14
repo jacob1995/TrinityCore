@@ -84,7 +84,7 @@ public:
             _uppercutTimer = urand(8, 10) *IN_MILLISECONDS;
         }
 
-        void EnterCombat(Unit* /*who*/) 
+        void EnterCombat(Unit* /*who*/)
         {
             Talk(SAY_AGGRO);
         }
@@ -100,7 +100,7 @@ public:
                 if (target)
                     DoCast(target, SPELL_WARSTOMP);
                 _warstompTimer = urand(25, 30) *IN_MILLISECONDS;
-            } 
+            }
             else
                 _warstompTimer -= diff;
 
@@ -108,7 +108,7 @@ public:
             {
                 DoCastVictim(SPELL_UPPERCUT);
                 _uppercutTimer = urand(10, 12) *IN_MILLISECONDS;;
-            } 
+            }
             else
                 _uppercutTimer -= diff;
 
@@ -116,15 +116,15 @@ public:
             {
                 DoCast(SPELL_THUNDERCLAP);
                 _thunderclapTimer = urand(13, 15) *IN_MILLISECONDS;
-            } 
-            else 
+            }
+            else
                 _thunderclapTimer -= diff;
 
             if (_mortalstrikeTimer <= diff)
             {
                 DoCastVictim(SPELL_MORTAL_STRIKE);
                 _mortalstrikeTimer = urand(12, 14) *IN_MILLISECONDS;
-            } 
+            }
             else
                 _mortalstrikeTimer -= diff;
 
@@ -132,7 +132,7 @@ public:
             {
                 DoCastVictim(SPELL_CLEAVE);
                 _cleaveTimer = urand (5, 7) *IN_MILLISECONDS;
-            } 
+            }
             else
                 _cleaveTimer -= diff;
 

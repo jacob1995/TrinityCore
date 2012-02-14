@@ -121,7 +121,7 @@ public:
 
     struct mob_ashtongue_channelerAI : public ScriptedAI
     {
-        mob_ashtongue_channelerAI(Creature* c) : ScriptedAI(c) 
+        mob_ashtongue_channelerAI(Creature* c) : ScriptedAI(c)
         {
             ShadeGUID = 0;
             SetImmuneToPushPullEffects(true);
@@ -129,7 +129,7 @@ public:
 
         uint64 ShadeGUID;
 
-        void Reset() 
+        void Reset()
         {
             me->setActive(true);
         }
@@ -153,7 +153,7 @@ public:
 
     struct mob_ashtongue_sorcererAI : public ScriptedAI
     {
-        mob_ashtongue_sorcererAI(Creature* c) : ScriptedAI(c) 
+        mob_ashtongue_sorcererAI(Creature* c) : ScriptedAI(c)
         {
             ShadeGUID = 0;
             SetImmuneToPushPullEffects(true);
@@ -292,12 +292,12 @@ public:
         {
             summons.DespawnAll();
         }
-        void JustSummoned(Creature *summon) 
+        void JustSummoned(Creature *summon)
         {
             if(summon->GetEntry() == CREATURE_DEFENDER || summon->GetEntry() == 23523 || summon->GetEntry() == 23318 || summon->GetEntry() == 23524)
                 summons.Summon(summon);
         }
-        void SummonedCreatureDespawn(Creature *summon) 
+        void SummonedCreatureDespawn(Creature *summon)
         {
             if(summon->GetEntry() == CREATURE_DEFENDER || summon->GetEntry() == 23523 || summon->GetEntry() == 23318 || summon->GetEntry() == 23524)
                 summons.Despawn(summon);
@@ -634,18 +634,18 @@ public:
             me->setActive(true);
         }
 
-        void JustSummoned(Creature *summon) 
+        void JustSummoned(Creature *summon)
         {
             if(summon->GetEntry() == CREATURE_BROKEN)
                 summons.Summon(summon);
         }
-        void SummonedCreatureDespawn(Creature *summon) 
+        void SummonedCreatureDespawn(Creature *summon)
         {
             if(summon->GetEntry() == CREATURE_BROKEN)
                 summons.Despawn(summon);
         }
 
-        void AttackStart(Unit* who) 
+        void AttackStart(Unit* who)
         {
 
         }

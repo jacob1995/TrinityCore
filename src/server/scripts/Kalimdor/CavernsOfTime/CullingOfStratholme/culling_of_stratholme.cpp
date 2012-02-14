@@ -288,7 +288,7 @@ public:
             uiMalganisGUID = 0;
             uiInfiniteGUID = 0;
 
-            if (pInstance) 
+            if (pInstance)
             {
                 if (pInstance->GetData(DATA_ARTHAS_EVENT) != DONE)
                     pInstance->SetData(DATA_ARTHAS_EVENT, NOT_STARTED);

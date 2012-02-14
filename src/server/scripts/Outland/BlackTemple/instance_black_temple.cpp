@@ -44,7 +44,7 @@ class instance_black_temple : public InstanceMapScript
 {
 public:
     instance_black_temple() : InstanceMapScript("instance_black_temple", 564) { }
-    
+
     InstanceScript* GetInstanceScript(InstanceMap *map) const
     {
        return new instance_black_temple_InstanceMapScript(map);
@@ -302,7 +302,7 @@ public:
                     HandleGameObject(MotherDoor, true);
                 }
                 if(Encounters[6] != DONE)
-                    Encounters[6] = data; 
+                    Encounters[6] = data;
 
                 break;
             case DATA_ILLIDARICOUNCILEVENT:

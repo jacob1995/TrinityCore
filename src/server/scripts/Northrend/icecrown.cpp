@@ -2860,7 +2860,7 @@ public:
             }
             else
                 relocateTimer -= diff;
-            
+
             if (wpReached)
             {
                 wpReached = false;
@@ -2961,7 +2961,7 @@ public:
             summons.Summon(pSummoned);
         }
 
-        void MoveInLineOfSight(Unit *who) 
+        void MoveInLineOfSight(Unit *who)
         {
             if(!who || !who->ToPlayer())
                 return;

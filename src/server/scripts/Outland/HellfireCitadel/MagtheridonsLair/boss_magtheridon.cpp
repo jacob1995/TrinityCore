@@ -452,7 +452,7 @@ public:
             } else Blaze_Timer -= diff;
 
                                                         // blast nova                   // shadow cage and earthquake
-            if (Phase != 3 && HealthBelowPct(30) && !me->IsNonMeleeSpellCasted(false) && !me->HasUnitState(UNIT_STATE_STUNNED)) 
+            if (Phase != 3 && HealthBelowPct(30) && !me->IsNonMeleeSpellCasted(false) && !me->HasUnitState(UNIT_STATE_STUNNED))
             {
                 Phase = 3;
                 DoScriptText(SAY_CHAMBER_DESTROY, me);

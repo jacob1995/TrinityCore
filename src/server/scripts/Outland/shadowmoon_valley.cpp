@@ -1809,7 +1809,7 @@ public:
  ####*/
 
 enum SpectreclesMisc
-{    
+{
     SPELL_REPLACE_LOST_SPECTRACLES      = 37700,
     ITEM_SPECTRECLES                    = 30721,
     QUEST_T_G_LORE_AND_LEGEND_A         = 10819,
@@ -1830,11 +1830,11 @@ class npc_item_spectrecles : public CreatureScript
             if (creature->isQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            if (!player->HasItemCount(ITEM_SPECTRECLES, 1, true) 
+            if (!player->HasItemCount(ITEM_SPECTRECLES, 1, true)
                 && (((player->GetQuestStatus(QUEST_T_G_LORE_AND_LEGEND_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_T_G_LORE_AND_LEGEND_A) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_T_G_I_AM_A))
                 || ((player->GetQuestStatus(QUEST_T_G_LORE_AND_LEGEND_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_T_G_LORE_AND_LEGEND_H) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_T_G_I_AM_H))))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPECTRACLES, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
-                
+
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
@@ -1858,7 +1858,7 @@ class npc_item_spectrecles : public CreatureScript
  ####*/
 
 enum ItemPathOfConquestMisc
-{    
+{
     NPC_ORBAROKH                         = 21769,
     NPC_YOREGAR                          = 21773,
     ITEM_WILDHAMMER_FLARE_GUN            = 31310,
@@ -1881,11 +1881,11 @@ class npc_item_path_of_conquest : public CreatureScript
             if (creature->isQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            if ((!player->HasItemCount(ITEM_WILDHAMMER_FLARE_GUN, 1, true) || !player->HasItemCount(ITEM_KORKRON_FLARE_GUN, 1, true)) 
+            if ((!player->HasItemCount(ITEM_WILDHAMMER_FLARE_GUN, 1, true) || !player->HasItemCount(ITEM_KORKRON_FLARE_GUN, 1, true))
                 && (((player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_A) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_A) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_DISSENSION_AMONGST_THE_RANKS_A))
                 || ((player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_H) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_H) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_PATH_OF_CONQUEST_H) == QUEST_STATUS_REWARDED) && !player->GetQuestRewardStatus(QUEST_DISSENSION_AMONGST_THE_RANKS_H))))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_FLARE_GUN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
-                
+
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
@@ -1904,8 +1904,8 @@ class npc_item_path_of_conquest : public CreatureScript
                         player->AddItem(ITEM_KORKRON_FLARE_GUN, 1);
                         break;
                 }
-                
-                player->CLOSE_GOSSIP_MENU();                    
+
+                player->CLOSE_GOSSIP_MENU();
             }
             return true;
         }

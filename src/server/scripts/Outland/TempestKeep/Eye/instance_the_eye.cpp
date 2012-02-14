@@ -189,7 +189,7 @@ class instance_the_eye : public InstanceMapScript
         char dataHead1, dataHead2;
         uint32 temp_auiEncounter[MAX_ENCOUNTER];
         memset(&temp_auiEncounter, 0, sizeof(temp_auiEncounter));
-        
+
         stream >> dataHead1 >> dataHead2 >> temp_auiEncounter[0] >> temp_auiEncounter[1] >> temp_auiEncounter[2] >> temp_auiEncounter[3];
 
         if(dataHead1 == 'T' && dataHead2 == 'E')

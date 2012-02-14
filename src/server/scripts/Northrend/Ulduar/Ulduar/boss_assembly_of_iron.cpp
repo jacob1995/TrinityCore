@@ -1147,7 +1147,7 @@ class achievement_cant_do_that_while_stunned : public AchievementCriteriaScript
                         if (Creature* brundir = ObjectAccessor::GetCreature(*boss, instance->GetData64(DATA_BRUNDIR)))
                             if (brundir->AI()->GetData(DATA_CANT_DO_THAT))
                                 return true;
- 
+
             return false;
         }
 };

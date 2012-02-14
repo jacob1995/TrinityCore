@@ -559,7 +559,7 @@ public:
         }
 
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
-        return true; 
+        return true;
     }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )

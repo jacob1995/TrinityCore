@@ -423,7 +423,7 @@ class item_fiery_soul_fragment : public ItemScript
 				pPlayer->CompleteQuest(10525);
 			}
 			return true;
-            
+
         }
 };
 

@@ -219,7 +219,7 @@ class boss_bjarngrim : public CreatureScript
                         break;
                 }
             }
-            
+
             uint32 GetData(uint32 type)
             {
                 if (type == DATA_LIGHTNING_STRUCK)

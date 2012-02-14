@@ -2043,7 +2043,7 @@ enum StefanVaduMisc
 {
     SPELL_SUMMON_NASS                   = 51865,
     QUEST_KICKIN_NASS_AND_TAKIN_MANES   = 12630,
-    
+
     SPELL_PUSH_ENSORCELLED_CHOKER       = 53810,
     ITEM_ENSORCELLED_CHOKER             = 38699,
     QUEST_DRESSING_DOWN                 = 12648,
@@ -2066,13 +2066,13 @@ class npc_stefan_vadu : public CreatureScript
 
             if (player->GetQuestStatus(QUEST_KICKIN_NASS_AND_TAKIN_MANES) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_NASS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
-        
+
             if (!player->HasItemCount(ITEM_ENSORCELLED_CHOKER, 1, true)
                 && (player->GetQuestStatus(QUEST_DRESSING_DOWN) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_DRESSING_DOWN) == QUEST_STATUS_REWARDED
                 || player->GetQuestStatus(QUEST_SUIT_UP) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_SUIT_UP) == QUEST_STATUS_REWARDED)
                 && !player->GetQuestRewardStatus(QUEST_BETRAYAL))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_CHOKER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            
+
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }

@@ -786,7 +786,7 @@ public:
         {
             creature->CastSpell(player,SPELL_SUMMON_ASHWOOD_BRAND,true);
         }
-        
+
         return true;
     }
 

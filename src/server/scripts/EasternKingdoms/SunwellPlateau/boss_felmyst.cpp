@@ -145,7 +145,7 @@ uint32 LeftFlyPos[2][3] =
     {1435, 650, 60}
 };
 
-uint32 RightFlyPos[2][3] = 
+uint32 RightFlyPos[2][3] =
 {
     {1515, 540, 60},
     {1435, 520, 60}
@@ -217,12 +217,12 @@ public:
             DoZoneInCombat();
             me->CastSpell(me, AURA_SUNWELL_RADIANCE, true);
             me->CastSpell(me, AURA_NOXIOUS_FUMES, true);
-        
+
 
             me->RemoveUnitMovementFlag(MOVEMENTFLAG_LEVITATING + MOVEMENTFLAG_ONTRANSPORT);
             me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
             EnterPhase(PHASE_GROUND);
-            
+
 
             if(pInstance)
                 pInstance->SetData(DATA_FELMYST_EVENT, IN_PROGRESS);

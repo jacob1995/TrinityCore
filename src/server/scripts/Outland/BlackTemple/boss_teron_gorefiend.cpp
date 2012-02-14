@@ -73,7 +73,7 @@ public:
 
     struct  mob_doom_blossomAI : public ScriptedAI
     {
-        mob_doom_blossomAI(Creature *c) : ScriptedAI(c) 
+        mob_doom_blossomAI(Creature *c) : ScriptedAI(c)
         {
             pInstance = c->GetInstanceScript();
         }
@@ -175,7 +175,7 @@ public:
 
     struct  mob_shadowy_constructAI : public ScriptedAI
     {
-        mob_shadowy_constructAI(Creature* c) : ScriptedAI(c) 
+        mob_shadowy_constructAI(Creature* c) : ScriptedAI(c)
         {
              pInstance =c->GetInstanceScript();
         }
@@ -273,7 +273,7 @@ public:
             if(CheckTeronTimer < diff)
             {
                 Creature* Teron = (Unit::GetCreature((*me), TeronGUID));
-            
+
                 if(pInstance->GetData(DATA_TERONGOREFIENDEVENT) != IN_PROGRESS)
                 {
                     me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
@@ -646,7 +646,7 @@ public:
                         }
 
                         //DoCast(target, SPELL_SHADOW_OF_DEATH);
-                    
+
                         //me->CastCustomSpell(target,SPELL_SHADOW_OF_DEATH,NULL,NULL,NULL,false);
                         /*GhostGUID = target->GetGUID();*/
                         ShadowOfDeathTimer = 30000;
@@ -698,7 +698,7 @@ public:
                             }
                         }/*else
                             del_player.push_back(*itr);*/
-                        //Auskommentieren fixt ALT+F4 Exploit 
+                        //Auskommentieren fixt ALT+F4 Exploit
                     }
                     for(std::list<uint64>::iterator itr = del_player.begin(); itr != del_player.end(); ++itr)
                     {

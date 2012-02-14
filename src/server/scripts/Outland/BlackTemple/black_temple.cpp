@@ -195,7 +195,7 @@ struct  mob_black_temple_ashtongueAI : public mob_black_temple_tashAI
         {
             if(me->getFaction() != ASH_FACTION_FRIENDLY)
                 me->setFaction(ASH_FACTION_FRIENDLY);
-            
+
         }else
         {
             if(me->getFaction() != ASH_FACTION_UNFRIENDLY)
@@ -416,7 +416,7 @@ struct  mob_black_temple_ashtongueAI : public mob_black_temple_tashAI
 #define SPELL_ILLI_FIREBALL                     41383
 #define SPELL_ILLI_FLAMESTRIKE                  41379
 #define SPELL_ILLI_FROSTBOLT                    41384
-    
+
 #define SPELL_ILLI_DIVINE_SHIELD                41367
 #define SPELL_ILLI_HAMMER_OF_JUSTICE            13005
 #define SPELL_ILLI_JUDGEMENT                    41368
@@ -649,7 +649,7 @@ public:
 
             if(spawn_Timer < diff)
             {
-            
+
                 Creature* temp;
 
                 for(int i = 0; i<2 ; i++)
@@ -909,7 +909,7 @@ public:
 
                     DoCast(me,SPELL_SUMMON_GEYSER);
                     geyser_Timer = 10000+rand()%10000;
-            
+
             }else geyser_Timer -= diff;
 
             mob_black_temple_tashAI::UpdateAI(diff);
@@ -2035,7 +2035,7 @@ public:
             {
                 spellInfo->MaxAffectedTargets = 5;
                 me->CastSpell(me,spellInfo,false);
-                //DoCast(me,SPELL_CYCLONE_TOTEM_EFFEKT); 
+                //DoCast(me,SPELL_CYCLONE_TOTEM_EFFEKT);
             }
         }
     };
@@ -2049,7 +2049,7 @@ public:
         {
             attack_Timer = 100;
         }
-    
+
         void UpdateAI(const uint32 diff)
         {
             if(attack_Timer < diff)
@@ -2486,7 +2486,7 @@ public:
         {
             if (!UpdateVictim() )
                 return;
-        
+
             if(lash_Timer < diff)
             {
                 DoCast(me->getVictim(),SPELL_LASH_OF_PAIN);
@@ -3310,7 +3310,7 @@ public:
             }
 
             return NULL;
-    
+
         }
 
         void UpdateAI(const uint32 diff)
@@ -3755,7 +3755,7 @@ public:
                 if(comet_Timer < diff)
                 {
                     Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0,40,true);
-                
+
                     if(target && me->GetDistance(target) > 10)
                     {
                         DoCast(target,SPELL_BEHEMOTH_FIERY_COMET);
@@ -3960,7 +3960,7 @@ public:
         {
             DoCast(me,SPELL_CLOUD_OF_DISEASE,true);
         }
-     
+
 
         void UpdateAI(const uint32 diff)
         {

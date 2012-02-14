@@ -18,7 +18,7 @@
 
 #include "ScriptPCH.h"
 #include "dark_portal.h"
- 
+
 class instance_the_dark_portal : public InstanceMapScript
 {
 public:
@@ -32,7 +32,7 @@ public:
     struct  instance_the_dark_portal_InstanceMapScript : public InstanceScript
     {
         instance_the_dark_portal_InstanceMapScript(Map *Map) : InstanceScript(Map) {};
- 
+
         uint64 Medivh;
         uint32 IsMedivhDead;
         uint32 IsChronoLordDejaDead;
@@ -40,7 +40,7 @@ public:
         uint32 IsAeonusDead;
         uint32 Wave;
         uint32 ShieldPercent;
- 
+
         void Initialize()
         {
             Medivh = 0;
@@ -66,16 +66,16 @@ public:
                     break;
             }
         }
- 
+
         uint64 GetData64(uint32 identifier)
         {
             if (identifier == DATA_MEDIVH)
                 return Medivh;
             return 0;
         }
- 
+
         uint32 GetData(uint32 type)
-        { 
+        {
             if(type == DATA_MEDIVHDEATH)
                 return IsMedivhDead;
             if(type == DATA_CHRONOLORDDEJADEATH)
@@ -90,7 +90,7 @@ public:
                 return ShieldPercent;
             return 0;
         }
- 
+
         void SetData(uint32 type, uint32 data)
         {
             if(type == DATA_MEDIVHDEATH)

@@ -1105,7 +1105,7 @@ class npc_zeppit : public CreatureScript
                 Player* player = me->ToTempSummon()->GetSummoner()->ToPlayer();
                 if (player && player->GetQuestStatus(QUEST_BLOODY_IMPOSSIBLE) != QUEST_STATUS_INCOMPLETE)
                     return;
-                
+
                 if (Creature* target = me->FindNearestCreature(NPC_WARP_CHASER, 20.0f, false))
                 {
                     me->CastSpell(target, SPELL_GATHER_WARP_CHASER_BLOOD);

@@ -2735,7 +2735,7 @@ public:
  ####*/
 
 enum RaeloraszMisc
-{   
+{
     SPELL_PUSH_ARCANE_PRISON            = 46764,
     ITEM_AUGMENTED_ARCANE_PRISON        = 35671,
     QUEST_THE_CELL                      = 11943,
@@ -2760,8 +2760,8 @@ class npc_raelorasz : public CreatureScript
 
             if (!player->HasItemCount(ITEM_AUGMENTED_ARCANE_PRISON, 1, true) && player->GetQuestStatus(QUEST_THE_CELL) == QUEST_STATUS_REWARDED && !player->GetQuestRewardStatus(QUEST_MUSTERING_THE_REDS))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PRISON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
-                
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MALYGOS_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);           
+
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MALYGOS_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }

@@ -1084,7 +1084,7 @@ class npc_simon_bunny : public CreatureScript
                 uint32 rewSpell;
                 switch (level)
                 {
-                    case 6: 
+                    case 6:
                         if (large)
                             GivePunishment();
                         else
@@ -1311,7 +1311,7 @@ class npc_antelarion : public CreatureScript
 
             if (!player->HasItemCount(ITEM_FELSWORD_GAS_MASK, 1, true) && player->GetQuestStatus(QUEST_FELSWORD_GAS_MASK) == QUEST_STATUS_REWARDED && !player->GetQuestRewardStatus(QUEST_YOU_RE_FIRED))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_GAS_MASK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
-                
+
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }

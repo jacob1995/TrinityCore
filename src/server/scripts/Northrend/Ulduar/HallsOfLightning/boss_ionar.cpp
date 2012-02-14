@@ -278,7 +278,7 @@ public:
                 {
                     if (Unit* pTemp = SelectTarget(SELECT_TARGET_RANDOM,1,100,true))
                         DoCast(pTemp, DUNGEON_MODE(SPELL_BALL_LIGHTNING,H_SPELL_BALL_LIGHTNING));
-                    else 
+                    else
                         DoCast(me->getVictim(), DUNGEON_MODE(SPELL_BALL_LIGHTNING,H_SPELL_BALL_LIGHTNING));
 
                     uiBallLightningTimer = 10*IN_MILLISECONDS;
@@ -369,7 +369,7 @@ public:
                 DoCast(me, SPELL_ARC_WELD);
                 uiArcWeldTimer = 500;
             } else uiArcWeldTimer -= uiDiff;
-            
+
             // Prevent them to follow players through the whole instance
             if (uiCheckTimer <= uiDiff)
             {

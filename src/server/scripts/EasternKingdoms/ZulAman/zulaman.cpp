@@ -53,7 +53,7 @@ const float DrumPositions[4][3] =
     {-127.524f, 1167.949f, 0.7608f}
 };
 
-const float ReinforcementPositions[4][3] = 
+const float ReinforcementPositions[4][3] =
 {
     {-178.348f, 1350.270f, -0.107f},
     {-177.929f, 1274.980f, 1.5715f},
@@ -248,11 +248,11 @@ public:
         {
             pPlayer->CLOSE_GOSSIP_MENU();
             pCreature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-        
+
             InstanceScript* pInstance = pCreature->GetInstanceScript();
             if(pInstance)
             {
-                if(pCreature->GetMap()->IsDungeon())   
+                if(pCreature->GetMap()->IsDungeon())
                     ((InstanceMap*)pCreature->GetMap())->PermBindAllPlayers(pPlayer);
                 pInstance->SetData(DATA_TIMERSTART,IN_PROGRESS);
             }
@@ -703,7 +703,7 @@ public:
         mob_amani_protective_wardAI(Creature *c) : NullCreatureAI(c) {Reset();}
         void Reset()
         {
-            DoCast(me,SPELL_AMANI_PROTECTIVE_WARD_PASSIVE_2); 
+            DoCast(me,SPELL_AMANI_PROTECTIVE_WARD_PASSIVE_2);
         }
         void UpdateAI(const uint32 diff)
         {
@@ -763,7 +763,7 @@ public:
         uint32 NextWaypoint;
         bool GauntletStarted;
 
-    
+
         void AttackStart(Unit* who)
         {
             if(!who || who == me)
@@ -771,7 +771,7 @@ public:
 
             if(!me->isAlive() || !who->isAlive())
                 return;
-        
+
             if(who->GetTypeId()==TYPEID_PLAYER )
             {
                 if(((Player*)who)->isGameMaster())
@@ -1007,7 +1007,7 @@ public:
         }
         void UpdateAI(const uint32 diff)
         {
-        
+
             if(!UpdateVictim())
             {
                 if(MoveWait_Timer)
@@ -1080,7 +1080,7 @@ public:
             if(pInstance)
                 pInstance->SetData(DATA_GAUNTLET,DONE);
         }
-   
+
         void UpdateAI(const uint32 diff)
         {
             if(pInstance && pInstance->GetData(DATA_GAUNTLET) == IN_PROGRESS)
@@ -1089,7 +1089,7 @@ public:
                 {
                     pInstance->SetData(DATA_GAUNTLET,DONE);
                 }
-            
+
                 if(WarriorSpawn_Timer < diff)
                 {
                     if(WarriorCounter > 0)
@@ -1123,7 +1123,7 @@ public:
 
             if(!UpdateVictim())
                 return;
-      
+
             if(Thunderclap_Timer < diff)
             {
                 DoCast(me->getVictim(),SPELL_AMANISHI_TEMPEST_THUNDERCLAP);
@@ -1357,7 +1357,7 @@ public:
 
         uint32 Crunch_Timer;
         uint32 Enrage_Timer;
- 
+
 
         void Reset()
         {
@@ -1468,7 +1468,7 @@ public:
                 ReinforcementPhase = 2;
             }
         }
-       
+
         void AttackStart(Unit* who)
         {
             if(ReinforcementPhase == 0)
@@ -1478,7 +1478,7 @@ public:
 
                 if(!me->isAlive() || !who->isAlive())
                     return;
-            
+
                 if(who->GetTypeId()==TYPEID_PLAYER )
                 {
                     if(((Player*)who)->isGameMaster())
@@ -1505,7 +1505,7 @@ public:
 
                 if(!me->IsWithinDistInMap(who, me->GetAttackDistance(who)) || !me->IsWithinLOSInMap(who))
                     return;
-        
+
                 if(me->canCreatureAttack(who))
                     CallReinforcements(who);
             }
