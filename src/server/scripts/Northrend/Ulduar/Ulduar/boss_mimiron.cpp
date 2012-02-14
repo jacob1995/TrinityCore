@@ -86,7 +86,8 @@ enum Spells
     SPELL_FLAME_SUPPRESSANT_VX001               = 65192,
     SPELL_SUMMON_FLAMES_INITIAL                 = 64563,
     SPELL_FLAME                                 = 64561,
-    SPELL_FROST_BOMB                            = 64624,
+    SPELL_FROST_BOMB                            = 64623,
+    SPELL_FROST_BOMB_VISUAL                     = 64624,
     SPELL_FROST_BOMB_EXPLOSION_10               = 64626,
     SPELL_FROST_BOMB_EXPLOSION_25               = 65333,
     SPELL_WATER_SPRAY                           = 64619,
@@ -1226,6 +1227,12 @@ public:
                 }
         }
 
+        void SpellHitTarget(Unit* target, SpellInfo const* spell)
+        {
+            if (spell->Id == SPELL_FROST_BOMB)
+                me->SummonCreature(NPC_FROST_BOMB, *target, TEMPSUMMON_TIMED_DESPAWN, 11000);
+        }
+
         void UpdateAI(uint32 const diff)
         {
             if (!UpdateVictim())
@@ -1321,19 +1328,14 @@ public:
                             events.RescheduleEvent(EVENT_HAND_PULSE, urand(3000, 4000));
                             break;
                         case EVENT_FROST_BOMB:
-                        {
-                            std::list<Creature*> _flames;
-                            me->GetCreatureListWithEntryInGrid(_flames, NPC_FLAME_SPREAD, 150.0f);
-                            if (!_flames.empty())
+                            if (me->FindNearestCreature(NPC_FLAME_SPREAD, 100.0f))
                             {
-                                if (Creature* flame = SelectRandomContainerElement(_flames))
-                                    me->SummonCreature(NPC_FROST_BOMB, *flame, TEMPSUMMON_TIMED_DESPAWN, 11000);
+                                DoCast(SPELL_FROST_BOMB);
+                                events.RescheduleEvent(EVENT_FROST_BOMB, 45000);
                             }
                             else
-                                me->SummonCreature(NPC_FROST_BOMB, SummonPos[rand()%9], TEMPSUMMON_TIMED_DESPAWN, 11000);
-                            events.RescheduleEvent(EVENT_FROST_BOMB, 45000);
+                                events.RescheduleEvent(EVENT_FROST_BOMB, 5000);
                             break;
-                        }
                         case EVENT_FLAME_SUPPRESSANT_VX001:
                             DoCastAOE(SPELL_FLAME_SUPPRESSANT_VX001);
                             events.RescheduleEvent(EVENT_FLAME_SUPPRESSANT_VX001, 10000, 0, PHASE_VX001_SOLO);
@@ -1985,7 +1987,7 @@ class npc_frost_bomb : public CreatureScript
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
-                DoCast(me, SPELL_FROST_BOMB, true);
+                DoCast(me, SPELL_FROST_BOMB_VISUAL, true);
                 _frostTimer = 10000;
             }
 
