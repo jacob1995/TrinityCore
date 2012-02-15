@@ -1146,14 +1146,12 @@ public:
             return true;
         }
 
-        void Aggro()
-        {
-
-        }
+        void Aggro() {}
 
         void JustDied(Unit *killer)
         {
             GameObject* object = me->SummonGameObject(ENTRY_ARTRUIS_URN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,0,0,0,0,600);
+            me->DespawnOrUnsummon();
         }
 
         void UpdateAI(const uint32 diff)
