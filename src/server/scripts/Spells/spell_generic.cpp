@@ -2984,6 +2984,43 @@ class spell_gen_tournament_pennant : public SpellScriptLoader
         }
 };
 
+class spell_gen_toy_train_set : public SpellScriptLoader
+{
+    public:
+        spell_gen_toy_train_set() : SpellScriptLoader("spell_gen_toy_train_set") { }
+
+        class spell_gen_toy_train_set_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_toy_train_set_SpellScript);
+
+            void HandleScript(SpellEffIndex /*effIndex*/)
+            {
+                if (Player* target = GetHitPlayer())
+                {
+                    target->HandleEmoteCommand(EMOTE_ONESHOT_TRAIN);
+
+                    WorldPacket data(SMSG_TEXT_EMOTE, 8 + 4 + 4 + 4 + 1);
+                    data << uint64(target->GetGUID());
+                    data << uint32(TEXT_EMOTE_TRAIN);
+                    data << uint32(0);
+                    data << uint32(1);
+                    data << uint8(0);
+                    target->SendMessageToSet(&data, true);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_gen_toy_train_set_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_toy_train_set_SpellScript();
+        }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -3038,4 +3075,5 @@ void AddSC_generic_spell_scripts()
     new spell_gen_summon_tournament_mount();
     new spell_gen_on_tournament_mount();
     new spell_gen_tournament_pennant();
+    new spell_gen_toy_train_set();
 }

@@ -3849,6 +3849,101 @@ public:
     };
 };
 
+/*#####
+# npc_train_wrecker
+#####*/
+
+enum TrainWrecker
+{
+    GO_TOY_TRAIN_SET       = 193963,
+    SPELL_TRAIN_WRECKER    = 62943,
+    POINT_JUMP             = 1,
+    EVENT_SEARCH           = 1,
+    EVENT_JUMP             = 2,
+    EVENT_WRECK            = 3,
+    EVENT_DANCE            = 4
+};
+
+class npc_train_wrecker : public CreatureScript
+{
+    public:
+        npc_train_wrecker() : CreatureScript("npc_train_wrecker") { }
+
+        struct npc_train_wreckerAI : public ScriptedAI
+        {
+            npc_train_wreckerAI(Creature* creature) : ScriptedAI(creature) { }
+
+            void Reset()
+            {
+                _events.ScheduleEvent(EVENT_SEARCH, 3000);
+            }
+
+            void MovementInform(uint32 type, uint32 id)
+            {
+                if (type != POINT_MOTION_TYPE)
+                    return;
+
+                if (id == POINT_JUMP)
+                    _events.ScheduleEvent(EVENT_JUMP, 500);
+            }
+
+            void UpdateAI(uint32 const diff)
+            {
+                _events.Update(diff);
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_SEARCH:
+                            if (GameObject* train = me->FindNearestGameObject(GO_TOY_TRAIN_SET, 20.0f))
+                            {
+                                if (me->GetDistance(train) > 1.5f)
+                                {
+                                    float x, y, z;
+                                    me->GetNearPoint(me, x, y, z, 0.0f, me->GetDistance(train) - 1.5f, me->GetAngle(train));
+                                    me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                                    me->GetMotionMaster()->MovePoint(POINT_JUMP, x, y, z);
+                                }
+                                else
+                                    _events.ScheduleEvent(EVENT_JUMP, 500);
+                            }
+                            else
+                                _events.ScheduleEvent(EVENT_SEARCH, 3000);
+                            break;
+                        case EVENT_JUMP:
+                            if (GameObject* train = me->FindNearestGameObject(GO_TOY_TRAIN_SET, 5.0f))
+                                me->GetMotionMaster()->MoveJump(train->GetPositionX(), train->GetPositionY(), train->GetPositionZ(), 4.0f, 6.0f);
+                            _events.ScheduleEvent(EVENT_WRECK, 2500);
+                            break;
+                        case EVENT_WRECK:
+                            if (GameObject* train = me->FindNearestGameObject(GO_TOY_TRAIN_SET, 5.0f))
+                            {
+                                DoCast(SPELL_TRAIN_WRECKER);
+                                train->SetLootState(GO_JUST_DEACTIVATED); // TODO: fix SPELL_TRAIN_WRECKER's effect
+                                _events.ScheduleEvent(EVENT_DANCE, 2500);
+                            }
+                            else
+                                me->DespawnOrUnsummon(3000);
+                            break;
+                        case EVENT_DANCE:
+                            me->HandleEmoteCommand(EMOTE_STATE_DANCE);
+                            me->DespawnOrUnsummon(10000);
+                            break;
+                    }
+                }
+            }
+
+        private:
+            EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return new npc_train_wreckerAI(creature);
+        }
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -3889,8 +3984,9 @@ void AddSC_npcs_special()
     new npc_dark_iron_guzzler();
     new npc_event_engineer();
     new npc_wild_turkey();
-    new npc_fire_elemental;
-    new npc_earth_elemental;
-    new npc_firework;
+    new npc_fire_elemental();
+    new npc_earth_elemental();
+    new npc_firework();
     new npc_snivel_rustrocket();
+    new npc_train_wrecker();
 }
