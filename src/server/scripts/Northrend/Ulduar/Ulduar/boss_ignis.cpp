@@ -150,7 +150,7 @@ class boss_ignis : public CreatureScript
                 events.ScheduleEvent(EVENT_SCORCH, 25000);
                 events.ScheduleEvent(EVENT_SLAG_POT, 35000, 1);
                 events.ScheduleEvent(EVENT_CONSTRUCT, 15000);
-                events.ScheduleEvent(EVENT_BERSERK, 480000);
+                events.ScheduleEvent(EVENT_BERSERK, 900000);
                 _slagPotGUID = 0;
                 _constructTimer = 0;
                 _shattered = false;

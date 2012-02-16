@@ -805,7 +805,8 @@ class npc_flash_freeze : public CreatureScript
             npc_flash_freezeAI(Creature* creature) : Scripted_NoMovementAI(creature)
             {
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED | UNIT_FLAG_PACIFIED);
-                me->setFaction(25865);
+                me->SetReactState(REACT_PASSIVE);
+                me->SetDisplayId(me->GetCreatureInfo()->Modelid2);
                 me->setFaction(14);
             }
 
