@@ -658,7 +658,7 @@ bool AuthSocket::_HandleLogonProof()
             PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(
                     LOGIN_UPD_LOGONPROOF);
             stmt->setString(0, K_hex);
-            stmt->setString(1, socket().get_remote_address().c_str());
+            stmt->setString(1, socket().getRemoteAddress().c_str());
             stmt->setUInt32(2, GetLocaleByName(_localizationName));
             stmt->setString(3, _os);
             stmt->setString(4, _login);
@@ -735,7 +735,7 @@ bool AuthSocket::_HandleAuthentificator() {
         PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(
                 LOGIN_UPD_LOGONPROOF);
         stmt->setString(0, auth_K.c_str());
-        stmt->setString(1, socket().get_remote_address().c_str());
+        stmt->setString(1, socket().getRemoteAddress().c_str());
         stmt->setUInt32(2, auth_Locale);
         stmt->setString(3, _os);
         stmt->setString(4, _login);
