@@ -47,35 +47,35 @@ enum Spells
     SPELL_FEIGN_DEATH       = 66804, // 1
     SPELL_RAISE_BRIGHTSTAR  = 67705, // 46
     SPELL_RAISE_SUNSWORN    = 67715, // 46
-    SPELL_PLAGUE_STRIKE_H   = 67884,
+  //SPELL_PLAGUE_STRIKE_H   = 67884,
     SPELL_PLAGUE_STRIKE     = 67724,
-    SPELL_ICY_TOUCH_H       = 67881,
+  //SPELL_ICY_TOUCH_H       = 67881,
     SPELL_ICY_TOUCH         = 67718,
     SPELL_DEATH_RESPITE     = 67745,
-    SPELL_DEATH_RESPITE_H   = 68306,
+  //SPELL_DEATH_RESPITE_H   = 68306,
     SPELL_DEATH_RESPITE_3   = 66798,
     SPELL_OBLITERATE_H      = 67883,
     SPELL_OBLITERATE        = 67725,
 
     // Phase 2
     SPELL_ARMY_DEAD         = 67761,
-    SPELL_ARMY_DEAD_H       = 67874,
+  //SPELL_ARMY_DEAD_H       = 67874,
     SPELL_DESECRATION       = 67778,
-    SPELL_DESECRATION_H     = 67877,
+  //SPELL_DESECRATION_H     = 67877,
     SPELL_GHOUL_EXPLODE     = 67751,
 
     // Phase 3
-    SPELL_DEATH_BITE_H      = 67875,
+  //SPELL_DEATH_BITE_H      = 67875,
     SPELL_DEATH_BITE        = 67808,
-    SPELL_MARKED_DEATH_H    = 67882,
+  //SPELL_MARKED_DEATH_H    = 67882,
     SPELL_MARKED_DEATH      = 67823,
 
     SPELL_BLACK_KNIGHT_RES  = 67693,
 
     SPELL_LEAP              = 67749,
-    SPELL_LEAP_H            = 67880,
+  //SPELL_LEAP_H            = 67880,
     SPELL_CLAW              = 67774,
-    SPELL_CLAW_H            = 67879,
+  //SPELL_CLAW_H            = 67879,
     SPELL_EXPLODE           = 67729,
     SPELL_EXPLODE_H         = 67886,
 
@@ -173,14 +173,14 @@ class boss_black_knight : public CreatureScript
 
                 phase = PHASE_UNDEAD;
 
-                icyTouchTimer = urand(5000, 9000);
-                plagueStrikeTimer = urand(10000, 13000);
-                deathRespiteTimer = urand(15000, 16000);
-                obliterateTimer = urand(17000, 19000);
-                desecrationTimer = urand(15000, 16000);
-                deathArmyCheckTimer = 7000;
+                icyTouchTimer = urand(3000, 5000);
+                plagueStrikeTimer = urand(4000, 7000);
+                deathRespiteTimer = urand(5000, 8000);
+                obliterateTimer = urand(10000, 12000);
+                desecrationTimer = urand(12000, 15000);
+                deathArmyCheckTimer = 1000;
                 resurrectTimer = 4000;
-                ghoulExplodeTimer = 8000;
+                ghoulExplodeTimer = 6000;
                 deathBiteTimer = urand(2000, 4000);
                 markedDeathTimer = urand(5000, 7000);
             }
@@ -201,6 +201,7 @@ class boss_black_knight : public CreatureScript
             {
                 isAttacked = true;
                 DoScriptText(SAY_AGGRO_2, me);
+                DoZoneInCombat(me, 150.0f);
                 SetEquipmentSlots(false, EQUIP_SWORD, EQUIP_NO_CHANGE, EQUIP_NO_CHANGE);
 
                 if (GameObject* go = GameObject::GetGameObject(*me, _instance->GetData64(DATA_MAIN_GATE)))
@@ -309,7 +310,7 @@ class boss_black_knight : public CreatureScript
                     {
                         if (icyTouchTimer <= diff)
                         {
-                            DoCastVictim(RAID_MODE<uint32>(SPELL_ICY_TOUCH, SPELL_ICY_TOUCH_H));
+                            DoCastVictim(SPELL_ICY_TOUCH);
                             icyTouchTimer = urand(5000, 7000);
                         }
                         else
@@ -317,7 +318,7 @@ class boss_black_knight : public CreatureScript
 
                         if (plagueStrikeTimer <= diff)
                         {
-                            DoCastVictim(RAID_MODE<uint32>(SPELL_PLAGUE_STRIKE, SPELL_PLAGUE_STRIKE_H));
+                            DoCastVictim(SPELL_PLAGUE_STRIKE);
                             plagueStrikeTimer = urand(12000, 15000);
                         }
                         else
@@ -325,8 +326,8 @@ class boss_black_knight : public CreatureScript
 
                         if (obliterateTimer <= diff)
                         {
-                            DoCastVictim(RAID_MODE<uint32>(SPELL_OBLITERATE, SPELL_OBLITERATE_H));
-                            obliterateTimer = urand(17000, 19000);
+                            DoCastVictim(SPELL_OBLITERATE);
+                            obliterateTimer = urand(12000, 17000);
                         }
                         else
                             obliterateTimer -= diff;
@@ -338,8 +339,8 @@ class boss_black_knight : public CreatureScript
                                 if (deathRespiteTimer <= diff)
                                 {
                                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
-                                        DoCast(target, RAID_MODE<uint32>(SPELL_DEATH_RESPITE, SPELL_DEATH_RESPITE_H));
-                                     deathRespiteTimer = urand(15000, 16000);
+                                        DoCast(target, SPELL_DEATH_RESPITE);
+                                     deathRespiteTimer = urand(10000, 12000);
                                 }
                                 else
                                     deathRespiteTimer -= diff;
@@ -351,7 +352,7 @@ class boss_black_knight : public CreatureScript
                                 {
                                     isSummoningArmy = true;
                                     me->AddUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
-                                    DoCast(me, RAID_MODE<uint32>(SPELL_ARMY_DEAD, SPELL_ARMY_DEAD_H));
+                                    DoCast(me, SPELL_ARMY_DEAD);
                                 }
 
                                 if (!isDeathArmySummoned)
@@ -360,6 +361,7 @@ class boss_black_knight : public CreatureScript
                                     {
                                         me->ClearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
                                         deathArmyCheckTimer = 0;
+                                        ghoulExplodeTimer = urand(3000, 5000);
                                         isDeathArmySummoned = true;
                                     }
                                     else
@@ -369,7 +371,7 @@ class boss_black_knight : public CreatureScript
                                 if (desecrationTimer <= diff)
                                 {
                                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
-                                        DoCast(target, RAID_MODE<uint32>(SPELL_DESECRATION, SPELL_DESECRATION_H));
+                                        DoCast(target, SPELL_DESECRATION);
                                     desecrationTimer = urand(15000, 16000);
                                 }
                                 else
@@ -378,7 +380,7 @@ class boss_black_knight : public CreatureScript
                                 if (ghoulExplodeTimer <= diff)
                                 {
                                     DoCast(me, SPELL_GHOUL_EXPLODE);
-                                    ghoulExplodeTimer = 8000;
+                                    ghoulExplodeTimer = 5000;
                                 }
                                 else
                                     ghoulExplodeTimer -= diff;
@@ -392,7 +394,7 @@ class boss_black_knight : public CreatureScript
                     {
                         if (deathBiteTimer <= diff)
                         {
-                            DoCastAOE(RAID_MODE<uint32>(SPELL_DEATH_BITE, SPELL_DEATH_BITE_H));
+                            DoCast(SPELL_DEATH_BITE);
                             deathBiteTimer = 3000;
                         }
                         else
@@ -401,7 +403,7 @@ class boss_black_knight : public CreatureScript
                         if (markedDeathTimer <= diff)
                         {
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
-                                DoCast(target, RAID_MODE<uint32>(SPELL_MARKED_DEATH, SPELL_MARKED_DEATH_H));
+                                DoCast(target, SPELL_MARKED_DEATH);
                             markedDeathTimer = 10000;
                         }
                         else
@@ -448,9 +450,13 @@ class npc_risen_ghoul : public CreatureScript
                 if (spell->Id == SPELL_GHOUL_EXPLODE)
                 {
                     _events.Reset();
-                    DoCast(RAID_MODE<uint32>(SPELL_EXPLODE, SPELL_EXPLODE_H));
+                    DoCast(SPELL_EXPLODE);
                 }
             }
+
+            //void SpellHitTarget(Unit* target, SpellInfo const* spell)
+            //{
+            //}
 
             void DoAction(int32 const action)
             {
@@ -458,7 +464,7 @@ class npc_risen_ghoul : public CreatureScript
                 {
                     _events.Reset();
                     me->AddAura(SPELL_GHOUL_EXPLODE, me);
-                    DoCast(RAID_MODE<uint32>(SPELL_EXPLODE, SPELL_EXPLODE_H));
+                    DoCast(SPELL_EXPLODE);
                 }
             }
 
@@ -479,7 +485,7 @@ class npc_risen_ghoul : public CreatureScript
                         case EVENT_CLAW:
                             if (me->IsWithinCombatRange(me->getVictim(), 5.0f))
                             {
-                                DoCastVictim(RAID_MODE<uint32>(SPELL_CLAW, SPELL_CLAW_H));
+                                DoCastVictim(SPELL_CLAW);
                                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 40.0f, true))
                                 {
                                     DoResetThreat();
@@ -495,7 +501,7 @@ class npc_risen_ghoul : public CreatureScript
                             {
                                 DoResetThreat();
                                 me->AddThreat(target, 1000.0f);
-                                DoCast(target, RAID_MODE<uint32>(SPELL_LEAP, SPELL_LEAP_H));
+                                DoCast(target, SPELL_LEAP);
                             }
                             _events.ScheduleEvent(EVENT_LEAP, urand(10000, 12000));
                             break;

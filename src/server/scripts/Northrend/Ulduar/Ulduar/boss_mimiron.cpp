@@ -119,7 +119,10 @@ enum Events
     // Aerial Command Unit
     EVENT_PLASMA_BALL,
     EVENT_REACTIVATE_AERIAL,
-    EVENT_SUMMON_BOTS
+    EVENT_SUMMON_BOTS,
+
+    // Temporary
+    EVENT_RELOCATE
 };
 
 enum Phases
@@ -887,6 +890,7 @@ public:
                     events.SetPhase(PHASE_LEVIATHAN_ASSEMBLED);
                     events.RescheduleEvent(EVENT_PROXIMITY_MINE, 1000);
                     events.RescheduleEvent(EVENT_SHOCK_BLAST, 30000);
+                    events.ScheduleEvent(EVENT_RELOCATE, 1000);
                     break;
                 case DO_ENTER_ENRAGE:
                     DoCast(me, SPELL_BERSERK, true);
@@ -911,6 +915,10 @@ public:
                 {
                     switch (eventId)
                     {
+                        case EVENT_RELOCATE:
+                            me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                            events.ScheduleEvent(EVENT_RELOCATE, 1000);
+                            break;
                         case EVENT_PROXIMITY_MINE:
                             for (int i = 0; i < 10; ++i)
                                 DoCast(SPELL_MINES_SPAWN);
@@ -1167,6 +1175,7 @@ public:
                     events.RescheduleEvent(EVENT_LASER_BARRAGE, urand(35000, 40000));
                     events.RescheduleEvent(EVENT_ROCKET_STRIKE, 20000);
                     events.RescheduleEvent(EVENT_HAND_PULSE, 15000, 0, PHASE_VX001_ASSEMBLED);
+                    events.ScheduleEvent(EVENT_RELOCATE, 1000);
                     if (MimironHardMode)
                     {
                         DoCast(me, SPELL_EMERGENCY_MODE, true);
@@ -1259,6 +1268,10 @@ public:
                 {
                     switch (eventId)
                     {
+                        case EVENT_RELOCATE:
+                            me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                            events.ScheduleEvent(EVENT_RELOCATE, 1000);
+                            break;
                         case EVENT_RAPID_BURST:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                                 if (Creature* BurstTarget = me->SummonCreature(NPC_BURST_TARGET, *target, TEMPSUMMON_TIMED_DESPAWN, 3100))

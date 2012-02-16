@@ -68,41 +68,16 @@ public:
             player->TalkedToCreature(creature->GetEntry(), creature->GetGUID());
 
             player->RemoveAurasDueToSpell(SPELL_KODO_KOMBO_PLAYER_BUFF);
+
             creature->GetMotionMaster()->MoveIdle();
-        }
-
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-        return true;
-    }
-
-    bool EffectDummyCreature(Unit* pCaster, uint32 spellId, uint32 effIndex, Creature* creatureTarget)
-    {
-        //always check spellid and effectindex
-        if (spellId == SPELL_KODO_KOMBO_ITEM && effIndex == 0)
-        {
-            //no effect if player/creature already have aura from spells
-            if (pCaster->HasAura(SPELL_KODO_KOMBO_PLAYER_BUFF) || creatureTarget->HasAura(SPELL_KODO_KOMBO_DESPAWN_BUFF))
-                return true;
-
-            if (creatureTarget->GetEntry() == NPC_AGED_KODO ||
-                creatureTarget->GetEntry() == NPC_DYING_KODO ||
-                creatureTarget->GetEntry() == NPC_ANCIENT_KODO)
-            {
-                pCaster->CastSpell(pCaster, SPELL_KODO_KOMBO_PLAYER_BUFF, true);
-
-                creatureTarget->UpdateEntry(NPC_TAMED_KODO);
-                creatureTarget->CastSpell(creatureTarget, SPELL_KODO_KOMBO_DESPAWN_BUFF, false);
-
-                if (creatureTarget->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
-                    creatureTarget->GetMotionMaster()->MoveIdle();
-
-                creatureTarget->GetMotionMaster()->MoveFollow(pCaster, PET_FOLLOW_DIST,  creatureTarget->GetFollowAngle());
-            }
-
-            //always return true when we are handling this spell and effect
+            creature->RemoveAllAuras();
+            creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
+            creature->CastSpell(creature, SPELL_KODO_KOMBO_GOSSIP, true);
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
+
         }
-        return false;
+        else return false;
     }
 
     CreatureAI* GetAI(Creature* creature) const
@@ -115,10 +90,16 @@ public:
         npc_aged_dying_ancient_kodoAI(Creature* creature) : ScriptedAI(creature) { Reset(); }
 
         uint32 m_uiDespawnTimer;
+        uint32 m_uiTimeoutTimer;
+        bool m_uiDespawn;
+        bool m_uiTimeout;
 
         void Reset()
         {
-            m_uiDespawnTimer = 0;
+            m_uiDespawnTimer = 60000;
+            m_uiTimeoutTimer = 300000;
+            m_uiDespawn = false;
+            m_uiTimeout = false;
         }
 
         void MoveInLineOfSight(Unit* who)
@@ -131,35 +112,54 @@ public:
                 if (me->IsWithinDistInMap(who, 10.0f))
                 {
                     DoScriptText(RAND(SAY_SMEED_HOME_1, SAY_SMEED_HOME_2, SAY_SMEED_HOME_3), who);
-
-                    //spell have no implemented effect (dummy), so useful to notify spellHit
-                    DoCast(me, SPELL_KODO_KOMBO_GOSSIP, true);
+                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 }
             }
         }
 
-        void SpellHit(Unit* /*pCaster*/, SpellInfo const* pSpell)
+        void SpellHit(Unit* caster, SpellInfo const* spell)
         {
-            if (pSpell->Id == SPELL_KODO_KOMBO_GOSSIP)
-            {
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                m_uiDespawnTimer = 60000;
-            }
-        }
 
-        void UpdateAI(const uint32 diff)
-        {
-            //timer should always be == 0 unless we already updated entry of creature. Then not expect this updated to ever be in combat.
-            if (m_uiDespawnTimer && m_uiDespawnTimer <= diff)
+            if (spell->Id == SPELL_KODO_KOMBO_GOSSIP)
             {
-                if (!me->getVictim() && me->isAlive())
+                m_uiDespawn = true;
+                m_uiTimeout = false;
+            }
+            else if (spell->Id == SPELL_KODO_KOMBO_ITEM)
+            {
+                if (!caster->HasAura(SPELL_KODO_KOMBO_PLAYER_BUFF) && !me->HasAura(SPELL_KODO_KOMBO_DESPAWN_BUFF))
                 {
-                    Reset();
-                    me->setDeathState(JUST_DIED);
-                    me->Respawn();
-                    return;
+                    caster->CastSpell(caster, SPELL_KODO_KOMBO_PLAYER_BUFF, true);
+                    me->UpdateEntry(NPC_TAMED_KODO);
+                    me->CastSpell(me, SPELL_KODO_KOMBO_DESPAWN_BUFF, false);
+                    m_uiTimeout = true;
+                    me->CombatStop(true);
+                    me->DeleteThreatList();
+                    me->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, me->GetFollowAngle());
                 }
-            } else m_uiDespawnTimer -= diff;
+            }
+        }
+
+        void UpdateAI(uint32 const diff)
+        {
+
+            if (m_uiDespawn == true && m_uiDespawnTimer <= diff)
+            {
+                Reset();
+                me->ForcedDespawn(0);
+                return;
+            }
+            else if (m_uiDespawn == true)
+                m_uiDespawnTimer -= diff;
+
+            if (m_uiTimeout == true && m_uiTimeoutTimer <= diff)
+            {
+                Reset();
+                me->ForcedDespawn(0);
+                return;
+            }
+            else if (m_uiTimeout == true)
+                m_uiTimeoutTimer -= diff;
 
             if (!UpdateVictim())
                 return;
@@ -167,7 +167,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 /*######
@@ -175,7 +174,7 @@ public:
 ## Hand of Iruxos
 ######*/
 
-enum 
+enum
 {
     QUEST_HAND_IRUXOS   = 5381,
     NPC_DEMON_SPIRIT    = 11876,

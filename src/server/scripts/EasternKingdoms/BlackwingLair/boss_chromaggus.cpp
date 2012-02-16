@@ -72,9 +72,9 @@ public:
 
     struct boss_chromaggusAI : public ScriptedAI
     {
-        boss_chromaggusAI(Creature* c) : ScriptedAI(c)
+        boss_chromaggusAI(Creature* creature) : ScriptedAI(creature)
         {
-            pInstance = c->GetInstanceScript();
+            pInstance = creature->GetInstanceScript();
             //Select the 2 breaths that we are going to use until despawned
             //5 possiblities for the first breath, 4 for the second, 20 total possiblites
             //This way we don't end up casting 2 of the same breath

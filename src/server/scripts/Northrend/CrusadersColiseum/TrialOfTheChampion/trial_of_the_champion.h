@@ -118,11 +118,6 @@ enum Vehicles
     VEHICLE_BLACK_KNIGHT        = 35491
 };
 
-enum Faction
-{
-    FACTION_HOSTILE_FOR_ALL     = 16
-};
-
 static void BindPlayersToInstance(Creature* creature)
 {
     Map* map = creature->GetMap();

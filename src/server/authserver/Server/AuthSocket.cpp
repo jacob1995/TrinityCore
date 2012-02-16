@@ -226,7 +226,7 @@ AuthSocket::~AuthSocket(void) {}
 // Accept the connection and set the s random value for SRP6
 void AuthSocket::OnAccept(void)
 {
-    sLog->outBasic("Accepting connection from '%s'", socket().get_remote_address().c_str());
+    sLog->outBasic("'%s:%d' Accepting connection", socket().getRemoteAddress().c_str(), socket().getRemotePort());
 }
 
 void AuthSocket::OnClose(void)
@@ -264,7 +264,7 @@ void AuthSocket::OnRead()
         // Report unknown packets in the error log
         if (i == AUTH_TOTAL_COMMANDS)
         {
-            sLog->outError("[Auth] got unknown packet from '%s'", socket().get_remote_address().c_str());
+            sLog->outError("[Auth] got unknown packet from '%s'", socket().getRemoteAddress().c_str());
             socket().shutdown();
             return;
         }
@@ -372,14 +372,14 @@ bool AuthSocket::_HandleLogonChallenge()
     // Verify that this IP is not in the ip_banned table
     LoginDatabase.Execute(LoginDatabase.GetPreparedStatement(LOGIN_DEL_EXPIRED_IP_BANS));
 
-    const std::string& ip_address = socket().get_remote_address();
+    const std::string& ip_address = socket().getRemoteAddress();
     PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_IP_BANNED);
     stmt->setString(0, ip_address);
     PreparedQueryResult result = LoginDatabase.Query(stmt);
     if (result)
     {
         pkt << (uint8)WOW_FAIL_BANNED;
-        sLog->outBasic("[AuthChallenge] Banned ip %s tried to login!", ip_address.c_str());
+        sLog->outBasic("'%s:%d' [AuthChallenge] Banned ip tries to login!",socket().getRemoteAddress().c_str(), socket().getRemotePort());
     }
     else
     {
@@ -426,12 +426,12 @@ bool AuthSocket::_HandleLogonChallenge()
                     if ((*banresult)[0].GetUInt64() == (*banresult)[1].GetUInt64())
                     {
                         pkt << (uint8)WOW_FAIL_BANNED;
-                        sLog->outBasic("[AuthChallenge] Banned account %s tried to login!", _login.c_str());
+                        sLog->outBasic("'%s:%d' [AuthChallenge] Banned account %s tried to login!", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str ());
                     }
                     else
                     {
                         pkt << (uint8)WOW_FAIL_SUSPENDED;
-                        sLog->outBasic("[AuthChallenge] Temporarily banned account %s tried to login!", _login.c_str());
+                        sLog->outBasic("'%s:%d' [AuthChallenge] Temporarily banned account %s tried to login!", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str ());
                     }
                 }
                 else
@@ -518,7 +518,9 @@ bool AuthSocket::_HandleLogonChallenge()
                     for (int i = 0; i < 4; ++i)
                         _localizationName[i] = ch->country[4-i-1];
 
-                    sLog->outBasic("[AuthChallenge] account %s is using '%c%c%c%c' locale (%u)", _login.c_str (), ch->country[3], ch->country[2], ch->country[1], ch->country[0], GetLocaleByName(_localizationName));
+                    sLog->outBasic("'%s:%d' [AuthChallenge] account %s is using '%c%c%c%c' locale (%u)", socket().getRemoteAddress().c_str(), socket().getRemotePort(),
+                            _login.c_str (), ch->country[3], ch->country[2], ch->country[1], ch->country[0], GetLocaleByName(_localizationName)
+                        );
                 }
             }
         }
@@ -763,6 +765,53 @@ bool AuthSocket::_HandleAuthentificator() {
         sLog->outStaticDebug("Authentificator FAIL");
         char data[4] = { AUTH_LOGON_PROOF, WOW_FAIL_UNKNOWN_ACCOUNT, 3, 0 };
         socket().send(data, sizeof(data));
+
+        sLog->outBasic("'%s:%d' [AuthChallenge] account %s tried to login with invalid password!", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str ());
+
+        uint32 MaxWrongPassCount = ConfigMgr::GetIntDefault("WrongPass.MaxCount", 0);
+        if (MaxWrongPassCount > 0)
+        {
+            //Increment number of failed logins by one and if it reaches the limit temporarily ban that account or IP
+            PreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_FAILEDLOGINS);
+            stmt->setString(0, _login);
+            LoginDatabase.Execute(stmt);
+
+            stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_FAILEDLOGINS);
+            stmt->setString(0, _login);
+
+            if (PreparedQueryResult loginfail = LoginDatabase.Query(stmt))
+            {
+                uint32 failed_logins = (*loginfail)[1].GetUInt32();
+
+                if (failed_logins >= MaxWrongPassCount)
+                {
+                    uint32 WrongPassBanTime = ConfigMgr::GetIntDefault("WrongPass.BanTime", 600);
+                    bool WrongPassBanType = ConfigMgr::GetBoolDefault("WrongPass.BanType", false);
+
+                    if (WrongPassBanType)
+                    {
+                        uint32 acc_id = (*loginfail)[0].GetUInt32();
+                        stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_ACCOUNT_AUTO_BANNED);
+                        stmt->setUInt32(0, acc_id);
+                        stmt->setUInt32(1, WrongPassBanTime);
+                        LoginDatabase.Execute(stmt);
+
+                        sLog->outBasic("'%s:%d' [AuthChallenge] account %s got banned for '%u' seconds because it failed to authenticate '%u' times",
+                            socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str(), WrongPassBanTime, failed_logins);
+                    }
+                    else
+                    {
+                        stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_IP_AUTO_BANNED);
+                        stmt->setString(0, socket().getRemoteAddress());
+                        stmt->setUInt32(1, WrongPassBanTime);
+                        LoginDatabase.Execute(stmt);
+
+                        sLog->outBasic("'%s:%d' [AuthChallenge] IP %s got banned for '%u' seconds because account %s failed to authenticate '%u' times",
+                            socket().getRemoteAddress().c_str(), socket().getRemotePort(), socket().getRemoteAddress().c_str(), WrongPassBanTime, _login.c_str(), failed_logins);
+                    }
+                }
+            }
+        }
     }
 
     delete[] key;
@@ -812,7 +861,7 @@ bool AuthSocket::_HandleReconnectChallenge()
     // Stop if the account is not found
     if (!result)
     {
-        sLog->outError("[ERROR] user %s tried to login and we cannot find his session key in the database.", _login.c_str());
+        sLog->outError("'%s:%d' [ERROR] user %s tried to login and we cannot find his session key in the database.", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str());
         socket().shutdown();
         return false;
     }
@@ -877,7 +926,7 @@ bool AuthSocket::_HandleReconnectProof()
     }
     else
     {
-        sLog->outError("[ERROR] user %s tried to login, but session invalid.", _login.c_str());
+        sLog->outError("'%s:%d' [ERROR] user %s tried to login, but session is invalid.", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str());
         socket().shutdown();
         return false;
     }
@@ -899,7 +948,7 @@ bool AuthSocket::_HandleRealmList()
     PreparedQueryResult result = LoginDatabase.Query(stmt);
     if (!result)
     {
-        sLog->outError("[ERROR] user %s tried to login and we cannot find him in the database.", _login.c_str());
+        sLog->outError("'%s:%d' [ERROR] user %s tried to login but we cannot find him in the database.", socket().getRemoteAddress().c_str(), socket().getRemotePort(), _login.c_str());
         socket().shutdown();
         return false;
     }

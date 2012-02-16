@@ -63,7 +63,8 @@ enum Spells
     SPELL_HEX_OF_MENDING            = 67534,
 
     // Jaelyne Evensong && Zul'tore (Hunter)
-    SPELL_DISENGAGE                 = 68340, // NYI
+  //SPELL_DISENGAGE                 = 68340,
+    SPELL_DISENGAGE                 = 68339,
     SPELL_LIGHTNING_ARROWS          = 66083,
     SPELL_MULTI_SHOT                = 66081,
     SPELL_SHOOT                     = 65868,
@@ -73,7 +74,9 @@ enum Spells
     SPELL_EVISCERATE                = 67709,
     SPELL_EVISCERATE_H              = 68317,
     SPELL_FAN_OF_KNIVES             = 67706,
-    SPELL_POISON_BOTTLE             = 67701
+    SPELL_POISON_BOTTLE             = 67701,
+    SPELL_DEADLY_POISON             = 67710,
+    SPELL_DEADLY_POISON_H           = 68315
 };
 
 enum Enums
@@ -94,6 +97,7 @@ enum Events
     EVENT_EVISCERATE,
     EVENT_FANOFKNIVES,
     EVENT_POISONBOTTLE,
+    EVENT_DEADLYPOISON,
     // Hunter
     EVENT_DISENGAGE,
     EVENT_SHOOT,
@@ -424,11 +428,12 @@ class boss_grand_champion_toc5 : public CreatureScript
                         _events.ScheduleEvent(EVENT_EVISCERATE, urand(5000, 8000));
                         _events.ScheduleEvent(EVENT_FANOFKNIVES, urand(10000, 14000));
                         _events.ScheduleEvent(EVENT_POISONBOTTLE, urand(12000, 19000));
+                        _events.ScheduleEvent(EVENT_DEADLYPOISON, urand(5000, 10000));
                         break;
                     // Hunter
                     case NPC_JAELYNE:
                     case NPC_ZULTORE:
-                        //_events.ScheduleEvent(EVENT_DISENGAGE, urand(5000, 8000));
+                        _events.ScheduleEvent(EVENT_DISENGAGE, urand(5000, 8000));
                         _events.ScheduleEvent(EVENT_SHOOT, urand(5000, 7000));
                         _events.ScheduleEvent(EVENT_MULTISHOT, urand(12000, 15000));
                         _events.ScheduleEvent(EVENT_LIGHTNINGARROWS, urand(10000, 16000));
@@ -452,7 +457,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                     // Warrior
                     case NPC_JACOB:
                     case NPC_MOKRA:
-                        _events.ScheduleEvent(EVENT_ROLLINGTHROW, urand(20000, 25000));
+                        //_events.ScheduleEvent(EVENT_ROLLINGTHROW, urand(20000, 25000));
                         _events.ScheduleEvent(EVENT_BLADESTORM, urand(15000, 20000));
                         _events.ScheduleEvent(EVENT_MORTALSTRIKE, urand(8000, 12000));
                         _events.ScheduleEvent(EVENT_INTERCEPT, urand(7000, 10000));
@@ -462,7 +467,8 @@ class boss_grand_champion_toc5 : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
-                //me->CallForHelp(20.0f);
+                DoZoneInCombat(me, 150.0f);
+                me->CallForHelp(20.0f);
 
                 switch (_phase)
                 {
@@ -561,6 +567,12 @@ class boss_grand_champion_toc5 : public CreatureScript
                 }
             }
 
+            void SpellHitTarget(Unit* target, SpellInfo const* spell)
+            {
+                if (spell->Id == SPELL_FAN_OF_KNIVES)
+                    DoCast(target, SPELL_DEADLY_POISON, true);
+            }
+
             void UpdateAI(uint32 const diff)
             {
                 if (_waypointReached)
@@ -582,7 +594,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                             _phaseChangeTimer -= diff;
                         break;
                     case 2:
-                        if (!me->HasAura(SPELL_STUNNED) && !me->isMoving())
+                        if (!me->HasAura(SPELL_KNEEL) && !me->HasAura(SPELL_STUNNED) && !me->isMoving())
                             SearchMount();
                         return;
                 }
@@ -649,19 +661,25 @@ class boss_grand_champion_toc5 : public CreatureScript
                                 DoCast(target, SPELL_POISON_BOTTLE);
                             _events.ScheduleEvent(EVENT_POISONBOTTLE, urand(12000, 16000));
                             break;
+                        case EVENT_DEADLYPOISON:
+                            DoCastVictim(SPELL_DEADLY_POISON);
+                            _events.ScheduleEvent(EVENT_DEADLYPOISON, urand(5000, 7500));
+                            break;
                         // Hunter
-                        //case EVENT_DISENGAGE:
-                        //    _events.ScheduleEvent(EVENT_DISENGAGE, urand(17, 23));
-                        //    break;
+                        case EVENT_DISENGAGE:
+                            if (me->IsWithinCombatRange(me->getVictim(), 5.0f))
+                                DoCast(SPELL_DISENGAGE);
+                            _events.ScheduleEvent(EVENT_DISENGAGE, urand(5000, 7000));
+                            break;
                         case EVENT_SHOOT:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 45.0f))
                                 DoCast(target, SPELL_SHOOT);
-                            _events.ScheduleEvent(EVENT_SHOOT, urand(7000, 9000));
+                            _events.ScheduleEvent(EVENT_SHOOT, urand(5000, 8000));
                             break;
                         case EVENT_MULTISHOT:
                             if (Unit* target = GetRangedTarget(5.0f, 30.0f, me))
                                 DoCast(target, SPELL_MULTI_SHOT);
-                            _events.ScheduleEvent(EVENT_MULTISHOT, urand(8000, 10000));
+                            _events.ScheduleEvent(EVENT_MULTISHOT, urand(7000, 10000));
                             break;
                         case EVENT_LIGHTNINGARROWS:
                             DoCast(SPELL_LIGHTNING_ARROWS);

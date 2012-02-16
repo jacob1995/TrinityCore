@@ -98,63 +98,43 @@ public:
             {
                 // Grand Champions
                 case NPC_MOKRA:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_JACOB, ALLIANCE);
                     break;
                 case NPC_ERESSEA:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_AMBROSE, ALLIANCE);
                     break;
                 case NPC_RUNOK:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_COLOSOS, ALLIANCE);
                     break;
                 case NPC_ZULTORE:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_JAELYNE, ALLIANCE);
                     break;
                 case NPC_VISCERI:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_LANA, ALLIANCE);
                     break;
                 // Faction Champios
                 case NPC_ORGRIMMAR_CHAMPION:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_STORMWIND_CHAMPION, ALLIANCE);
                     break;
                 case NPC_SILVERMOON_CHAMPION:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_GNOMEREGAN_CHAMPION, ALLIANCE);
                     break;
                 case NPC_THUNDER_CHAMPION:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_EXODAR_CHAMPION, ALLIANCE);
                     break;
                 case NPC_TROLL_CHAMPION:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_DARNASSUS_CHAMPION, ALLIANCE);
                     break;
                 case NPC_UNDERCITY_CHAMPION:
-                    if (ServerAllowsTwoSideGroups())
-                        creature->setFaction(FACTION_HOSTILE_FOR_ALL);
                     if (teamInInstance == HORDE)
                         creature->UpdateEntry(NPC_IRONFORGE_CHAMPION, ALLIANCE);
                     break;

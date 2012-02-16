@@ -484,17 +484,17 @@ public:
             {
                 for (uint8 i = 0; i < 3; ++i)
                 {
-                    if (Creature* trash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER, SpawnPosition))
+                    if (Creature* trash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER, SpawnPosition, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 7000))
                     {
                         trash->AI()->SetData(i, 0);
                         trash->SetReactState(REACT_AGGRESSIVE);
                     }
-                    if (Creature* trash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition))
+                    if (Creature* trash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 7000))
                     {
                         trash->AI()->SetData(i, 0);
                         trash->SetReactState(REACT_AGGRESSIVE);
                     }
-                    if (Creature* trash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition))
+                    if (Creature* trash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 7000))
                     {
                         trash->AI()->SetData(i, 0);
                         trash->SetReactState(REACT_AGGRESSIVE);
