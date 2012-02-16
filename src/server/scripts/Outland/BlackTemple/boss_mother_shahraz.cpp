@@ -335,7 +335,7 @@ public:
                     if(!isNear)
                         if(targets[2] && targets[2]->isAlive() && targets[0]->GetDistance2d(targets[2]) < 25)
                             isNear = true;
-                
+
                     if(isNear)
                         targets[0]->CastSpell(targets[0],SPELL_ATTRACTION,true);
                     else
@@ -346,7 +346,7 @@ public:
                     }
                 }
 
-            
+
                 if(targets[1] && targets[1]->isAlive())
                 {
                     bool isNear = false;
@@ -356,7 +356,7 @@ public:
                     if(!isNear)
                         if(targets[2] && targets[2]->isAlive() && targets[1]->GetDistance2d(targets[2]) < 25)
                             isNear = true;
-                
+
                     if(isNear)
                         targets[1]->CastSpell(targets[1],SPELL_ATTRACTION,true);
                     else

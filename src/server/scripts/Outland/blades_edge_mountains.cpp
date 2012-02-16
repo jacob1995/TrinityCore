@@ -1084,7 +1084,7 @@ class npc_simon_bunny : public CreatureScript
                 uint32 rewSpell;
                 switch (level)
                 {
-                    case 6: 
+                    case 6:
                         if (large)
                             GivePunishment();
                         else
@@ -1285,6 +1285,51 @@ class npc_scalewing_serpent : public CreatureScript
         }
 };
 
+/*####
+ ## npc_antelarion
+ ####*/
+
+enum AntelarionMisc
+{
+    SPELL_CREATE_FELSWORD_GAS_MASK      = 39101,
+    ITEM_FELSWORD_GAS_MASK              = 31366,
+    QUEST_FELSWORD_GAS_MASK             = 10819,
+    QUEST_YOU_RE_FIRED                  = 10821
+ };
+
+#define GOSSIP_ITEM_GAS_MASK    "Please, give me a new Felsworn Gas Mask."
+
+class npc_antelarion : public CreatureScript
+{
+    public:
+        npc_antelarion() : CreatureScript("npc_antelarion") { }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (!player->HasItemCount(ITEM_FELSWORD_GAS_MASK, 1, true) && player->GetQuestStatus(QUEST_FELSWORD_GAS_MASK) == QUEST_STATUS_REWARDED && !player->GetQuestRewardStatus(QUEST_YOU_RE_FIRED))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_GAS_MASK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
+
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 0:
+                    player->CLOSE_GOSSIP_MENU();
+                    player->CastSpell(player, SPELL_CREATE_FELSWORD_GAS_MASK);
+                    break;
+            }
+            return true;
+        }
+};
+
 void AddSC_blades_edge_mountains()
 {
     new mobs_bladespire_ogre();
@@ -1302,8 +1347,5 @@ void AddSC_blades_edge_mountains()
     new go_apexis_relic();
     new mob_wrangled_aether_ray();
     new npc_scalewing_serpent();
-    /*
-        UPDATE creature_template SET scriptname = 'mob_aether_ray' WHERE entry = 22181;
-        UPDATE creature_template SET scriptname = 'mob_wrangled_aether_ray' WHERE entry = 23343;
-    */
+    new npc_antelarion();
 }

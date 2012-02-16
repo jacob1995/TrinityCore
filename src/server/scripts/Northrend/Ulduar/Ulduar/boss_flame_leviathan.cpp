@@ -274,7 +274,7 @@ class boss_flame_leviathan : public CreatureScript
                 me->RemoveLootMode(LOOT_MODE_DEFAULT);
             }
 
-            // installing accessorys to creatures that have different vehicle ids in there difficulty modes seems nyi
+            // installing accessorys to creatures that have different vehicle ids in each difficulty mode seems nyi
             // so remove 2 unecessary turrets/overload devices in 10 man mode
             void ClearSeats()
             {
@@ -419,7 +419,7 @@ class boss_flame_leviathan : public CreatureScript
                 events.Update(diff);
                 _DoAggroPulse(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 if (!Pursued && me->getVictim() && !me->getVictim()->HasAura(SPELL_PURSUED) && !me->HasAura(SPELL_SYSTEMS_SHUTDOWN))
@@ -440,6 +440,8 @@ class boss_flame_leviathan : public CreatureScript
                             break;
                         case EVENT_MISSILE:
                             DoCast(me, SPELL_MISSILE_BARRAGE, true);
+                            // temporary update passengers
+                            me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                             events.ScheduleEvent(EVENT_MISSILE, 1500);
                             break;
                         case EVENT_VENT:
@@ -453,7 +455,7 @@ class boss_flame_leviathan : public CreatureScript
                         case EVENT_SHUTDOWN:
                             DoScriptText(RAND(SAY_OVERLOAD_1, SAY_OVERLOAD_2, SAY_OVERLOAD_3), me);
                             me->MonsterTextEmote(EMOTE_OVERLOAD, 0, true);
-                            me->GetMotionMaster()->Clear();
+                            me->GetMotionMaster()->Clear(false);
                             me->GetMotionMaster()->MoveIdle();
                             me->CastSpell(me, SPELL_SYSTEMS_SHUTDOWN, true);
                             events.DelayEvents(20*IN_MILLISECONDS);
@@ -670,6 +672,8 @@ class npc_flame_leviathan_seat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisplayId(me->GetCreatureInfo()->Modelid1);
                 me->setActive(true);
+                _loaded = false;
+                _relocateTimer = 1000;
             }
 
             void SetImmunitys(Unit* target, bool apply)
@@ -686,11 +690,9 @@ class npc_flame_leviathan_seat : public CreatureScript
 
             void PassengerBoarded(Unit* who, int8 seatId, bool apply)
             {
-                //if (!me->GetVehicle())
-                //    return;
-
                 if (seatId == SEAT_PLAYER)
                 {
+                    _loaded = apply;
                     SetImmunitys(who, apply);
 
                     if (apply)
@@ -705,13 +707,32 @@ class npc_flame_leviathan_seat : public CreatureScript
                     {
                         who->RemoveAurasDueToSpell(SPELL_FORCE_REACTION);
                         who->CastSpell(who, SPELL_SMOKE_TRAIL, true);
+                        who->GetMotionMaster()->Clear(false);
                         who->GetMotionMaster()->MoveJump(me->GetPositionX() + 20.0f, me->GetPositionY(), me->GetPositionZ() + 30.0f, 5.0f, 5.0f);
                     }
                 }
+                else if (apply)
+                    who->UpdateObjectVisibility();
+            }
+
+            void UpdateAI(uint32 const diff)
+            {
+                if (!_loaded)
+                    return;
+
+                if (_relocateTimer <= diff)
+                {
+                    me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                    _relocateTimer = 1000;
+                }
+                else
+                    _relocateTimer -= diff;
             }
 
         private:
             Vehicle* _vehicle;
+            uint32 _relocateTimer;
+            bool _loaded;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -822,7 +843,7 @@ class npc_mechanolift : public CreatureScript
                     {
                         float x, y, z;
                         me->GetPosition(x, y, z);
-                        z = me->GetMap()->GetHeight(x, y, MAX_HEIGHT);
+                        z = me->GetMap()->GetHeight(me->GetPhaseMask(), x, y, MAX_HEIGHT);
 
                         liquid->SetFlying(true);
                         liquid->GetMotionMaster()->MovePoint(0, x, y, z);
@@ -1897,7 +1918,7 @@ class spell_systems_shutdown : public SpellScriptLoader
                     return;
 
                 //! This could probably in the SPELL_EFFECT_SEND_EVENT handler too:
-                owner->AddUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+                owner->AddUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                 owner->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
                 owner->RemoveAurasDueToSpell(SPELL_GATHERING_SPEED);
             }
@@ -1908,7 +1929,7 @@ class spell_systems_shutdown : public SpellScriptLoader
                 if (!owner)
                     return;
 
-                owner->ClearUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ROOT);
+                owner->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                 owner->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
             }
 

@@ -655,7 +655,7 @@ struct npc_xiriAI : public ScriptedAI
                 Wait_Timer = 20000;
                 break;
             case PHASE_ATTACK:
-                
+
                 c_Vagath = Creature::GetCreature((*me),Vagath);
                 c_Akama = Creature::GetCreature((*me),Akama);
                 c_Maiev = Creature::GetCreature((*me),Maiev);
@@ -665,7 +665,7 @@ struct npc_xiriAI : public ScriptedAI
                     c_Akama->SetHomePosition(Wyrm_SomePositions[0][0],Wyrm_SomePositions[0][1]+10,Wyrm_SomePositions[0][2],M_PI*1.5f);
                     c_Maiev->GetMotionMaster()->MovePoint(0,Wyrm_SomePositions[0][0],Wyrm_SomePositions[0][1],Wyrm_SomePositions[0][2]);
                     c_Maiev->SetHomePosition(Wyrm_SomePositions[0][0],Wyrm_SomePositions[0][1],Wyrm_SomePositions[0][2],M_PI*1.5f);
-                
+
                     for(int i = 0; i < 5; i++)
                     {
                         Creature* c_Ashtongue;
@@ -826,7 +826,7 @@ public:
                 strike_Timer = 10000 + rand()%10000;
             }else strike_Timer -= diff;
 
-        
+
             if(throw_Timer <= diff)
             {
                 DoCast(me->getVictim(),SPELL_THROW_DAGGERS);

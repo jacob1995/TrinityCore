@@ -723,7 +723,7 @@ struct ItemTemplate
             default:
                 break;
         }
-        return itemLevel;
+        return (itemLevel > 0) ? itemLevel : 0;
     }
 
     bool IsPotion() const { return Class == ITEM_CLASS_CONSUMABLE && SubClass == ITEM_SUBCLASS_POTION; }

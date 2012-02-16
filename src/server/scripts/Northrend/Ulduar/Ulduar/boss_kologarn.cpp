@@ -297,7 +297,7 @@ class boss_kologarn : public CreatureScript
                 summon->SetReactState(REACT_PASSIVE);
                 summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
                 // One of the above spells is a channeled spell, we need to clear this unit state for MoveChase to work
-                summon->ClearUnitState(UNIT_STAT_CASTING);
+                summon->ClearUnitState(UNIT_STATE_CASTING);
 
                 // Victim gets 67351
                 if (eyebeamTarget)
@@ -333,7 +333,7 @@ class boss_kologarn : public CreatureScript
                 events.Update(diff);
                 _DoAggroPulse(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 switch (events.GetEvent())

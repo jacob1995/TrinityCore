@@ -260,7 +260,7 @@ public:
         std::string GetSaveData()
         {
             std::ostringstream ss;
-            ss << "M C " 
+            ss << "M C "
                 << m_auiEncounter[0] << " "
                 << m_auiEncounter[1] << " "
                 << m_auiEncounter[2] << " "

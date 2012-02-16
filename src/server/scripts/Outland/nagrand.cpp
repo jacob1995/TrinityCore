@@ -57,9 +57,9 @@ public:
 
         bool Spawn;
 
-        void Reset() 
-        { 
-            Spawn = false; 
+        void Reset()
+        {
+            Spawn = false;
         }
 
         void SpellHit(Unit* Hitter, const SpellInfo* Spellkind)
@@ -148,7 +148,7 @@ class mob_lump : public CreatureScript
             {
                 _resetTimer = 60000;
                 _spearThrowTimer = 2000;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PASSIVE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC);
             }
 
             void DamageTaken(Unit* attacker, uint32& damage)
@@ -1111,7 +1111,7 @@ public:
             if (!UpdateVictim())
                 return;
 
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (ChainLightningTimer <= diff)

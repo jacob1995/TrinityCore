@@ -1146,7 +1146,7 @@ void AuraEffect::UpdatePeriodic(Unit* caster)
                     if((m_tickNumber-1) % 5 == 0 && (m_tickNumber-1) > 0)
                         SetAmount(GetAmount() * 2);
                     break;
-                default: 
+                default:
                     break;
             }
             break;
@@ -1377,12 +1377,6 @@ void AuraEffect::PeriodicTick(AuraApplication * aurApp, Unit* caster) const
                         target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
                         target->RemoveAurasByType(SPELL_AURA_FLY);
                     }
-                    break;
-                case 68614: // Concentrated Irresistible Cologne Spill
-                    caster->CastSpell(target, 68934, false);
-                    break;
-                case 68798: // Concentrated Alluring Perfume Spill
-                    caster->CastSpell(target, 68927, false);
                     break;
             }
         default:
@@ -1991,13 +1985,13 @@ void AuraEffect::HandleAuraModShapeshift(AuraApplication const* aurApp, uint8 mo
             break;
         case FORM_ZOMBIE:                                   // 0x15
             //Effekt 1 : 43945 - Verringert Speed, Aura die langsam einen Schaden macht, Bite als nahkampf procc
-            //Effekt 2 : 44305 - Faction Override, Languarge Override, 
+            //Effekt 2 : 44305 - Faction Override, Languarge Override,
             //Effekt 3 : 48050 - Kein PvP Ziel, Items ignorieren, Angreifbar
             //Effekt 4 : 54059 - Disarm
             //Effekt 5 : 54145 - Attackpower 1, Resessitenzen �nderung
             //Effekt 6 : 54147 - Modifizier Skill 95, Immun 85
             //Effekt 7 : 54162 - Legt HP Fest, Regeneration unterbrechen, Vollheilen
-            
+
             //Tansform 1 : 43964 - normal ?
             //Tansform 1 : 43966 - gro�
             //Tansform 1 : 43967 - klein
@@ -2552,7 +2546,7 @@ void AuraEffect::HandleFeignDeath(AuraApplication const* aurApp, uint8 mode, boo
         target->VisitNearbyObject(target->GetMap()->GetVisibilityRange(), searcher);
         for (UnitList::iterator iter = targets.begin(); iter != targets.end(); ++iter)
         {
-            if (!(*iter)->HasUnitState(UNIT_STAT_CASTING))
+            if (!(*iter)->HasUnitState(UNIT_STATE_CASTING))
                 continue;
 
             for (uint32 i = CURRENT_FIRST_NON_MELEE_SPELL; i < CURRENT_MAX_SPELL; i++)
@@ -2583,7 +2577,7 @@ void AuraEffect::HandleFeignDeath(AuraApplication const* aurApp, uint8 mode, boo
                                                             // blizz like 2.0.x
         target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
 
-        target->AddUnitState(UNIT_STAT_DIED);
+        target->AddUnitState(UNIT_STATE_DIED);
     }
     else
     {
@@ -2600,7 +2594,7 @@ void AuraEffect::HandleFeignDeath(AuraApplication const* aurApp, uint8 mode, boo
                                                             // blizz like 2.0.x
         target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
 
-        target->ClearUnitState(UNIT_STAT_DIED);
+        target->ClearUnitState(UNIT_STATE_DIED);
     }
 }
 
@@ -3166,7 +3160,7 @@ void AuraEffect::HandleModConfuse(AuraApplication const* aurApp, uint8 mode, boo
 
     Unit* target = aurApp->GetTarget();
 
-    target->SetControlled(apply, UNIT_STAT_CONFUSED);
+    target->SetControlled(apply, UNIT_STATE_CONFUSED);
 }
 
 void AuraEffect::HandleModFear(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -3176,7 +3170,7 @@ void AuraEffect::HandleModFear(AuraApplication const* aurApp, uint8 mode, bool a
 
     Unit* target = aurApp->GetTarget();
 
-    target->SetControlled(apply, UNIT_STAT_FLEEING);
+    target->SetControlled(apply, UNIT_STATE_FLEEING);
 }
 
 void AuraEffect::HandleAuraModStun(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -3186,7 +3180,7 @@ void AuraEffect::HandleAuraModStun(AuraApplication const* aurApp, uint8 mode, bo
 
     Unit* target = aurApp->GetTarget();
 
-    target->SetControlled(apply, UNIT_STAT_STUNNED);
+    target->SetControlled(apply, UNIT_STATE_STUNNED);
 }
 
 void AuraEffect::HandleAuraModRoot(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -3196,7 +3190,7 @@ void AuraEffect::HandleAuraModRoot(AuraApplication const* aurApp, uint8 mode, bo
 
     Unit* target = aurApp->GetTarget();
 
-    target->SetControlled(apply, UNIT_STAT_ROOT);
+    target->SetControlled(apply, UNIT_STATE_ROOT);
 }
 
 void AuraEffect::HandlePreventFleeing(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -3207,7 +3201,7 @@ void AuraEffect::HandlePreventFleeing(AuraApplication const* aurApp, uint8 mode,
     Unit* target = aurApp->GetTarget();
 
     if (target->HasAuraType(SPELL_AURA_MOD_FEAR))
-        target->SetControlled(!(apply), UNIT_STAT_FLEEING);
+        target->SetControlled(!(apply), UNIT_STATE_FLEEING);
 }
 
 /***************************/
@@ -3600,7 +3594,7 @@ void AuraEffect::HandleAuraModSchoolImmunity(AuraApplication const* aurApp, uint
     if (GetSpellInfo()->Mechanic == MECHANIC_BANISH)
     {
         if (apply)
-            target->AddUnitState(UNIT_STAT_ISOLATED);
+            target->AddUnitState(UNIT_STATE_ISOLATED);
         else
         {
             bool banishFound = false;
@@ -3612,7 +3606,7 @@ void AuraEffect::HandleAuraModSchoolImmunity(AuraApplication const* aurApp, uint
                     break;
                 }
             if (!banishFound)
-                target->ClearUnitState(UNIT_STAT_ISOLATED);
+                target->ClearUnitState(UNIT_STATE_ISOLATED);
         }
     }
 
@@ -5908,6 +5902,14 @@ void AuraEffect::HandlePeriodicDummyAuraTick(Unit* target, Unit* caster) const
                         target->RemoveAura(64821);
                     }
                     break;
+                case 68614: // Concentrated Irresistible Cologne Spill
+                    if (!target->HasAura(68530))
+                        caster->CastSpell(target, 68934, true);
+                    break;
+                case 68798: // Concentrated Alluring Perfume Spill
+                    if (!target->HasAura(68529))
+                        caster->CastSpell(target, 68927, true);
+                    break;
             }
             break;
         case SPELLFAMILY_MAGE:
@@ -6443,7 +6445,7 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
     if (!caster || !target->isAlive())
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
     {
         SendTickImmune(target, caster);
         return;
@@ -6461,7 +6463,7 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
         {
             case 43093: case 31956: case 38801:  // Grievous Wound
             case 35321: case 38363: case 39215:  // Gushing Wound
-            case 48920:                          // Grievous Bite 
+            case 48920:                          // Grievous Bite
                 if (target->IsFullHealth())
                 {
                     target->RemoveAurasDueToSpell(GetSpellInfo()->Id);
@@ -6480,18 +6482,10 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
             }
             case 22682: // Shadow Flame
             {
-                if(m_tickNumber == GetTotalTicks())
-                   caster->CastSpell(target,22993,true);
+                if (m_tickNumber == GetTotalTicks())
+                   caster->CastSpell(target, 22993, true);
                 break;
             }
-            //case 68948: // Irresistible Cologne Spray
-            //    if (target->HasAura(68530))
-            //        m_amount = 0;
-            //break;
-            //case 68607: // Alluring Perfume Spray
-            //    if (target->HasAura(68529))
-            //        m_amount = 0;
-            //break;
         }
     }
 
@@ -6599,7 +6593,7 @@ void AuraEffect::HandlePeriodicHealthLeechAuraTick(Unit* target, Unit* caster) c
     if (!caster || !caster->isAlive() || !target->isAlive())
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
     {
         SendTickImmune(target, caster);
         return;
@@ -6665,7 +6659,7 @@ void AuraEffect::HandlePeriodicHealthFunnelAuraTick(Unit* target, Unit* caster) 
     if (!caster || !caster->isAlive() || !target->isAlive())
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED))
     {
         SendTickImmune(target, caster);
         return;
@@ -6693,7 +6687,7 @@ void AuraEffect::HandlePeriodicHealAurasTick(Unit* target, Unit* caster) const
     if (!caster || !target->isAlive())
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED))
     {
         SendTickImmune(target, caster);
         return;
@@ -6809,7 +6803,7 @@ void AuraEffect::HandlePeriodicManaLeechAuraTick(Unit* target, Unit* caster) con
     if (!caster || !caster->isAlive() || !target->isAlive() || target->getPowerType() != powerType)
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
     {
         SendTickImmune(target, caster);
         return;
@@ -6909,7 +6903,7 @@ void AuraEffect::HandleObsModPowerAuraTick(Unit* target, Unit* caster) const
     if (!target->isAlive() || !target->GetMaxPower(powerType))
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED))
     {
         SendTickImmune(target, caster);
         return;
@@ -6940,7 +6934,7 @@ void AuraEffect::HandlePeriodicEnergizeAuraTick(Unit* target, Unit* caster) cons
     if (!target->isAlive() || !target->GetMaxPower(powerType))
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED))
     {
         SendTickImmune(target, caster);
         return;
@@ -6972,7 +6966,7 @@ void AuraEffect::HandlePeriodicPowerBurnAuraTick(Unit* target, Unit* caster) con
     if (!caster || !target->isAlive() || target->getPowerType() != powerType)
         return;
 
-    if (target->HasUnitState(UNIT_STAT_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
+    if (target->HasUnitState(UNIT_STATE_ISOLATED) || target->IsImmunedToDamage(GetSpellInfo()))
     {
         SendTickImmune(target, caster);
         return;

@@ -27,15 +27,15 @@ public:
     {
 
         npc_lakkaAI(Creature *c) : npc_escortAI(c) {}
-    
+
         void WaypointReached(uint32 i)
         {
             Unit* player = Unit::GetUnit((*me), GetEventStarterGUID());
-        
+
             if (!player)
                 return;
 
-            switch(i) 
+            switch(i)
             {
             case 1:
                 me->MonsterSay(SAY_DANKE, LANG_UNIVERSAL, NULL);

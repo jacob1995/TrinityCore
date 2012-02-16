@@ -125,7 +125,7 @@ public:
 
             Creature* Runes = (Creature*)Unit::GetUnit((*me),Runes_GUID);
             if(!Runes)
-            {        
+            {
                 Runes = DoSpawnCreature(MOB_GROUND_RUNES,0,0,0,0,TEMPSUMMON_CORPSE_DESPAWN,10000);
                 Runes->CastSpell(Runes,SPELL_EFFEKT_GROUND_RUNES,false);
                 Runes_GUID = Runes->GetGUID();
@@ -159,7 +159,7 @@ public:
         {
             me->MonsterYell(SAY_INTRO, LANG_UNIVERSAL, 0);
             DoPlaySoundToSet(me, SOUND_INTRO);
-        
+
             Phase = 1;
         }
 
@@ -190,7 +190,7 @@ public:
         {
             Creature* Portal;
             Portal = me->SummonCreature(MOB_TIME_RIFT,RiftLocations[cas][0],RiftLocations[cas][1],RiftLocations[cas][2], 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
-        
+
             //m�sste verbessert werden (auch wenn gering ... unendlichkeit ist gegeben)
             do
             {
@@ -546,17 +546,17 @@ public:
         {
             Creature *Guardian;
             Unit *pMedivh = Unit::GetUnit((*me), pInstance->GetData64(DATA_MEDIVH));
-            uint32 wave = pInstance->GetData(DATA_WAVE); 
-        
+            uint32 wave = pInstance->GetData(DATA_WAVE);
+
             switch (wave)
-            {   
+            {
             case 6:
                 if(HeroicMode)
-                {    
+                {
                     if( pInstance->GetData(DATA_CHRONOLORDDEJADEATH) == 1) Guardian = DoSpawnCreature(H_MOB_CHRONO_LORD, float(rand()%5), float(rand()%5), 0.0f, 0.0f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
                     else Guardian = DoSpawnCreature(BOSS_CHRONO_LORD_DEJA, float(rand()%5), float(rand()%5), 0.0f, 0.0f, TEMPSUMMON_DEAD_DESPAWN, 600000);
                 }
-                else 
+                else
                 {
                     Guardian = DoSpawnCreature(BOSS_CHRONO_LORD_DEJA, float(rand()%5), float(rand()%5), 0.0f, 0.0f, TEMPSUMMON_DEAD_DESPAWN, 600000);
                 }
@@ -594,7 +594,7 @@ public:
         }
 
         void UpdateAI(const uint32 diff)
-        {   
+        {
             Creature* Guardian =  (Creature*)Unit::GetUnit((*me),Guardian_GUID);
             /** Despawn if Medivh dies **/
             if(pInstance->GetData(DATA_MEDIVHDEATH) == 1)
@@ -624,7 +624,7 @@ public:
                     Control = SummonInfiniteSpawn(Control);
                     Add_Spawn_Timer = 15000;
                 }else Add_Spawn_Timer -= diff;
-            }        
+            }
 
             if(Guardian)
             {
@@ -650,7 +650,7 @@ public:
 #define ARCANE_BOLT                 15230 // 15124
 #define ARCANE_EXPLOSION            33860 // 33623
 #define FROST_NOVA                  15531 // 15063
-#define FROST_BOLT_CHRONO           15497 // 12675 
+#define FROST_BOLT_CHRONO           15497 // 12675
 
 //Infinite Executioner
 #define CLEAVE                      15496
@@ -659,7 +659,7 @@ public:
 #define STRIKE                      34920 // 15580
 
 //Rift Keeper
-#define BLAST_WAVE                  38536 // 36278 
+#define BLAST_WAVE                  38536 // 36278
 #define CURSE_OF_VULNERABILITY      36276
 #define ENRAGE                      8269
 #define FEAR                        12542
@@ -688,7 +688,7 @@ public:
 
     struct  mobs_infinite_addsAI : public ScriptedAI
     {
-        mobs_infinite_addsAI(Creature *c) : ScriptedAI(c) 
+        mobs_infinite_addsAI(Creature *c) : ScriptedAI(c)
         {
             pInstance = c->GetInstanceScript();
         }
@@ -847,7 +847,7 @@ public:
                             if(!pMedivh->isDead() && ShieldPercent <= 0)
                             {
                                 me->DealDamage(pMedivh, pMedivh->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                            
+
                             }
                         }
                     }
@@ -1070,7 +1070,7 @@ public:
         {
             Creature *pMedivh = (Creature*)(Unit::GetUnit((*me), pInstance->GetData64(DATA_MEDIVH)));
             uint32 CreatureID = me->GetEntry();
-        
+
             if(!me->getVictim())
             {
                 if (!(CreatureID == 17839 || CreatureID == 21104))
@@ -1108,7 +1108,7 @@ public:
             player->ADD_GOSSIP_ITEM(0,"Give me a Chrono Beacon <Placeholder>",GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+1);
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
         }
-        return true; 
+        return true;
     }
 
     bool GossipSelect_npc_saat(Player *player, Creature *_Creature, uint32 sender, uint32 action )
@@ -1123,7 +1123,7 @@ public:
 
     struct  npc_saatAI : public ScriptedAI
     {
-        npc_saatAI(Creature *c) : ScriptedAI(c) 
+        npc_saatAI(Creature *c) : ScriptedAI(c)
         {
             once = false;
         }

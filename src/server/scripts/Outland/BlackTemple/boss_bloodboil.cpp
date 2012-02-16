@@ -289,7 +289,7 @@ public:
         {
             if(!UpdateVictim())
                 return;
-        
+
             if(Phase1)
             {
                 if(pulse_Timer < diff)

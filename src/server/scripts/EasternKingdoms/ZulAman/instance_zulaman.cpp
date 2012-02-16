@@ -49,7 +49,7 @@ static SHostageInfo HostageInfo[] =
     {23999, 187021, 400, 1414, 74.36f, 3.3f}, // eagle
     {24001, 186672, -35, 1134, 18.71f, 1.9f}, // dragonhawk
     {24024, 186667, 413, 1117,  6.32f, 3.1f}  // lynx
-    
+
 };
 
 enum ChestLootType
@@ -212,19 +212,19 @@ public:
         std::string GetSaveData()
         {
             std::ostringstream ss;
-            ss << "Z A " 
-                << m_auiEncounter[0] << " " 
-                << m_auiEncounter[1] << " " 
-                << m_auiEncounter[2] << " " 
-                << m_auiEncounter[3] << " " 
-                << m_auiEncounter[4] << " " 
-                << m_auiEncounter[5] << " " 
-                << ChestLooted << " " 
-                << QuestMinute << " " 
-                << SacreficeEventStarted << " " 
-                << ChestLootTyp[0] << " " 
-                << ChestLootTyp[1] << " " 
-                << ChestLootTyp[2] << " " 
+            ss << "Z A "
+                << m_auiEncounter[0] << " "
+                << m_auiEncounter[1] << " "
+                << m_auiEncounter[2] << " "
+                << m_auiEncounter[3] << " "
+                << m_auiEncounter[4] << " "
+                << m_auiEncounter[5] << " "
+                << ChestLooted << " "
+                << QuestMinute << " "
+                << SacreficeEventStarted << " "
+                << ChestLootTyp[0] << " "
+                << ChestLootTyp[1] << " "
+                << ChestLootTyp[2] << " "
                 << ChestLootTyp[3];
             char* data = new char[ss.str().length()+1];
             strcpy(data, ss.str().c_str());
@@ -307,7 +307,7 @@ public:
                 case IN_PROGRESS:
                     HandleGameObject(HalazziEntranceDoorGUID, false);
                     break;
-                case NOT_STARTED: 
+                case NOT_STARTED:
                     HandleGameObject(HalazziEntranceDoorGUID, true);
                     HandleGameObject(HalazziExitDoorGUID, false);
                     break;

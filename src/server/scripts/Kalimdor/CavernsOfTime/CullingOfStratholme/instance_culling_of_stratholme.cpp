@@ -64,7 +64,7 @@ public:
 
         uint32 uiCountCrates;
 
-    
+
         void Initialize()
         {
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));

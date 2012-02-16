@@ -107,9 +107,6 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellInfo const* spellproto,
             // Hamstring - limit duration to 10s in PvP
             if (spellproto->SpellFamilyFlags[0] & 0x2)
                 return DIMINISHING_LIMITONLY;
-            // Improved Hamstring
-            else if (spellproto->AttributesEx3 & 0x80000 && spellproto->SpellIconID == 23)
-                return DIMINISHING_ROOT;
             // Charge Stun (own diminishing)
             else if (spellproto->SpellFamilyFlags[0] & 0x01000000)
                 return DIMINISHING_CHARGE;
@@ -2891,18 +2888,6 @@ void SpellMgr::LoadSpellCustomAttr()
             case 56908: // Fire Breath - Sartharion
             case 58956: // Fire Breath - Sartharion
             case 57874: // Twilight Shift Damage - Sartharion
-            case 64590: // Shield Breaker
-            case 62626: // Shield Breaker
-            case 64342: // Shield Breaker
-            case 64686: // Shield Breaker
-            case 68321: // Charge
-            case 63010: // Charge
-            case 63003: // Charge
-            case 68498: // Charge
-            case 62544: // Trust
-            case 64588: // Trust
-            case 66479: // Trust
-            case 68505: // Trust
                 // ToC Spells
             case 65767: // Light Surge
             case 66013: // Penetrating Cold
@@ -2948,6 +2933,23 @@ void SpellMgr::LoadSpellCustomAttr()
             case 64443: // Algalon - Big Bang
             case 64584: // Algalon - Big Bang
             case 63278: // Mark of the Faceless (General Vezax)
+            case 62544: // Thrust (Argent Tournament)
+            case 64588: // Thrust (Argent Tournament)
+            case 66479: // Thrust (Argent Tournament)
+            case 68505: // Thrust (Argent Tournament)
+            case 62709: // Counterattack! (Argent Tournament)
+            case 62626: // Break-Shield (Argent Tournament, Player)
+            case 64590: // Break-Shield (Argent Tournament, Player)
+            case 64342: // Break-Shield (Argent Tournament, NPC)
+            case 64686: // Break-Shield (Argent Tournament, NPC)
+            case 65147: // Break-Shield (Argent Tournament, NPC)
+            case 68504: // Break-Shield (Argent Tournament, NPC)
+            case 62874: // Charge (Argent Tournament, Player)
+            case 68498: // Charge (Argent Tournament, Player)
+            case 64591: // Charge (Argent Tournament, Player)
+            case 63003: // Charge (Argent Tournament, NPC)
+            case 63010: // Charge (Argent Tournament, NPC)
+            case 68321: // Charge (Argent Tournament, NPC)
             case 72255: // Mark of the Fallen Champion (Deathbringer Saurfang)
             case 72444: // Mark of the Fallen Champion (Deathbringer Saurfang)
             case 72445: // Mark of the Fallen Champion (Deathbringer Saurfang)
@@ -3027,6 +3029,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 30657: // Quake
                 spellInfo->EffectTriggerSpell[0] = 30571;
                 break;
+            case 63665: // Charge (Argent Tournament emote on riders)
             case 31447: // Mark of Kaz'rogal (needs target selection script)
             case 31298: // Sleep (needs target selection script)
             case 51904: // Summon Ghouls On Scarlet Crusade (this should use conditions table, script for this spell needs to be fixed)
@@ -3132,6 +3135,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 62301: // Cosmic Smash
             case 52479: // Gift of the Harvester
             case 48246: // Ball of Flame
+            case 64623: // Frost Bomb
             case 66545: // Summon Memory
                 spellInfo->MaxAffectedTargets = 1;
                 break;
@@ -3265,6 +3269,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 42436: // Drink!
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CONE_ENTRY;
                 spellInfo->MaxAffectedTargets = 1;
+                break;
+            case 69510: // Charm Collector
+                spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_DEAD;
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
                 break;
             case 29809: // Desecration Arm - 36 instead of 37 - typo? :/
                 spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_7_YARDS;

@@ -172,7 +172,7 @@ public:
             }
 
             // do not interrupt self
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (uiPoisonNovaTimer <= diff)
@@ -275,7 +275,7 @@ public:
                      {
                           pTarget->RemoveAurasDueToSpell(SPELL_GRIP_OF_SLAD_RAN);
 
-                          me->AddUnitState(UNIT_STAT_ROOT); //dont interrupt channelling by moving
+                          me->AddUnitState(UNIT_STATE_ROOT); //dont interrupt channelling by moving
                           DoCast(pTarget, SPELL_SNAKE_WRAP);
 
                           bEnwrapping = true;

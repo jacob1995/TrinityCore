@@ -173,13 +173,13 @@ public:
                 Madrigosa->setDeathState(ALIVE);
                 Madrigosa->setActive(true);
                 IsIntro = true;
-        
+
             }else
             {
                 //sLog->outError("Madrigosa nicht gefunden");
                 EndIntro();
             }
-       
+
         }
 
         void EndIntro()

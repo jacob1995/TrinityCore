@@ -213,7 +213,7 @@ public:
             {
                 if(me->getVictim() && me->getVictim()->GetTypeId() == TYPEID_PLAYER)
                     DoAttackerGroupInCombat(((Player*)me->getVictim()));
-                else 
+                else
                     DoAttackerAreaInCombat(me->getVictim(),50);
                 pulse_Timer = 5000;
             }else pulse_Timer -= diff;

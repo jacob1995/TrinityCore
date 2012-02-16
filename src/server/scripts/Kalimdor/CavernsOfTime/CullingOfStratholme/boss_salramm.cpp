@@ -108,7 +108,7 @@ public:
                  instance->SetData(DATA_SALRAMM_EVENT, IN_PROGRESS);
         }
 
-        void SpellHitTarget(Unit* pTarget, const SpellInfo* spell) 
+        void SpellHitTarget(Unit* pTarget, const SpellInfo* spell)
         {
             if (spell->Id == SPELL_STEAL_FLESH)
             {
@@ -123,7 +123,7 @@ public:
             if (!UpdateVictim())
                 return;
 
-            if (me->HasUnitState(UNIT_STAT_CASTING))
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             //Curse of twisted flesh timer

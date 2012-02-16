@@ -51,8 +51,8 @@ public:
         }
         return false;
     }
-    
-    
+
+
 private:
     bool checkCode(Player *player, Creature *_Creature, const char* sCode)
     {
@@ -65,16 +65,16 @@ private:
         uint64 charguid = 0;
         uint8 newlevel = 0;
         bool found = false;
-        
-        
+
+
         uint32 creatureID = _Creature->GetEntry();
 
         creatureID = creatureID == 1000104 ? 90001 : creatureID;
-        
+
         PreparedStatement *stmt = CharacterDatabase.GetPreparedStatement(CHAR_GET_CODEBOX_ITEM);
         stmt->setUInt32(0, creatureID);
         stmt->setUInt32(1, player->GetSession()->GetAccountId());
-        
+
         result = CharacterDatabase.Query(stmt);
         if(!result)
         {
@@ -82,11 +82,11 @@ private:
             _Creature->MonsterWhisper("Der Code ist falsch! Komme wieder, wenn du einen gueltigen Code hast!", player->GetGUID());
             return false;
         }
-        
-        
+
+
         do {
             Field *fields = result->Fetch();
-            
+
             item_id = fields[0].GetInt32();
             quantity = fields[1].GetUInt32();
             uses = fields[2].GetUInt8();
@@ -94,7 +94,7 @@ private:
             charguid = fields[4].GetUInt64();
             newlevel = fields[5].GetUInt8();
             const char* dbcode = fields[6].GetCString();
-            
+
             sLog->outDebug(LOG_FILTER_TSCR, "CodeBox: Found Code (%s) in DB", dbcode);
 
             if(!strcmp(dbcode, sCode))
@@ -104,44 +104,44 @@ private:
                 break;
             }
         } while (result->NextRow());
-        
+
         result.release();
-        
+
         if(!found)
         {
             sLog->outError("CodeBox: Player %u request not existing code (%s).", player->GetGUID(), sCode);
             _Creature->MonsterWhisper("Der Code ist falsch! Komme wieder, wenn du einen gueltigen Code hast!", player->GetGUID());
             return false;
         }
-        
+
         if(account != player->GetSession()->GetAccountId())
         {
             sLog->outError("CodeBox: Player %u request correct code (%s) but account doesn't match. Playeraccount: %u CodeAccount: %u", player->GetGUID(), sCode, player->GetSession()->GetAccountId(), account);
             _Creature->MonsterWhisper("Der Code ist falsch! Komme wieder, wenn du einen gueltigen Code hast!", player->GetGUID());
             return false;
         }
-        
+
         if(charguid && player->GetGUID() != charguid)
         {
             sLog->outError("CodeBox: Player %u request correct code (%s) but guid doesn't match. CharGUID: %u", player->GetGUID(), sCode, charguid);
             _Creature->MonsterWhisper("Leider kannst du diesen Code nicht mit diesem Charakter Einloesen!", player->GetGUID());
             return false;
         }
-        
+
         if(!uses)
         {
             sLog->outError("CodeBox: Player %u request correct code (%s) but available uses reached 0.", player->GetGUID(), sCode);
             _Creature->MonsterWhisper("Der Code wurde bereits eingeloest! Komme wieder, wenn du einen gueltigen Code hast!", player->GetGUID());
             return false;
         }
-        
+
         if(newlevel && player->getLevel() >= newlevel)
         {
             sLog->outError("CodeBox: Player %u request correct code (%s) but playerlevel is to high. Playerlevel: %u Codelevel: %u", player->GetGUID(), player->getLevel(), newlevel);
             _Creature->MonsterWhisper("Leider kannst du diesen Code nicht mit diesem Charakter Einloesen denn dein Level ist zu hoch!", player->GetGUID());
             return false;
         }
-        
+
         // levelcode
         if(newlevel > 0)
         {
@@ -187,18 +187,18 @@ private:
         {
             PreparedQueryResult items;
             uint32 item;
-            
-            
+
+
             PreparedStatement *itemGroupStmt = CharacterDatabase.GetPreparedStatement(CHAR_GET_CODEBOX_ITEMGROUP);
             itemGroupStmt->setUInt32(0, -item_id);
-            
+
             items = CharacterDatabase.Query(itemGroupStmt);
             if(!items)
             {
                 sLog->outError("CodeBox: Player %u request item from itemgroup: %u but itemgroup not found.", player->GetGUID(), -item_id);
                 _Creature->MonsterWhisper("Bei dem Verarbeiten deines Codes ist ein Interner Fehler aufgetreten. Bitte melde diesen mit genauer Zeit in einem Ticket!", player->GetGUID());
             }
-            
+
             item = items->Fetch()[0].GetUInt32();
             items.release();
 
@@ -211,7 +211,7 @@ private:
         used_stmt->setUInt32(0, creatureID);
         used_stmt->setUInt32(1, account);
         CharacterDatabase.Execute(used_stmt);*/
-        
+
         if(item_id != 0)
         {
             if(item_id == 200000 || item_id == 200005)
@@ -235,15 +235,15 @@ private:
             Item *newItem = NULL;
             newItem = player->StoreNewItem(dest, item, quantity, true);
             player->SendNewItem(newItem,quantity,true,false);
-            
+
             return true;
         }
-        
+
         sLog->outError("CodeBox: Player %u request item %u but got equip error %u.", player->GetGUID(), canStoreNewItem);
-        
+
         if(canStoreNewItem == EQUIP_ERR_CANT_CARRY_MORE_OF_THIS)
            creature->MonsterWhisper("Dein Code ist gueltig, aber du kannst nur eines dieser Items pro Charakter Tragen! Versuche es mit einem anderem Charakter!", player->GetGUID());
-        
+
         else if(canStoreNewItem == EQUIP_ERR_INVENTORY_FULL)
            creature->MonsterWhisper("Dein Code ist gueltig, aber du hast nicht genung Platz in deinen Taschen! Versuche es nochmal, wenn du etwas mehr Platz in deinem Rucksack hast!", player->GetGUID());
 

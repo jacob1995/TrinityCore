@@ -57,7 +57,7 @@ public:
             pInstance = c->GetInstanceScript();
             HeroicMode = me->GetMap()->IsHeroic();
         }
-    
+
         InstanceScript* pInstance;
 
         bool HeroicMode;
@@ -93,7 +93,7 @@ public:
             DoScriptText(SAY_DEATH, me);
 
             if (pInstance)
-                pInstance->SetData(DATA_CHRONOLORDDEJADEATH, 1); 
+                pInstance->SetData(DATA_CHRONOLORDDEJADEATH, 1);
         }
 
         void UpdateAI(const uint32 diff)

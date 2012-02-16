@@ -376,7 +376,7 @@ class boss_steelbreaker : public CreatureScript
                 events.Update(diff);
                 _DoAggroPulse(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -617,7 +617,7 @@ class boss_runemaster_molgeim : public CreatureScript
                 events.Update(diff);
                 _DoAggroPulse(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -987,7 +987,7 @@ class boss_stormcaller_brundir : public CreatureScript
                 events.Update(diff);
                 _DoAggroPulse(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -1004,7 +1004,7 @@ class boss_stormcaller_brundir : public CreatureScript
                             events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, urand(3000, 5000), 1);
                             break;
                         case EVENT_OVERLOAD:
-                            if (!me->HasUnitState(UNIT_STAT_STUNNED))
+                            if (!me->HasUnitState(UNIT_STATE_STUNNED))
                                 me->MonsterTextEmote(EMOTE_OVERLOAD, 0, true);
                             DoCast(RAID_MODE(SPELL_OVERLOAD, SPELL_OVERLOAD_H));
                             events.ScheduleEvent(EVENT_OVERLOAD, urand(60000, 80000), 1);
@@ -1147,7 +1147,7 @@ class achievement_cant_do_that_while_stunned : public AchievementCriteriaScript
                         if (Creature* brundir = ObjectAccessor::GetCreature(*boss, instance->GetData64(DATA_BRUNDIR)))
                             if (brundir->AI()->GetData(DATA_CANT_DO_THAT))
                                 return true;
- 
+
             return false;
         }
 };

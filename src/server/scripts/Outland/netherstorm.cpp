@@ -796,7 +796,7 @@ public:
                 Materialize = true;
             }
 
-            if (me->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || me->HasUnitState(UNIT_STAT_ROOT)) // if the mob is rooted/slowed by spells eg.: Entangling Roots, Frost Nova, Hamstring, Crippling Poison, etc. => remove it
+            if (me->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || me->HasUnitState(UNIT_STATE_ROOT)) // if the mob is rooted/slowed by spells eg.: Entangling Roots, Frost Nova, Hamstring, Crippling Poison, etc. => remove it
                 DoCast(me, SPELL_PHASE_SLIP);
 
             if (!UpdateVictim())
@@ -1105,7 +1105,7 @@ class npc_zeppit : public CreatureScript
                 Player* player = me->ToTempSummon()->GetSummoner()->ToPlayer();
                 if (player && player->GetQuestStatus(QUEST_BLOODY_IMPOSSIBLE) != QUEST_STATUS_INCOMPLETE)
                     return;
-                
+
                 if (Creature* target = me->FindNearestCreature(NPC_WARP_CHASER, 20.0f, false))
                 {
                     me->CastSpell(target, SPELL_GATHER_WARP_CHASER_BLOOD);

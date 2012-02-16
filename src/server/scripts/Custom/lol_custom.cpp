@@ -153,7 +153,7 @@ struct mob_wyrm_dragonmaw_peonAI : public ScriptedAI
         {
             eating = true;
             EatTimer = 5000;
-            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_EAT_NOSHEATHE);
+            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_EAT_NO_SHEATHE);
         }
     }
 
@@ -222,7 +222,7 @@ struct mob_wyrm_dragonmaw_peonAI : public ScriptedAI
 
             return;
         }else
-        {     
+        {
 
             if (!UpdateVictim())
             {
@@ -242,7 +242,7 @@ struct mob_wyrm_dragonmaw_peonAI : public ScriptedAI
                         //me->SetUInt32Value(UNIT_NPC_EMOTESTATE,EMOTE_STATE_SIT);
                         me->UpdateEntry(23311);
                         me->SetUInt32Value(UNIT_NPC_EMOTESTATE,EMOTE_ONESHOT_NONE);
-                        
+
                         switch(rand()%3)
                         {
                         case 0: me->CastSpell(me,SPELL_DAZE,true); break;
@@ -420,7 +420,7 @@ public:
                         victim->CastSpell(victim,SPELL_DEBUFF_EXILE,true);
                         victim->CastSpell(victim,SPELL_DEBUFF_SICKNESS,true);
                         victim->CastSpell(victim,SPELL_TELEPORT,true);
-                    
+
                         banishteleport_timer = 12000;
                         EnterEvadeMode();
                     }
@@ -450,7 +450,7 @@ public:
             player->ADD_GOSSIP_ITEM(0,"Segne mich mich mit eurer Magie.",GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+1);
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
         }
-        return true; 
+        return true;
     }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )
@@ -561,7 +561,7 @@ public:
             if(!explosion)
             {
 
-                if(!me->HasUnitState(UNIT_STAT_FOLLOW))
+                if(!me->HasUnitState(UNIT_STATE_FOLLOW))
                 {
                     if(me->GetOwner())
                     {
@@ -614,7 +614,7 @@ public:
             //float x,y,z;
             //me->GetPosition(x,y,z);
             //Creature* trigger = me->SummonTrigger(me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,4000);
-            //if(trigger) 
+            //if(trigger)
             if(killer && killer->GetTypeId() == TYPEID_PLAYER)
             {
                  Player* pKiller = (Player*)killer;
@@ -879,7 +879,7 @@ public:
 
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
 
-        return true; 
+        return true;
 }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )
@@ -939,16 +939,16 @@ public:
                 if(!player->HasItemCount(ENTRY_BLESSED_MEDALLION_OF_KARABOR,1))
                     player->ADD_GOSSIP_ITEM(0,SPECIAL_ADAL_2,GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+3);
             }
-            else 
+            else
             {
                 if(!player->HasItemCount(ENTRY_MEDALLION_OF_KARABOR,1))
                     player->ADD_GOSSIP_ITEM(0,SPECIAL_ADAL_2,GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+2);
             }
-        
+
         }
 
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
-        return true; 
+        return true;
     }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )
@@ -1571,7 +1571,7 @@ bool OnGossipHello(Player *player, GameObject* _GO)
     {Creature* panth = GetClosestCreatureWithEntry(player,N_ENRAGED_PANTHER,50);
         if(panth)
         {
-            panth->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            panth->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_IMMUNE_TO_PC);
             panth->Attack(player,true);
             return false;
         }
@@ -1779,7 +1779,7 @@ public:
     {
         if(Unit *target = targets.GetUnitTarget())
         {
-            if(target->GetTypeId() == TYPEID_PLAYER || 
+            if(target->GetTypeId() == TYPEID_PLAYER ||
                 (target->GetEntry() != 27237 && target->GetEntry() != 27235 &&  target->GetEntry() != 27234 &&  target->GetEntry() != 27236))
             {
                 player->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW,_Item,NULL);
@@ -1926,7 +1926,7 @@ public:
         }
 
         bool isInAcherus()
-        { 
+        {
             return me->GetAreaId() == 4281 || me->GetMapId() == 609;
         }
 
@@ -2172,7 +2172,7 @@ public:
         {
             if(breath)
             {
-                if(!me->HasUnitState(UNIT_STAT_STUNNED))
+                if(!me->HasUnitState(UNIT_STATE_STUNNED))
                 {
                     me->CastSpell(me,SPELL_ONYXIAN_WHELPLING_BREATH,false);
                     breath = false;
@@ -2235,7 +2235,7 @@ public:
         if(!player->HasItemCount(ITEM_MOHAWK_GRENADE,1,true))
             player->ADD_GOSSIP_ITEM(0,"I pity the fools.",GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+1);
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
-        return true; 
+        return true;
     }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )
@@ -2332,63 +2332,63 @@ public:
 
         if( _Creature->isTrainer() )
             player->ADD_GOSSIP_ITEM(3, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
-        
+
         for (QuestStatusMap::const_iterator itr = player->getQuestStatusMap().begin(); itr != player->getQuestStatusMap().end(); ++itr)
         {
             //if(itr->second.m_rewarded)
             //    continue;
-                
+
             uint32 itemid = getItemID(itr->first);
             if(!itemid)
                 continue;
-            
+
             if(!_Creature->hasQuest(itr->first))
                 continue;
-            
+
             if(player->HasItemCount(itemid, 1, true))
                 continue;
-            
+
             LocaleConstant locale = player->GetSession()->GetSessionDbLocaleIndex();
-            
+
             std::string itemName;
             const ItemLocale *itemLocale = sObjectMgr->GetItemLocale(itemid);
             if(itemLocale)
             {
                 sObjectMgr->GetLocaleString(itemLocale->Name, locale, itemName);
             }
-            
+
             if(!itemName.size())
-            {   
+            {
                 const ItemTemplate *item = sObjectMgr->GetItemTemplate(itemid);
                 if(!item)
                     continue;
-                
+
                 itemName = item->Name1;
             }
-            
+
             std::ostringstream ss;
             ss << "Ich habe den Gegenstand \"";
             ss << itemName;
             ss << "\" verloren, könnte ich ihn bitte wieder haben?";
-            
+
             player->ADD_GOSSIP_ITEM(0, ss.str().c_str(),GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF+itemid);
         }
-        
+
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(_Creature),_Creature->GetGUID());
-        return true; 
+        return true;
     }
 
     bool OnGossipSelect(Player *player, Creature *_Creature, uint32 sender, uint32 action )
     {
         if (action > GOSSIP_ACTION_INFO_DEF)
-        {            
+        {
             player->CLOSE_GOSSIP_MENU();
-            
+
             player->AddItem(action - GOSSIP_ACTION_INFO_DEF, 1);
         }
         return true;
     }
-    
+
 private:
     uint32 getItemID(uint32 quest)
     {
@@ -2407,15 +2407,15 @@ public:
     {
         channelName = ConfigMgr::GetStringDefault("Chatticker.Channel", "global");
     }
-    
+
     void OnChat(Player* player, uint32 type, uint32 lang, std::string& message, Channel* channel)
     {
         if(player && !stricmp(channel->GetName().c_str(), channelName.c_str()))
         {
             std::string stripped = message;   // create private copy
-            
+
             //stripLinks(stripped);
-            
+
             PreparedStatement *stmt = CharacterDatabase.GetPreparedStatement(CHAR_ADD_CHATTICKER_MESSAGE);
             stmt->setString(0, player->GetName());
             stmt->setUInt8(1, player->getRace());
@@ -2425,8 +2425,8 @@ public:
     }
 private:
     std::string channelName;
-    
-    
+
+
     // link format: |c<color code>|H<type>:<id>[:<parameter>[:<parameter>]]|h[<name>]|h|r
     void stripLinks(std::string& message)
     {
@@ -2435,15 +2435,15 @@ private:
             std::string::size_type startPosLink = message.find("|c");
             if(startPosLink == message.npos)
                 return;
-            
+
             std::string::size_type startPosName = message.find("|h", startPosLink + 2);
             if(startPosName == message.npos)
                 return;
-            
+
             std::string::size_type endPos       = message.find("|h|r", startPosName + 2);
             if(endPos == message.npos)
                 return;
-            
+
             message.erase(endPos, 4);
             message.erase(startPosLink, startPosName - startPosLink + 2);
         }
@@ -2515,7 +2515,7 @@ enum MAPS
     MAP_ULDUAR      = 603,
 };
 
-float TeleportPointsSunwell[6][3] = 
+float TeleportPointsSunwell[6][3] =
 {
     {1744,  920, 16},// Start
     {1700, 1052, 53},// Kalecgos
@@ -2683,7 +2683,7 @@ bool HasItemInMail(Player *pPlayer, uint32 item)
     result = CharacterDatabase.PQuery("SELECT `mail_items`.`item_guid` FROM `mail_items` INNER JOIN `item_instance` ON item_instance.guid = mail_items.item_guid WHERE item_instance.itemEntry = '%i' AND `mail_items`.`receiver` = '%i' LIMIT 1", item_id, pPlayer->GetGUID());
     if(result)
         return true;
-    else 
+    else
         return false;
 
     //for (PlayerMails::iterator itr = pPlayer->GetMailBegin(); itr != pPlayer->GetMailEnd(); ++itr)

@@ -176,7 +176,7 @@ struct mob_sunwell_plateau_tashAI : public ScriptedAI
 //Sunblade Dragonhawk
 #define SPELL_SBDH_FIRE_BREATH                      47251
 
-//Sunblade Slayer   
+//Sunblade Slayer
 #define SPELL_SWSL_SLAYING_SHOT                     46557
 #define SPELL_SWSL_SCATTER_SHOT                     46681
 #define SPELL_SWSL_SHOOT                            47001
@@ -1333,7 +1333,7 @@ public:
                 {
                     if(rand()%2 == 0 || miss >= 3)
                         me->CastSpell(target,cataclysm_aura[i],true);
-                    else 
+                    else
                         miss++;
                 }
             }
@@ -1582,7 +1582,7 @@ public:
                 DoCast(me,SPELL_VF_BURNING_DESTRUCTION);
         }
 
-        void DamageTaken(Unit *done_by, uint32 &damage) 
+        void DamageTaken(Unit *done_by, uint32 &damage)
         {
             if(me->GetHealth() <= damage)
                 DoCastAOE(SPELL_VF_FELFIRE_FISSION,true);
@@ -1628,7 +1628,7 @@ enum GOSSIP_REPAIRBOT
     AKTI_REPAIR = 11,
 };
 
-float TeleportPoints[6][3] = 
+float TeleportPoints[6][3] =
 {
     {1744,  920, 16},// Start
     {1700, 1052, 53},// Kalecgos

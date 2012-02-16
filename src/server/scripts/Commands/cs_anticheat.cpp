@@ -51,8 +51,8 @@ public:
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
 
-        Player* pTarget = NULL;
-        
+        Player* target = NULL;
+
         std::string strCommand;
 
         char* command = strtok((char*)args, " ");
@@ -62,13 +62,14 @@ public:
             strCommand = command;
             normalizePlayerName(strCommand);
 
-            pTarget = sObjectAccessor->FindPlayerByName(strCommand.c_str()); //get player by name
-        }else 
-            pTarget = handler->getSelectedPlayer();
+            target = sObjectAccessor->FindPlayerByName(strCommand.c_str()); //get player by name
+        }
+        else
+            target = handler->getSelectedPlayer();
 
-        if (!pTarget)
+        if (!target)
             return false;
-        
+
         WorldPacket data;
 
         // need copy to prevent corruption by strtok call in LineFromMessage original string
@@ -78,7 +79,7 @@ public:
         while (char* line = handler->LineFromMessage(pos))
         {
             handler->FillSystemMessageData(&data, line);
-            pTarget->GetSession()->SendPacket(&data);
+            target->GetSession()->SendPacket(&data);
         }
 
         free(buf);
@@ -90,8 +91,8 @@ public:
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
 
-        Player* pTarget = NULL;
-        
+        Player* target = NULL;
+
         std::string strCommand;
 
         char* command = strtok((char*)args, " ");
@@ -101,28 +102,29 @@ public:
             strCommand = command;
             normalizePlayerName(strCommand);
 
-            pTarget = sObjectAccessor->FindPlayerByName(strCommand.c_str()); //get player by name
-        }else 
-            pTarget = handler->getSelectedPlayer();
+            target = sObjectAccessor->FindPlayerByName(strCommand.c_str()); //get player by name
+        }
+        else
+            target = handler->getSelectedPlayer();
 
-        if (!pTarget)
+        if (!target)
         {
             handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        if (pTarget == handler->GetSession()->GetPlayer())
+        if (target == handler->GetSession()->GetPlayer())
             return false;
-    
+
         // teleport both to jail.
-        pTarget->TeleportTo(1,16226.5f,16403.6f,-64.5f,3.2f);
-        handler->GetSession()->GetPlayer()->TeleportTo(1,16226.5f,16403.6f,-64.5f,3.2f);
+        target->TeleportTo(1, 16226.5f, 16403.6f, -64.5f, 3.2f);
+        handler->GetSession()->GetPlayer()->TeleportTo(1, 16226.5f, 16403.6f, -64.5f, 3.2f);
 
         WorldLocation loc;
 
         // the player should be already there, but no :(
-        // pTarget->GetPosition(&loc);
+        // target->GetPosition(&loc);
 
         loc.m_mapId = 1;
         loc.m_positionX = 16226.5f;
@@ -130,7 +132,7 @@ public:
         loc.m_positionZ = -64.5f;
         loc.m_orientation = 3.2f;
 
-        pTarget->SetHomebind(loc,876);
+        target->SetHomebind(loc, 876);
         return true;
     }
 
@@ -141,13 +143,13 @@ public:
 
         std::string strCommand;
 
-        char* command = strtok((char*)args, " "); //get entered name
+        char* command = strtok((char*)args, " "); // get entered name
 
         if (!command)
             return true;
-        
+
         strCommand = command;
-        
+
         if (strCommand.compare("deleteall") == 0)
             sAnticheatMgr->AnticheatDeleteCommand(0);
         else
@@ -174,7 +176,7 @@ public:
 
         uint32 guid = 0;
         Player* player = NULL;
-        
+
         if (command)
         {
             strCommand = command;
@@ -184,11 +186,12 @@ public:
 
             if (player)
                 guid = player->GetGUIDLow();
-        }else 
+        }
+        else
         {
             player = handler->getSelectedPlayer();
             if (player)
-                guid = player->GetGUIDLow();  
+                guid = player->GetGUIDLow();
         }
 
         if (!guid)
@@ -220,7 +223,7 @@ public:
         std::string strCommand;
 
         char* command = strtok((char*)args, " ");
-        
+
         if (!command)
             return true;
 
@@ -239,7 +242,7 @@ public:
             sWorld->setBoolConfig(CONFIG_ANTICHEAT_ENABLE,false);
             handler->SendSysMessage("The Anticheat System is now: Disabled!");
         }
-        
+
         return true;
     }
 
@@ -261,31 +264,31 @@ public:
         Player* target = handler->getSelectedPlayer();
         if (!target)
             return false;
-        
+
         int32 spawntime = 30;
         char* spawntimeString = strtok((char*)args, " ");
         if (spawntimeString)
             spawntime = atoi(spawntimeString);
-        
-        GameObject* pGameObj = new GameObject;
-    
+
+        GameObject* go = new GameObject;
+
         Map* map = target->GetMap();
-        
+
         float x = target->GetPositionX();
         float y = target->GetPositionY();
         float z = target->GetPositionZ();
-        
-        if (!pGameObj->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT), 2000000, map, target->GetPhaseMask(), x, y, z, target->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 100, GO_STATE_READY))
+
+        if (!go->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT), 2000000, map, target->GetPhaseMask(), x, y, z, target->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 100, GO_STATE_READY))
         {
-            delete pGameObj;
+            delete go;
             return false;
         }
-        pGameObj->SetRespawnTime(spawntime < 1 ? 1800 : spawntime * MINUTE);
-        pGameObj->m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_MODERATOR);
-        pGameObj->SetOwnerGUID(handler->GetSession()->GetPlayer()->GetGUID());
-        pGameObj->SetSpawnedByDefault(false);
+        go->SetRespawnTime(spawntime < 1 ? 1800 : spawntime * MINUTE);
+        go->m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_MODERATOR);
+        go->SetOwnerGUID(handler->GetSession()->GetPlayer()->GetGUID());
+        go->SetSpawnedByDefault(false);
 
-        map->AddWorldObject(pGameObj);
+        map->AddWorldObject(go);
         return true;
     }
 };

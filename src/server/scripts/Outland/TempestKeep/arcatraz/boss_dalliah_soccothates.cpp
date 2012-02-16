@@ -14,26 +14,26 @@
 #define SOUND_INTRO             11236
 #define SAY_D_AGGRO             "It is unwise to anger me."
 #define SOUND_D_AGGRO           11086
-#define SAY_D_HEAL_1            "Ahh... That is much better." 
+#define SAY_D_HEAL_1            "Ahh... That is much better."
 #define SOUND_D_HEAL_1          11091
 #define SAY_D_HEAL_2            "Ahh... Just what I needed."
 #define SOUND_D_HEAL_2          11092
-#define SAY_D_KILL_1            "Completely ineffective. Just like someone else I know." 
+#define SAY_D_KILL_1            "Completely ineffective. Just like someone else I know."
 #define SOUND_D_KILL_1          11087
 #define SAY_D_KILL_2            "You chose the wrong opponent."
-#define SOUND_D_KILL_2          11088    
-#define SAY_D_WHIRL_1           "I'll cut you to pieces!" 
+#define SOUND_D_KILL_2          11088
+#define SAY_D_WHIRL_1           "I'll cut you to pieces!"
 #define SOUND_D_WHIRL_1         11089
 #define SAY_D_WHIRL_2           "Reap the Whirlwind!"
 #define SOUND_D_WHIRL_2         11090
-#define SAY_D_DEATH             "Now I'm really... angry..." 
+#define SAY_D_DEATH             "Now I'm really... angry..."
 #define SOUND_D_DEATH           11093
 
 #define SAY_AGGRO_SOCCO         "Don't worry about me; kill that worthless dullard instead!"
 #define SOUND_AGGRO_SOCCO       11085
 #define SAY_25_SOCCO            "More than you can handle, scryer?"
 #define SOUND_25_SOCCO          11094
-#define SAY_DEATH_SOCCO         "Congratulations. I've wanted to do that for years." 
+#define SAY_DEATH_SOCCO         "Congratulations. I've wanted to do that for years."
 #define SOUND_DEATH_SOCCO       11097
 
 class boss_dalliah : public CreatureScript
@@ -48,7 +48,7 @@ public:
 
     struct boss_dalliahAI : public ScriptedAI
     {
-        boss_dalliahAI(Creature *c) : ScriptedAI(c) 
+        boss_dalliahAI(Creature *c) : ScriptedAI(c)
         {
             HeroicMode = me->GetMap()->IsHeroic();
             pInstance = c->GetInstanceScript();
@@ -72,7 +72,7 @@ public:
         bool once;
         bool isHealing;
 
-        void Reset() 
+        void Reset()
         {
             whirlwind_timer = 15000;
             heal_timer = 999999;
@@ -142,7 +142,7 @@ public:
                 break;
             }
         }
- 
+
         void JustDied(Unit* Killer)
         {
             DoPlaySoundToSet(me,SOUND_D_DEATH);
@@ -162,14 +162,14 @@ public:
                 ScriptedAI::MoveInLineOfSight(who);
             }
         }
-   
+
         void UpdateAI(const uint32 diff)
         {
             if (!otherdead && pInstance)
             {
-                Unit* Temp = NULL; 
+                Unit* Temp = NULL;
                 Temp = Unit::GetUnit((*me),pInstance->GetData64(DATA_WRATH_SCRYERSOCCOTHRATES));
-            
+
                 if (Temp->isDead())
                 {
                     DoPlaySoundToSet(me, SOUND_DEATH_SOCCO);
@@ -189,7 +189,7 @@ public:
 
                 if (!otherhp25)
                 {
-                    if(pInstance->GetData(DATA_SOCCOTHRATES25) == 1 ) 
+                    if(pInstance->GetData(DATA_SOCCOTHRATES25) == 1 )
                     {
                         DoPlaySoundToSet(me,SOUND_25_SOCCO );
                         me->MonsterYell(SAY_25_SOCCO ,LANG_UNIVERSAL,NULL);
@@ -237,7 +237,7 @@ public:
 
             if (!hp25)
             {
-                if(pInstance && (me->GetHealth()*100) / me->GetMaxHealth() < 25) 
+                if(pInstance && (me->GetHealth()*100) / me->GetMaxHealth() < 25)
                 {
                     hp25 = true;
                     pInstance->SetData(DATA_DALLIAH25,1);
@@ -273,7 +273,7 @@ public:
 #define H_SPELL_FELFIRE_SHOCK   39006
 
 
-#define SAY_S_AGGRO             "At last, a target for my frustrations!" 
+#define SAY_S_AGGRO             "At last, a target for my frustrations!"
 #define SOUND_S_AGGRO           11238
 #define SAY_S_CHARGE_1          "On guard!"
 #define SOUND_S_CHARGE_1        11241
@@ -283,7 +283,7 @@ public:
 #define SOUND_S_KILL_1          11239
 #define SAY_S_KILL_2            "Much better."
 #define SOUND_S_KILL_2          11240
-#define SAY_S_DEATH             "Knew this was... the only way out." 
+#define SAY_S_DEATH             "Knew this was... the only way out."
 #define SOUND_S_DEATH           11243
 
 #define SAY_AGGRO_DALLI         "Have you come to kill Dalliah? Can I watch?"
@@ -292,7 +292,7 @@ public:
 #define SOUND_25_DALLI_1        11244
 #define SAY_25_DALLI_2          "I suggest a new strategy, you draw the attackers while I gather reinforcements. Hahaha!"
 #define SOUND_25_DALLI_2        11246
-#define SAY_DEATH_DALLI         "Finally! Well done!" 
+#define SAY_DEATH_DALLI         "Finally! Well done!"
 #define SOUND_DEATH_DALLI       11247
 
 class boss_soccothates : public CreatureScript
@@ -307,7 +307,7 @@ public:
 
     struct boss_soccothatesAI : public ScriptedAI
     {
-        boss_soccothatesAI(Creature *c) : ScriptedAI(c) 
+        boss_soccothatesAI(Creature *c) : ScriptedAI(c)
         {
             HeroicMode = me->GetMap()->IsHeroic();
             pInstance = c->GetInstanceScript();
@@ -327,7 +327,7 @@ public:
         uint32 flame_timer;
         uint32 lineup_timer;
 
-        void Reset() 
+        void Reset()
         {
             flameshock_timer = 15000;
             flame_timer = 10000;
@@ -355,7 +355,7 @@ public:
         }
 
         void KilledUnit(Unit *victim)
-        {    
+        {
             switch(rand()%2)
             {
             case 0:
@@ -368,7 +368,7 @@ public:
                 break;
             }
         }
- 
+
         void JustDied(Unit* Killer)
         {
             DoPlaySoundToSet(me,SOUND_S_DEATH);
@@ -376,14 +376,14 @@ public:
             if (pInstance)
                 pInstance->SetData(DATA_WRATH_SCRYERSOCCOTHRATESEVENT, DONE);
         }
-   
+
         void UpdateAI(const uint32 diff)
         {
             if (!otherdead && pInstance)
             {
-                Unit* Temp = NULL; 
+                Unit* Temp = NULL;
                 Temp = Unit::GetUnit((*me),pInstance->GetData64(DATA_DALLIAHTHEDOOMSAYER));
-            
+
                 if (Temp->isDead())
                 {
                     DoPlaySoundToSet(me, SOUND_DEATH_DALLI);
@@ -404,7 +404,7 @@ public:
 
                 if (!otherhp25)
                 {
-                    if(pInstance->GetData(DATA_DALLIAH25) == 1 ) 
+                    if(pInstance->GetData(DATA_DALLIAH25) == 1 )
                     {
                         switch(rand()%2)
                         {
@@ -416,7 +416,7 @@ public:
                             DoPlaySoundToSet(me,SOUND_25_DALLI_2 );
                             me->MonsterYell(SAY_25_DALLI_2 ,LANG_UNIVERSAL,NULL);
                             break;
-                        }                
+                        }
                         otherhp25 = true;
                     }
                 }
@@ -431,7 +431,7 @@ public:
                 Unit* ptarget = SelectTarget(SELECT_TARGET_RANDOM,0);
                 if (ptarget)
                     DoCast(ptarget,HeroicMode ? H_SPELL_FELFIRE_SHOCK : SPELL_FELFIRE_SHOCK);
-                flameshock_timer = 15000; 
+                flameshock_timer = 15000;
             }else flameshock_timer -= diff;
 
             if (flame_timer < diff)
@@ -468,7 +468,7 @@ public:
 
             if (!hp25)
             {
-                if(pInstance && (me->GetHealth()*100) / me->GetMaxHealth() < 25) 
+                if(pInstance && (me->GetHealth()*100) / me->GetMaxHealth() < 25)
                 {
                     hp25 = true;
                     pInstance->SetData(DATA_SOCCOTHRATES25,1);

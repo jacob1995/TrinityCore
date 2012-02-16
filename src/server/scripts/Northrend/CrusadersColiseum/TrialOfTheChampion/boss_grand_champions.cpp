@@ -165,7 +165,7 @@ void AggroAllPlayers(Creature* source)
             {
                 if (Creature* vehicle = player->GetVehicleBase()->ToCreature())
                 {
-                    source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                     source->SetReactState(REACT_AGGRESSIVE);
                     source->SetInCombatWith(vehicle);
                     player->SetInCombatWith(source);
@@ -175,7 +175,7 @@ void AggroAllPlayers(Creature* source)
             }
             else if (player->isAlive())
             {
-                source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                 source->SetReactState(REACT_AGGRESSIVE);
                 source->SetInCombatWith(player);
                 player->SetInCombatWith(source);
@@ -271,7 +271,7 @@ class npc_faction_champion_toc5 : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())
@@ -352,8 +352,8 @@ class boss_grand_champion_toc5 : public CreatureScript
             {
                 _phase = 0;
                 _phaseChangeTimer = 20000;
-                me->setFaction(35);
                 EnterEvadeMode();
+                me->setFaction(35);
             }
 
             void SetData(uint32 type, uint32 /*data*/)
@@ -525,13 +525,13 @@ class boss_grand_champion_toc5 : public CreatureScript
                                 announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) + 1);
                             break;
                         case 3:
+                            _phase = 2;
                             DoScriptText(SAY_START_1, me);
                             me->InterruptNonMeleeSpells(true);
                             DoCast(me, SPELL_KNEEL, true);
                             if (_instance)
                                 _instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
                             me->SetReactState(REACT_PASSIVE);
-                            _phase = 2;
                             break;
                     }
                 }
@@ -604,7 +604,7 @@ class boss_grand_champion_toc5 : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())

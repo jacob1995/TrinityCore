@@ -32,7 +32,7 @@ public:
     }
 
     struct  mob_shattered_hand_executionerAI : public ScriptedAI
-    {   
+    {
         mob_shattered_hand_executionerAI(Creature *c) : ScriptedAI(c)
         {
             for(int i = 0; i < 3; i++)
@@ -125,7 +125,7 @@ public:
                 //me->getThreatManager().addThreat(temp,0.0f);
                 me->AI()->AttackStart(temp);
             }
-            //executing = true; 
+            //executing = true;
                         //me->AI()->AttackStart(temp);
         }
 

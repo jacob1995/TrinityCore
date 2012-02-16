@@ -1381,7 +1381,7 @@ public:
             if (uiType != POINT_MOTION_TYPE)
                 return;
 
-            me->AddUnitState(UNIT_STAT_STUNNED);
+            me->AddUnitState(UNIT_STATE_STUNNED);
             me->CastSpell(me, SPELL_STUN, true);
             if (me->isSummon())
                 if (Unit* summoner = me->ToTempSummon()->GetSummoner())
@@ -1498,7 +1498,7 @@ public:
             DoScriptText(SAY_LERYSSA_1, pLeryssa);
             pArlos->Kill(pArlos, false);
             pLeryssa->RemoveAura(SPELL_STUN);
-            pLeryssa->ClearUnitState(UNIT_STAT_STUNNED);
+            pLeryssa->ClearUnitState(UNIT_STATE_STUNNED);
             pLeryssa->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
             pLeryssa->GetMotionMaster()->MovePoint(0, 3722.114502f, 3564.201660f, 477.441437f);
 
@@ -1548,7 +1548,7 @@ public:
                 if (Creature* pTalbot = me->FindNearestCreature(NPC_PRINCE_VALANAR, 50.0f, true))
                     CAST_AI(npc_counselor_talbot::npc_counselor_talbotAI, pTalbot->GetAI())->bCheck = true;
 
-                me->AddUnitState(UNIT_STAT_STUNNED);
+                me->AddUnitState(UNIT_STATE_STUNNED);
                 me->CastSpell(me, SPELL_STUN, true);
 
                 if (me->isSummon())
@@ -2730,6 +2730,63 @@ public:
     };
 };
 
+/*####
+ ## npc_raelorasz
+ ####*/
+
+enum RaeloraszMisc
+{
+    SPELL_PUSH_ARCANE_PRISON            = 46764,
+    ITEM_AUGMENTED_ARCANE_PRISON        = 35671,
+    QUEST_THE_CELL                      = 11943,
+    QUEST_MUSTERING_THE_REDS            = 11967,
+    GOSSIP_MENU_1                       =  9283,
+    GOSSIP_MENU_2                       =  9284
+ };
+
+#define GOSSIP_ITEM_PRISON      "I've lost my Arcane Prison Item, please give me a new one."
+#define GOSSIP_ITEM_MALYGOS_0   "What is the cause of this conflict?"
+#define GOSSIP_ITEM_MALYGOS_1   "Who is Malygos?"
+
+class npc_raelorasz : public CreatureScript
+{
+    public:
+        npc_raelorasz() : CreatureScript("npc_raelorasz") { }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (!player->HasItemCount(ITEM_AUGMENTED_ARCANE_PRISON, 1, true) && player->GetQuestStatus(QUEST_THE_CELL) == QUEST_STATUS_REWARDED && !player->GetQuestRewardStatus(QUEST_MUSTERING_THE_REDS))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PRISON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
+
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MALYGOS_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 0:
+                    player->CLOSE_GOSSIP_MENU();
+                    player->CastSpell(player, SPELL_PUSH_ARCANE_PRISON);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 1:
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MALYGOS_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_1, creature->GetGUID());
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 2:
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_2, creature->GetGUID());
+                    break;
+            }
+            return true;
+        }
+};
+
 void AddSC_borean_tundra()
 {
     new npc_sinkhole_kill_credit();
@@ -2764,4 +2821,5 @@ void AddSC_borean_tundra()
     //UPDATE creature_template SET scriptname = 'npc_cultist_for_hunt' where entry in (25828,25827,25248);
     new npc_recon_pilot();
     new mob_steam_rager();
+    new npc_raelorasz();
 }

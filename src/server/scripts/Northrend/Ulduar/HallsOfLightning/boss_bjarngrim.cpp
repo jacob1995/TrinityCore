@@ -219,7 +219,7 @@ class boss_bjarngrim : public CreatureScript
                         break;
                 }
             }
-            
+
             uint32 GetData(uint32 type)
             {
                 if (type == DATA_LIGHTNING_STRUCK)
@@ -235,7 +235,7 @@ class boss_bjarngrim : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())
@@ -344,7 +344,7 @@ class mob_stormforged_lieutenant : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())

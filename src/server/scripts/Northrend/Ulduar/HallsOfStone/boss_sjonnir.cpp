@@ -106,7 +106,7 @@ public:
         uint32 uiSummonTimer;
         uint32 uiCheckPhaseTimer;
         uint8 abuseTheOoze;
-        uint32 uiSummonEntry;        
+        uint32 uiSummonEntry;
         uint8 uiSummonPhase;
 
         SummonList lSummons;
@@ -131,7 +131,7 @@ public:
 
             if (pInstance)
                 pInstance->SetData(DATA_SJONNIR_EVENT, NOT_STARTED);
-            
+
             CheckLightningShield();
         }
 
@@ -217,7 +217,7 @@ public:
                     uiSummonEntry = CREATURE_FORGED_IRON_TROGG;
                     uiSummonTimer = 1000;
                     uiSummonPhase = 2;
-                } 
+                }
                 else if (HealthBelowPct(50) && uiSummonPhase == 2)
                 {
                     uiSummonEntry = CREATURE_MALFORMED_OOZE;
@@ -230,7 +230,7 @@ public:
                     uiSummonTimer = 1000;
                     uiSummonPhase = 4;
                 }
-                
+
                 uiCheckPhaseTimer = 1000;
 
             } else uiCheckPhaseTimer -= diff;
@@ -238,7 +238,7 @@ public:
             if (uiSummonTimer <= diff)
             {
                 uint32 rnd = urand(0, 1);
-                
+
                 if (uiSummonEntry)
                     me->SummonCreature(uiSummonEntry, PipeLocations[rnd].x, PipeLocations[rnd].y, PipeLocations[rnd].z, 0.0f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
 
@@ -260,7 +260,7 @@ public:
                         DoCast(me, SPELL_FRENZY);
                         bIsFrenzy = true;
                     }
-                            
+
             DoMeleeAttackIfReady();
         }
 
@@ -336,7 +336,7 @@ public:
 
     struct mob_malformed_oozeAI : public ScriptedAI
     {
-        mob_malformed_oozeAI(Creature *c) : ScriptedAI(c) 
+        mob_malformed_oozeAI(Creature *c) : ScriptedAI(c)
         {
             pInstance = c->GetInstanceScript();
         }
@@ -351,7 +351,7 @@ public:
 
         void JustSummoned(Creature* pSummon)
         {
-            if (pInstance)               
+            if (pInstance)
                 if (Creature* pSjonnir = Unit::GetCreature(*me, pInstance->GetData64(DATA_SJONNIR)))
                     if (Unit* pTarget = CAST_AI(boss_sjonnir::boss_sjonnirAI, pSjonnir->AI())->SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         pSummon->AI()->AttackStart(pTarget);
@@ -396,7 +396,7 @@ public:
 
         InstanceScript* pInstance;
         uint32 uiToxicVolleyTimer;
-        
+
         void Reset()
         {
             uiToxicVolleyTimer = 2000;

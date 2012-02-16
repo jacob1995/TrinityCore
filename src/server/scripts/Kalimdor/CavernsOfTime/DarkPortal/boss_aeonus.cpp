@@ -79,7 +79,7 @@ public:
             IsChanneling = false;
 
             if (pInstance)
-                pInstance->SetData(DATA_AEONUSDEATH, 0); 
+                pInstance->SetData(DATA_AEONUSDEATH, 0);
 
             Creature *pMedivh = (Creature*)(Unit::GetUnit((*me), pInstance->GetData64(DATA_MEDIVH)));
             if(pMedivh)
@@ -119,7 +119,7 @@ public:
             DoScriptText(SAY_DEATH, me);
 
             if (pInstance)
-                pInstance->SetData(DATA_AEONUSDEATH, 1); 
+                pInstance->SetData(DATA_AEONUSDEATH, 1);
         }
 
         void KilledUnit(Unit * /*victim*/)
@@ -199,7 +199,7 @@ public:
                 DoCast(me, SPELL_ENRAGE);
                 Frenzy_Timer = 120000;
             }else Frenzy_Timer -= diff;
-        
+
             if (!IsChanneling)
                 DoMeleeAttackIfReady();
         }

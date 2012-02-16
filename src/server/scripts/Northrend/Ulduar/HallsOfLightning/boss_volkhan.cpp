@@ -239,7 +239,7 @@ public:
             //Return since we have no target
             if (!UpdateVictim())
                 return;
-            
+
             //exploit fix, remove later
             if (m_uiCheckZ <= uiDiff)
             {
@@ -272,7 +272,7 @@ public:
                 return;
             }
 
-            // ShatteringStomp all the Time, 
+            // ShatteringStomp all the Time,
             if (!m_bHasTemper && !m_bMove)
             {
                 if (m_uiShatteringStomp_Timer <= uiDiff)

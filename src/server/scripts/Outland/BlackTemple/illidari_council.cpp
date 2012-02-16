@@ -599,7 +599,7 @@ public:
                 {
                     if(Unit* pUnit = SelectCouncilMember())
                     {
-                    
+
                         switch(rand()%2)
                         {
                             case 0: DoCast(pUnit, SPELL_BLESS_SPELLWARD);  break;

@@ -110,7 +110,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
                 if (_isUndead)
                     me->UpdateEntry(NPC_INGVAR_HUMAN);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
 
                 _events.Reset();
@@ -136,7 +136,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
                     me->InterruptNonMeleeSpells(true);
                     me->RemoveAllAuras();
                     me->SetReactState(REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                     me->GetMotionMaster()->MovementExpired(false);
                     me->GetMotionMaster()->MoveIdle();
                     me->SetStandState(UNIT_STAND_STATE_DEAD);
@@ -160,7 +160,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
             {
                 _isUndead = true;
                 _eventInProgress = false;
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 me->UpdateEntry(NPC_INGVAR_UNDEAD);
                 me->SetReactState(REACT_AGGRESSIVE);
                 DoZoneInCombat(me, 100.0f);
@@ -206,7 +206,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
 
                 _events.Update(diff);
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = _events.ExecuteEvent())
@@ -234,7 +234,7 @@ class boss_ingvar_the_plunderer : public CreatureScript
                                 target->SetMaxHealth(100000);
                                 target->SetHealth(100000);
                                 target->SetReactState(REACT_PASSIVE);
-                                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_PASSIVE);
+                                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_IMMUNE_TO_NPC);
                                 AttackStart(target);
                                 me->SetReactState(REACT_PASSIVE);
                                 me->GetMotionMaster()->MoveFollow(target, 0.0f, 0.0f);

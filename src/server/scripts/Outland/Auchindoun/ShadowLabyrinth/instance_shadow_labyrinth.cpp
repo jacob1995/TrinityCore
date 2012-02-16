@@ -218,7 +218,7 @@ public:
 
             std::istringstream loadStream(in);
         loadStream >> dataHead1 >> dataHead2 >> temp_auiEncounter[0] >> temp_auiEncounter[1] >> temp_auiEncounter[2] >> temp_auiEncounter[3] >> temp_auiEncounter[4];
-        
+
         if(dataHead1 == 'S' && dataHead2 == 'L')
         {
             for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)

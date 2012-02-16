@@ -19,7 +19,7 @@
 #ifndef DEF_SHADOWFANG_H
 #define DEF_SHADOWFANG_H
 
-enum eData
+enum Data
 {
     TYPE_FREE_NPC               = 1,
     TYPE_RETHILGORE             = 2,
@@ -44,4 +44,3 @@ enum Data64
 };
 
 #endif
-

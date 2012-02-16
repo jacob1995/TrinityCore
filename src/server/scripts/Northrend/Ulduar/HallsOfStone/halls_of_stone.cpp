@@ -229,7 +229,7 @@ public:
                             matter->SetDisplayId(17200);
                             matter->setFaction(16);
                             uiDarkMatterGUID = matter->GetGUID();
-                            
+
                             bLoadingDarkMatter = true;
 
                             for (std::list<uint64>::const_iterator itr = MarnakGUIDList.begin(); itr != MarnakGUIDList.end(); ++itr)
@@ -252,7 +252,7 @@ public:
                             {
                                 float x, y, z;
                                 target->GetPosition(x, y, z);
-                
+
                                 me->SummonCreature(CREATURE_DARK_MATTER_TARGET, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 20*IN_MILLISECONDS);
                                 matter->GetMotionMaster()->MovePoint(0, x, y, z);
                             }
@@ -426,13 +426,13 @@ public:
                                 kaddrak = me->SummonCreature(CREATURE_KADDRAK, 927.265f, 333.200f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
                                 kaddrak = me->SummonCreature(CREATURE_KADDRAK, 921.745f, 328.076f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
-                            
+
                             if (kaddrak)
                                 CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->KaddrakGUIDList.push_back(kaddrak->GetGUID());
 
                             ++uiPositionCounter;
                         }
-                        
+
                         controller->AI()->DoZoneInCombat(controller, 100.0f);
                         CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bKaddrakActivated = true;
                     }
@@ -451,13 +451,13 @@ public:
                                 marnak = me->SummonCreature(CREATURE_MARNAK, 891.309f, 359.382f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
                                 marnak = me->SummonCreature(CREATURE_MARNAK, 895.834f, 363.436f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
-                            
+
                             if (marnak)
                                 CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->MarnakGUIDList.push_back(marnak->GetGUID());
 
                             ++uiPositionCounter;
                         }
-                        
+
                         controller->AI()->DoZoneInCombat(controller, 100.0f);
                         CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bMarnakActivated = true;
                     }
@@ -476,13 +476,13 @@ public:
                                 abedneum = me->SummonCreature(CREATURE_ABEDNEUM, 897.865f, 328.341f, 223.84f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
                                 abedneum = me->SummonCreature(CREATURE_ABEDNEUM, 893.012f, 332.804f, 223.545f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
-                            
+
                             if (abedneum)
                                 CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->AbedneumGUIDList.push_back(abedneum->GetGUID());
 
                             ++uiPositionCounter;
                         }
-                        
+
                         controller->AI()->DoZoneInCombat(controller, 100.0f);
                         CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bAbedneumActivated = true;
                     }
@@ -847,7 +847,7 @@ public:
         // skip history lessons
         if (uiStepCount > 29 && uiStepCount < 49)
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PROGRESS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-        
+
         pPlayer->SEND_GOSSIP_MENU(TEXT_ID_START, pCreature->GetGUID());
 
         return true;
@@ -904,7 +904,7 @@ public:
                 }
 
                 uiCheckTimer = 1*IN_MILLISECONDS;
-            } 
+            }
             else uiCheckTimer -= diff;
         }
     };

@@ -437,7 +437,10 @@ public:
             if (Creature* boss = me->SummonCreature(NPC_TO_SUMMON_1, SpawnPosition))
             {
                 if (instance)
+                {
                     instance->SetData64(DATA_GRAND_CHAMPION_1 - 1 + summonTimes, boss->GetGUID());
+                    instance->SetData(DATA_GRAND_CHAMPION_ENTRY, boss->GetEntry());
+                }
 
                 boss->AI()->SetData(summonTimes, 0);
 
@@ -521,7 +524,7 @@ public:
 
         void StartEncounter()
         {
-            if (!instance)
+            if (!instance || !me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
                 return;
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -539,8 +542,7 @@ public:
                     if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE)
                         DoStartArgentChampionEncounter();
                 }
-
-                if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE && (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE ||
+                else if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE && (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE ||
                     instance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE))
                 {
                     me->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0);

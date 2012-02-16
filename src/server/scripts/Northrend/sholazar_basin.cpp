@@ -1146,14 +1146,12 @@ public:
             return true;
         }
 
-        void Aggro()
-        {
-
-        }
+        void Aggro() {}
 
         void JustDied(Unit *killer)
         {
             GameObject* object = me->SummonGameObject(ENTRY_ARTRUIS_URN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,0,0,0,0,600);
+            me->DespawnOrUnsummon();
         }
 
         void UpdateAI(const uint32 diff)
@@ -1675,7 +1673,7 @@ class npc_rejek_first_blood : public CreatureScript
 
             uint32 uiFlipAttack_Timer;
             uint32 uiCharge_Timer;
-            
+
             bool Frenzied;
 
             void Reset()
@@ -1784,14 +1782,14 @@ public:
         void SpellHitTarget(Unit* target,SpellInfo const* spell)
         {
             if(target == me)
-                return;       
-        
+                return;
+
             if(spell->Id == SPELL_DEVOUR_WIND)
             {
                 if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                 {
                     player->KilledMonsterCredit(29009, 0);
-                    me->UpdateEntry(NPC_HAIPHOON_AIR);                    
+                    me->UpdateEntry(NPC_HAIPHOON_AIR);
                     player->VehicleSpellInitialize();
                     me->setFaction(player->getFaction());
                 }
@@ -1801,7 +1799,7 @@ public:
             {
                 if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                 {
-                    player->KilledMonsterCredit(29008, 0);                    
+                    player->KilledMonsterCredit(29008, 0);
                     me->UpdateEntry(NPC_HAIPHOON_WATER);
                     player->VehicleSpellInitialize();
                     me->setFaction(player->getFaction());
@@ -1809,6 +1807,159 @@ public:
             }
         }
     };
+};
+
+/*######
+## npc_elder_harkek
+######*/
+
+enum eElderHarkek_Misc
+{
+    ITEM_GOREGEKS_SHACKLES              = 38619,
+    ITEM_DAJIKS_WORN_CHALK              = 38621,
+    ITEM_ZEPIKS_HUNTING_HORN            = 38512,
+
+    SPELL_FORCEITEM_GOREGEK             = 52542,
+    SPELL_FORCEITEM_DAJIK               = 52544,
+    SPELL_FORCEITEM_ZEPIK               = 52545,
+
+    QUEST_PLAYING_ALONG                 = 12528,
+    QUEST_THE_WHASP_HUNTERS_APPRENTICE  = 12533,
+    QUEST_ROUGH_RIDE                    = 12536,
+};
+
+#define GOSSIP_GOREGEK_ITEM "I need to find Goregek, do you have his shackles?"
+#define GOSSIP_DAJIK_ITEM   "I need to find Dajik, do you have his chalk?"
+#define GOSSIP_ZEPIK_ITEM   "I need to find Zepik, do you have his horn?"
+
+class npc_elder_harkek : public CreatureScript
+{
+    public:
+        npc_elder_harkek() : CreatureScript("npc_elder_harkek") { }
+
+        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+        {
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF+0:
+                    player->CastSpell(player, SPELL_FORCEITEM_GOREGEK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+                case GOSSIP_ACTION_INFO_DEF+1:
+                    player->CastSpell(player, SPELL_FORCEITEM_DAJIK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+                case GOSSIP_ACTION_INFO_DEF+2:
+                    player->CastSpell(player, SPELL_FORCEITEM_ZEPIK, true);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+            }
+            return true;
+        }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (player->GetQuestStatus(QUEST_PLAYING_ALONG) == QUEST_STATUS_REWARDED
+                && !player->HasItemCount(ITEM_GOREGEKS_SHACKLES, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_GOREGEK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+
+            if ((player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_INCOMPLETE
+                || player->GetQuestStatus(QUEST_THE_WHASP_HUNTERS_APPRENTICE) == QUEST_STATUS_REWARDED)
+                && !player->HasItemCount(ITEM_DAJIKS_WORN_CHALK, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DAJIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+            if ((player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_INCOMPLETE
+                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_COMPLETE
+                || player->GetQuestStatus(QUEST_ROUGH_RIDE) == QUEST_STATUS_REWARDED)
+                && !player->HasItemCount(ITEM_ZEPIKS_HUNTING_HORN, 1, true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ZEPIK_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature),creature->GetGUID());
+            return true;
+        }
+};
+
+/*######
+## Quest The Lifewarden's Wrath
+######*/
+
+enum MiscLifewarden
+{
+    NPC_PRESENCE = 28563, // Freya's Presence
+    NPC_SABOTEUR = 28538, // Cultist Saboteur
+    NPC_SERVANT = 28320, // Servant of Freya
+
+    WHISPER_ACTIVATE = 0,
+
+    SPELL_FREYA_DUMMY = 51318,
+    SPELL_LIFEFORCE = 51395,
+    SPELL_FREYA_DUMMY_TRIGGER = 51335,
+    SPELL_LASHER_EMERGE = 48195,
+    SPELL_WILD_GROWTH = 52948,
+};
+
+class spell_q12620_the_lifewarden_wrath : public SpellScriptLoader
+{
+public:
+    spell_q12620_the_lifewarden_wrath() : SpellScriptLoader("spell_q12620_the_lifewarden_wrath") { }
+
+    class spell_q12620_the_lifewarden_wrath_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_q12620_the_lifewarden_wrath_SpellScript);
+
+        void HandleSendEvent(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+
+            if (Unit* caster = GetCaster())
+            {
+                if (Creature* presence = caster->FindNearestCreature(NPC_PRESENCE, 50.0f))
+                {
+                    presence->AI()->Talk(WHISPER_ACTIVATE, caster->GetGUID());
+                    presence->CastSpell(presence, SPELL_FREYA_DUMMY, true); // will target plants
+                    // Freya Dummy could be scripted with the following code
+
+                    // Revive plants
+                    std::list<Creature*> servants;
+                    GetCaster()->GetCreatureListWithEntryInGrid(servants, NPC_SERVANT, 200.0f);
+                    for (std::list<Creature*>::iterator itr = servants.begin(); itr != servants.end(); ++itr)
+                    {
+                        // Couldn't find a spell that does this
+                        if ((*itr)->isDead())
+                            (*itr)->Respawn(true);
+
+                        (*itr)->CastSpell(*itr, SPELL_FREYA_DUMMY_TRIGGER, true);
+                        (*itr)->CastSpell(*itr, SPELL_LASHER_EMERGE, false);
+                        (*itr)->CastSpell(*itr, SPELL_WILD_GROWTH, false);
+
+                        if (Unit* target = (*itr)->SelectNearestTarget(150.0f))
+                            (*itr)->AI()->AttackStart(target);
+                    }
+
+                    // Kill nearby enemies
+                    std::list<Creature*> saboteurs;
+                    caster->GetCreatureListWithEntryInGrid(saboteurs, NPC_SABOTEUR, 200.0f);
+                    for (std::list<Creature*>::iterator itr = saboteurs.begin(); itr != saboteurs.end(); ++itr)
+                        if ((*itr)->isAlive())
+                            // Lifeforce has a cast duration, it should be cast at all saboteurs one by one
+                            presence->CastSpell((*itr), SPELL_LIFEFORCE, false);
+                }
+            }
+        }
+
+        void Register()
+        {
+            OnEffectHit += SpellEffectFn(spell_q12620_the_lifewarden_wrath_SpellScript::HandleSendEvent, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_q12620_the_lifewarden_wrath_SpellScript();
+    }
 };
 
 void AddSC_sholazar_basin()
@@ -1819,6 +1970,7 @@ void AddSC_sholazar_basin()
     new npc_bushwhacker();
     new npc_engineer_helice();
     new npc_jungle_punch_target();
+    new spell_q12620_the_lifewarden_wrath();
     new npc_high_oracle_soo_say();
     new npc_generic_oracle_treasure_trigger();
     new npc_generic_oracle_treasure_seeker();
@@ -1832,4 +1984,5 @@ void AddSC_sholazar_basin()
     new npc_stormwatcher();
     new npc_rejek_first_blood();
     new vehicle_haiphoon();
+    new npc_elder_harkek();
 }

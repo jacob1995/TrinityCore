@@ -80,7 +80,7 @@ public:
         /*** Misc ***/
         uint32 SpectralRealmTimer;
         std::vector<uint64> SpectralRealmList;
-        uint32 RepairBotState;  
+        uint32 RepairBotState;
 
         void Initialize()
         {

@@ -226,7 +226,7 @@ public:
                     BridgePart[2] = go->GetGUID();
                     go->setActive(true);
                 break;
-                
+
                 default:
                     break;
             }

@@ -1794,7 +1794,7 @@ void LFGMgr::TeleportPlayer(Player* player, bool out, bool fromOpcode /*= false*
         error = LFG_TELEPORTERROR_INVALID_LOCATION;
     else if (!player->isAlive())
         error = LFG_TELEPORTERROR_PLAYER_DEAD;
-    else if (player->IsFalling() || player->HasUnitState(UNIT_STAT_JUMPING))
+    else if (player->IsFalling() || player->HasUnitState(UNIT_STATE_JUMPING))
         error = LFG_TELEPORTERROR_FALLING;
     else
     {
@@ -1866,6 +1866,11 @@ void LFGMgr::TeleportPlayer(Player* player, bool out, bool fromOpcode /*= false*
                         orientation = 2.108f;
                         break;
                     case 288: // The Crown Chemical Co.
+                        mapid = 33;
+                        x = -234.948f;
+                        y = 2149.66f;
+                        z = 91.53f;
+                        orientation = 2.29f;
                         break;
                     // normal dungeons
                     case 14: // Gnomeregan

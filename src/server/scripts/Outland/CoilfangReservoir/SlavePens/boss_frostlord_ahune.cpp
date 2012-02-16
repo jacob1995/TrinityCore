@@ -103,7 +103,7 @@ class npc_frostlord_ahune : public CreatureScript
             {
                 switch (summon->GetEntry())
                 {
-                    case NPC_FROZEN_CORE: 
+                    case NPC_FROZEN_CORE:
                         summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                         summon->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_GRIP, true);
                         summon->SetHealth(me->GetHealth());

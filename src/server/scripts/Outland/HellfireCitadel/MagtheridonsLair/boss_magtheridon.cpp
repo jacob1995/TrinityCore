@@ -215,7 +215,7 @@ public:
             me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 10);
             me->SetFloatValue(UNIT_FIELD_COMBATREACH, 10);
             me->SetReactState(REACT_PASSIVE);
-            me->AddUnitState(UNIT_STAT_STUNNED);
+            me->AddUnitState(UNIT_STATE_STUNNED);
             DoCast(me, SPELL_SHADOW_CAGE_C, true);
         }
 
@@ -257,7 +257,7 @@ public:
             Phase = 1;
             NeedCheckCube = false;
 
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_6);
 
             for (uint8 i = 0; i < 5; i++)
@@ -266,7 +266,7 @@ public:
 
         void EnterEvadeMode()
         {
-            me->ClearUnitState(UNIT_STAT_STUNNED);
+            me->ClearUnitState(UNIT_STATE_STUNNED);
             me->RemoveAurasDueToSpell(SPELL_SHADOW_CAGE_C);
             Summons.DespawnAll();
             _EnterEvadeMode();
@@ -277,7 +277,7 @@ public:
         void JustReachedHome()
         {
             me->SetReactState(REACT_PASSIVE);
-            me->AddUnitState(UNIT_STAT_STUNNED);
+            me->AddUnitState(UNIT_STATE_STUNNED);
             DoCast(me, SPELL_SHADOW_CAGE_C, true);
         }
 
@@ -380,7 +380,7 @@ public:
 
                 if (Release_Timer <= diff)
                 {
-                    me->ClearUnitState(UNIT_STAT_STUNNED);
+                    me->ClearUnitState(UNIT_STATE_STUNNED);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     me->RemoveAurasDueToSpell(SPELL_SHADOW_CAGE_C);
                     me->SetReactState(REACT_AGGRESSIVE);
@@ -417,7 +417,7 @@ public:
             if (BlastNova_Timer <= diff)
             {
                 // to avoid earthquake interruption
-                if (!me->HasUnitState(UNIT_STAT_STUNNED))
+                if (!me->HasUnitState(UNIT_STATE_STUNNED))
                 {
                     DoScriptText(EMOTE_BLASTNOVA, me);
                     DoCast(me, SPELL_BLASTNOVA);
@@ -452,7 +452,7 @@ public:
             } else Blaze_Timer -= diff;
 
                                                         // blast nova                   // shadow cage and earthquake
-            if (Phase != 3 && HealthBelowPct(30) && !me->IsNonMeleeSpellCasted(false) && !me->HasUnitState(UNIT_STAT_STUNNED)) 
+            if (Phase != 3 && HealthBelowPct(30) && !me->IsNonMeleeSpellCasted(false) && !me->HasUnitState(UNIT_STATE_STUNNED))
             {
                 Phase = 3;
                 DoScriptText(SAY_CHAMBER_DESTROY, me);

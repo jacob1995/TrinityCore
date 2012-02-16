@@ -75,11 +75,11 @@ public:
         {
             switch( pGo->GetEntry() )
             {
-                case DOOR_NETHEKURSE_ENTRANCE: 
+                case DOOR_NETHEKURSE_ENTRANCE:
                     nethekurseDoorGUID = pGo->GetGUID();
                     pGo->SetGoState((GOState)nethekurskilled);
                     break;
-                case DOOR_NETHEKURSE_EXIT: 
+                case DOOR_NETHEKURSE_EXIT:
                     nethekurseDoor2GUID = pGo->GetGUID();
                     pGo->SetGoState((GOState)nethekurskilled);
                     break;
@@ -90,7 +90,7 @@ public:
         {
             switch(pCreature->GetEntry())
             {
-                case 16807: 
+                case 16807:
                     nethekurseGUID = pCreature->GetGUID();
                     break;
             }

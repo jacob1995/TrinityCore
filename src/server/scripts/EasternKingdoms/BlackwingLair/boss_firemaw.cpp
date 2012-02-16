@@ -46,7 +46,7 @@ public:
         {
             pInstance = c->GetInstanceScript();
         }
-        
+
         InstanceScript* pInstance;
 
         uint32 ShadowFlame_Timer;

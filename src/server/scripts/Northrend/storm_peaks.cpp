@@ -598,7 +598,7 @@ public:
 ## Quest: Cold Hearted (12856)
 ######*/
 
-enum eColdHearted
+enum ColdHearted
 {
     SPELL_KILL_CREDIT_PRISONER = 55144,
     SPELL_KILL_CREDIT_DRAKE    = 55143,
@@ -625,25 +625,27 @@ public:
         npc_freed_protodrakeAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
         bool movementStarted;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
             movementStarted = false;
+            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 5)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else // reached village, give credits
             {
@@ -669,18 +671,27 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
             if (!me->isCharmed() && !movementStarted)
             {
                 me->SetSpeed(MOVE_FLIGHT, 5.0f);
                 movementStarted = true;
-                wp_reached = true;
+                wpReached = true;
             }
 
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, FreedDrakeWaypoints[count]);
             }
         }
@@ -712,15 +723,15 @@ public:
     {
         npc_brunnhildar_prisonerAI(Creature* creature) : ScriptedAI(creature) {}
 
-        uint32 uiCheckTimer;
+        uint32 checkTimer;
 
         void Reset()
         {
-            uiCheckTimer = 10*IN_MILLISECONDS;
+            checkTimer = 10*IN_MILLISECONDS;
             DoCast(me, SPELL_ICE_BLOCK, true);
         }
 
-        void DoAction(const int32 /*param*/)
+        void DoAction(int32 const /*param*/)
         {
             me->Kill(me);
             me->Respawn();
@@ -740,16 +751,15 @@ public:
 
                     me->EnterVehicle(caster);
                     me->RemoveAurasDueToSpell(SPELL_ICE_BLOCK);
-                    caster->SetSpeed(MOVE_FLIGHT, 3.0f);
                 }
             }
         }
 
         void UpdateAI(uint32 const diff)
         {
-            if (uiCheckTimer < diff)
+            if (checkTimer < diff)
             {
-                if (!me->HasUnitState(UNIT_STAT_ONVEHICLE))
+                if (!me->HasUnitState(UNIT_STATE_ONVEHICLE))
                 {
                     // return home
                     if (me->GetDistance(me->GetHomePosition()) > 30.0f)
@@ -766,8 +776,10 @@ public:
                     }
                 }
 
-                uiCheckTimer = 10*IN_MILLISECONDS;
-            }else uiCheckTimer -= diff;
+                checkTimer = 10*IN_MILLISECONDS;
+            }
+            else
+                checkTimer -= diff;
         }
     };
 
@@ -823,7 +835,7 @@ public:
             if (who->GetTypeId() != TYPEID_PLAYER)
                 return;
 
-            if (who->ToPlayer()->GetQuestStatus(QUEST_LAST_OF_HER_KIND) == QUEST_STATUS_INCOMPLETE && !who->HasUnitState(UNIT_STAT_ONVEHICLE) && who->GetDistance(me) < 5.0f)
+            if (who->ToPlayer()->GetQuestStatus(QUEST_LAST_OF_HER_KIND) == QUEST_STATUS_INCOMPLETE && !who->HasUnitState(UNIT_STATE_ONVEHICLE) && who->GetDistance(me) < 7.0f)
             {
                 who->CastSpell(who, SPELL_HARNESSED_ICEMAW, true);
                 // disable player control
@@ -832,7 +844,6 @@ public:
                         base->RemoveCharmedBy(base->GetCharmer());
             }
         }
-
     };
 
     CreatureAI* GetAI(Creature* creature) const
@@ -851,25 +862,27 @@ public:
         npc_harnessed_icemawAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
         bool movementStarted;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
             movementStarted = false;
+            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 16)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else // reached questgiver, give credit
             {
@@ -882,17 +895,26 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
             if (!me->isCharmed() && !movementStarted)
             {
                 movementStarted = true;
-                wp_reached = true;
+                wpReached = true;
             }
 
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, HarnessedIcemawWaypoints[count]);
             }
         }
@@ -939,19 +961,21 @@ public:
         npc_hyldsmeet_protodrake_transportAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint8 count;
-        bool wp_reached;
+        bool wpReached;
+        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
-            wp_reached = false;
+            wpReached = false;
+            relocateTimer = 1000;
         }
 
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
         {
             if (who && apply)
             {
-                    wp_reached = true;
+                    wpReached = true;
                     me->SetFlying(true);
                     me->SetSpeed(MOVE_FLIGHT, 5.0f);
             }
@@ -959,13 +983,13 @@ public:
 
         void MovementInform(uint32 type, uint32 id)
         {
-            if (type != POINT_MOTION_TYPE || id != count)
+            if (type != POINT_MOTION_TYPE)
                 return;
 
             if (id < 10)
             {
                 ++count;
-                wp_reached = true;
+                wpReached = true;
             }
             else
             {
@@ -980,11 +1004,20 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const /*diff*/)
+        void UpdateAI(uint32 const diff)
         {
-            if (wp_reached)
+            // TODO: fix passenger relocation
+            if (relocateTimer <= diff)
             {
-                wp_reached = false;
+                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                relocateTimer = 1000;
+            }
+            else
+                relocateTimer -= diff;
+
+            if (wpReached)
+            {
+                wpReached = false;
                 me->GetMotionMaster()->MovePoint(count, HyldsmeetProtodrakeWaypoints[count]);
             }
         }
@@ -1188,7 +1221,7 @@ public:
 
     struct npc_archivist_mechatonAI : public ScriptedAI
     {
-        npc_archivist_mechatonAI(Creature* pCreature) : ScriptedAI(pCreature) 
+        npc_archivist_mechatonAI(Creature* pCreature) : ScriptedAI(pCreature)
         {
             if(me->isSummon())
             {
@@ -1206,16 +1239,16 @@ public:
         void Reset()
         {
             saytimer = 0;
-        
+
             if(FirstTime)
                 saycount = 1;
             else
-            {   
+            {
                 saycount = 0;
                 me->DespawnOrUnsummon();
             }
         }
-        
+
         void DoNextText(uint32 timer)
         {
             saytimer = timer;
@@ -1224,10 +1257,10 @@ public:
 
         void UpdateAI(uint32 const diff)
         {
-            if(saytimer <= diff)    
-            {            
+            if(saytimer <= diff)
+            {
                 Unit* pSummoner = me->ToTempSummon()->GetSummoner();
-                
+
                 switch(saycount)
                 {
                     case 1:
@@ -1275,13 +1308,62 @@ public:
 
             if (!UpdateVictim())
                 return;
-        }  
+        }
     };
 
     CreatureAI* GetAI(Creature* pCreature) const
     {
         return new npc_archivist_mechatonAI(pCreature);
     }
+};
+
+/*######
+## npc_item_branns_communicator
+######*/
+
+enum BrannsCommunicator_Misc
+{
+    ITEM_BRANNS_COMMUNICATOR            = 40971,
+
+    QUEST_CATCHING_UP_WITH_BRANN        = 12920, // Horde
+    QUEST_SNIFFING_OUT_THE_PERPETRATOR  = 12855, // Alliance
+};
+
+#define GOSSIP_COMMUNICATOR_ITEM        "Bitte gib mir einen neuen Kommunikator."
+
+class npc_item_branns_communicator : public CreatureScript
+{
+    public:
+        npc_item_branns_communicator() : CreatureScript("npc_item_branns_communicator") { }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (!player->HasItemCount(ITEM_BRANNS_COMMUNICATOR, 1, true)
+                && (player->GetQuestStatus(QUEST_SNIFFING_OUT_THE_PERPETRATOR) == QUEST_STATUS_REWARDED
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
+                || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 uiAction)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (uiAction)
+            {
+                case GOSSIP_ACTION_INFO_DEF+0:
+                    player->AddItem(ITEM_BRANNS_COMMUNICATOR, 1);
+                    player->CLOSE_GOSSIP_MENU();
+                    break;
+            }
+            return true;
+        }
 };
 
 void AddSC_storm_peaks()
@@ -1304,4 +1386,5 @@ void AddSC_storm_peaks()
     new npc_dead_irongiant();
     new npc_snowblind_follower();
     new npc_archivist_mechaton();
+    new npc_item_branns_communicator();
 }

@@ -175,7 +175,7 @@ class boss_ignis : public CreatureScript
                 events.Update(diff);
                 _constructTimer += diff;
 
-                if (me->HasUnitState(UNIT_STAT_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -211,7 +211,7 @@ class boss_ignis : public CreatureScript
                                 me->AddAura(SPELL_SLAG_POT, slagPotTarget);
                                 slagPotTarget->ExitVehicle();
                                 slagPotTarget->CastCustomSpell(SPELL_GRAB_ENTER_VEHICLE, SPELLVALUE_BASE_POINT0, 2, me, true);
-                                slagPotTarget->ClearUnitState(UNIT_STAT_ONVEHICLE); // Hack
+                                slagPotTarget->ClearUnitState(UNIT_STATE_ONVEHICLE); // Hack
                                 _slagPotGUID = 0;
                             }
                             break;
