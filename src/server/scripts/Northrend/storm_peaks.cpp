@@ -733,8 +733,10 @@ public:
 
         void DoAction(int32 const /*param*/)
         {
-            me->Kill(me);
-            me->Respawn();
+            float x, y, z, o;
+            me->GetHomePosition(x, y, z, o);
+            me->NearTeleportTo(x, y, z, o);
+            me->DespawnOrUnsummon(1000);
         }
 
         void SpellHit(Unit* caster, SpellInfo const* spell)
@@ -745,7 +747,8 @@ public:
 
                 if (caster->IsVehicle())
                 {
-                    uint8 seat = caster->GetVehicleKit()->GetNextEmptySeat(0, true);
+                    int8 seat = caster->GetVehicleKit()->GetNextEmptySeat(0, true);
+
                     if (seat <= 0)
                         return;
 
