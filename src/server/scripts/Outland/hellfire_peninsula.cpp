@@ -485,9 +485,9 @@ public:
             {
                 if(who->GetTypeId() == TYPEID_PLAYER)
                 {
-                    if(CAST_PLR(who)->getQuestStatusMap()[10162].m_creatureOrGOcount[0] == 20 &&
-                       CAST_PLR(who)->getQuestStatusMap()[10162].m_creatureOrGOcount[1] == 5 &&
-                       CAST_PLR(who)->getQuestStatusMap()[10162].m_creatureOrGOcount[2] == 5 && CAST_PLR(who)->GetQuestStatus(10162) == QUEST_STATUS_INCOMPLETE)
+                    if(CAST_PLR(who)->getQuestStatusMap()[10162].CreatureOrGOCount[0] == 20 &&
+                       CAST_PLR(who)->getQuestStatusMap()[10162].CreatureOrGOCount[1] == 5 &&
+                       CAST_PLR(who)->getQuestStatusMap()[10162].CreatureOrGOCount[2] == 5 && CAST_PLR(who)->GetQuestStatus(10162) == QUEST_STATUS_INCOMPLETE)
                     {
                         CAST_PLR(who)->AreaExploredOrEventHappens(10162);
                     }
