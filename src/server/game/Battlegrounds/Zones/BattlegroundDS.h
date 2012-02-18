@@ -43,10 +43,15 @@ enum BattlegroundDSObjects
 };
 
 enum BattlegroundDSData
-{
+{ // These values are NOT blizzlike... need the correct data!
     BG_DS_WATERFALL_TIMER_MIN                    = 35000,
     BG_DS_WATERFALL_TIMER_MAX                    = 60000,
-    BG_DS_WATERFALL_DURATION                     = 30000,
+    BG_DS_WATERFALL_WARNING_DURATION             = 7000,
+    BG_DS_WATERFALL_DURATION                     = 23000,
+
+    BG_DS_WATERFALL_STATUS_WARNING               = 1, // Water starting to fall, but no LoS Blocking nor movement blocking
+    BG_DS_WATERFALL_STATUS_ON                    = 2, // LoS and Movement blocking active
+    BG_DS_WATERFALL_STATUS_OFF                   = 3,
 };
 
 class BattlegroundDSScore : public BattlegroundScore
@@ -76,16 +81,16 @@ class BattlegroundDS : public Battleground
         void HandleKillPlayer(Player* player, Player* killer);
         bool HandlePlayerUnderMap(Player* player);
     private:
-        uint32 m_waterTimer;
-        bool m_waterfallActive;
+        uint32 _waterfallTimer;
+        uint8 _waterfallStatus;
         virtual void PostUpdateImpl(uint32 diff);
         bool m_knockbackCheck;
         uint32 m_knockback;
         void KnockBackPlayer(Unit *pPlayer, float angle, float horizontalSpeed, float verticalSpeed);
     protected:
-        bool isWaterFallActive() { return m_waterfallActive; };
-        void setWaterFallActive(bool active) { m_waterfallActive = active; };
-        void setWaterFallTimer(uint32 timer) { m_waterTimer = timer; };
-        uint32 getWaterFallTimer() { return m_waterTimer; };
+        uint32 getWaterFallStatus() { return _waterfallStatus; };
+        void setWaterFallStatus(uint32 status) { _waterfallStatus = status; };
+        void setWaterFallTimer(uint32 timer) { _waterfallTimer = timer; };
+        uint32 getWaterFallTimer() { return _waterfallTimer; };
 };
 #endif

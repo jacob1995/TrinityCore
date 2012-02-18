@@ -846,7 +846,7 @@ class npc_simon_bunny : public CreatureScript
                 if (!listening)
                     return;
 
-                uint8 pressedColor;
+                uint8 pressedColor = SIMON_MAX_COLORS;
 
                 if (type == clusterIds[SIMON_RED])
                     pressedColor = SIMON_RED;
@@ -1081,7 +1081,7 @@ class npc_simon_bunny : public CreatureScript
             // Handles the spell rewards. The spells also have the QuestCompleteEffect, so quests credits are working.
             void GiveRewardForLevel(uint8 level)
             {
-                uint32 rewSpell;
+                uint32 rewSpell = 0;
                 switch (level)
                 {
                     case 6:
@@ -1096,8 +1096,6 @@ class npc_simon_bunny : public CreatureScript
                     case 10:
                         rewSpell = SPELL_REWARD_BUFF_3;
                         break;
-                    default:
-                        rewSpell = 0;
                 }
 
                 if (rewSpell)

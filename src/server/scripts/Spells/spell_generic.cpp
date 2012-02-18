@@ -2154,7 +2154,7 @@ class spell_gen_luck_of_the_draw : public SpellScriptLoader
                 if (group && group->isLFGGroup())
                     if (uint32 dungeonId = sLFGMgr->GetDungeon(group->GetGUID(), true))
                         if (LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(dungeonId))
-                            if (dungeon->map == map->GetId() && dungeon->difficulty == map->GetDifficulty())
+                            if (uint32(dungeon->map) == map->GetId() && dungeon->difficulty == map->GetDifficulty())
                                 if (randomDungeon && randomDungeon->type == LFG_TYPE_RANDOM)
                                     return; // in correct dungeon
 
@@ -2339,6 +2339,8 @@ class spell_gen_break_shield: public SpellScriptLoader
                         }
                         break;
                     }
+                    default:
+                        break;
                 }
             }
 
@@ -2427,6 +2429,7 @@ class spell_gen_mounted_charge: public SpellScriptLoader
                         {
                             case SPELL_CHARGE_TRIGGER_TRIAL_CHAMPION:
                                 spellId = SPELL_CHARGE_CHARGING_EFFECT_20K_1;
+                                break;
                             case SPELL_CHARGE_TRIGGER_FACTION_MOUNTS:
                                 spellId = SPELL_CHARGE_CHARGING_EFFECT_8K5;
                                 break;
@@ -2467,7 +2470,7 @@ class spell_gen_mounted_charge: public SpellScriptLoader
                 }
             }
 
-            void HandleChargeEffect(SpellEffIndex effIndex)
+            void HandleChargeEffect(SpellEffIndex /*effIndex*/)
             {
                 uint32 spellId;
 
@@ -2541,7 +2544,7 @@ class spell_gen_defend : public SpellScriptLoader
 
             void RefreshVisualShields(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
             {
-                if (Unit* caster = GetCaster())
+                if (GetCaster())
                 {
                     Unit* target = GetTarget();
 
@@ -2622,7 +2625,7 @@ class spell_gen_tournament_duel : public SpellScriptLoader
                 return true;
             }
 
-            void HandleScriptEffect(SpellEffIndex effIndex)
+            void HandleScriptEffect(SpellEffIndex /*effIndex*/)
             {
                 if (Unit* rider = GetCaster()->GetCharmer())
                 {
