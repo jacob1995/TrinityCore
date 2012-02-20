@@ -752,7 +752,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
     }
 
     // Mixology - Effect value mod
-    if (caster->GetTypeId() == TYPEID_PLAYER)
+    if (caster && caster->GetTypeId() == TYPEID_PLAYER)
     {
         if (GetSpellInfo()->SpellFamilyName == SPELLFAMILY_POTION && (
             sSpellMgr->IsSpellMemberOfSpellGroup(GetId(), SPELL_GROUP_ELIXIR_BATTLE) ||
