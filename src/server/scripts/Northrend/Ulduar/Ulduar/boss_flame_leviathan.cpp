@@ -86,6 +86,7 @@ enum Creatures
     NPC_SEAT                       = 33114,
     NPC_DEFENSE_TURRET             = 33142,
     NPC_OVERLOAD_DEVICE            = 33143,
+    NPC_DEFENSE_CANNON             = 33139,
     NPC_MECHANOLIFT                = 33214,
     NPC_LIQUID                     = 33189,
     NPC_CONTAINER                  = 33218,
@@ -249,42 +250,67 @@ class boss_flame_leviathan : public CreatureScript
                 Shutdown = 0;
                 Pursued = false;
                 _pursueTarget = 0;
-                me->SetReactState(REACT_DEFENSIVE);
                 me->setActive(true);
-            }
-
-            void JustReachedHome()
-            {
-                _JustReachedHome();
-                vehicle->InstallAllAccessories(false);
             }
 
             void EnterCombat(Unit* /*who*/)
             {
                 _EnterCombat();
-                me->SetReactState(REACT_AGGRESSIVE);
                 events.ScheduleEvent(EVENT_PURSUE, 30*IN_MILLISECONDS);
                 events.ScheduleEvent(EVENT_MISSILE, urand(1500, 4*IN_MILLISECONDS));
                 events.ScheduleEvent(EVENT_VENT, 20*IN_MILLISECONDS);
                 events.ScheduleEvent(EVENT_SPEED, 15*IN_MILLISECONDS);
                 ActiveTower();
-                ClearSeats();
+
+                HandleAccessorys(true);
 
                 // TODO: remove later
                 me->RemoveLootMode(LOOT_MODE_DEFAULT);
             }
 
-            // installing accessorys to creatures that have different vehicle ids in each difficulty mode seems nyi
-            // so remove 2 unecessary turrets/overload devices in 10 man mode
-            void ClearSeats()
+            void HandleAccessorys(bool install)
             {
-                if (Is25ManRaid())
-                    return;
+                if (install)
+                {
+                    // Seats
+                    for (uint8 i = RAID_MODE<uint8>(2, 0); i < 4; ++i)
+                        if (Creature* seat = me->SummonCreature(NPC_SEAT, *me))
+                        {
+                            if (Creature* turret = me->SummonCreature(NPC_DEFENSE_TURRET, *me))
+                                turret->EnterVehicle(seat, SEAT_TURRET);
 
-                for (uint8 i = 0; i < 2; ++i)
-                    if (Unit* seat = vehicle->GetPassenger(i))
-                        if (seat->ToCreature())
-                            seat->ToCreature()->DespawnOrUnsummon();
+                            if (Creature* device = me->SummonCreature(NPC_OVERLOAD_DEVICE, *me))
+                                device->EnterVehicle(seat, SEAT_DEVICE);
+
+                            seat->EnterVehicle(me, i);
+                        }
+
+                    // Cannon
+                    if (Creature* cannon = me->SummonCreature(NPC_DEFENSE_CANNON, *me))
+                        cannon->EnterVehicle(me, SEAT_CANNON);
+                }
+                else
+                {
+                    for (uint8 i = 0; i < 4; ++i)
+                        if (Unit* seat = vehicle->GetPassenger(i))
+                            if (seat->ToCreature() && seat->GetVehicleKit())
+                            {
+                                if (Unit* turret = seat->GetVehicleKit()->GetPassenger(SEAT_TURRET))
+                                    if (turret->ToCreature())
+                                        turret->ToCreature()->DespawnOrUnsummon(1000);
+
+                                if (Unit* device = seat->GetVehicleKit()->GetPassenger(SEAT_DEVICE))
+                                    if (device->ToCreature())
+                                        device->ToCreature()->DespawnOrUnsummon(1000);
+
+                                seat->ToCreature()->DespawnOrUnsummon(500);
+                            }
+
+                    // Cannon
+                    if (Unit* cannon = vehicle->GetPassenger(SEAT_CANNON))
+                        if (cannon->ToCreature())
+                            cannon->ToCreature()->DespawnOrUnsummon(500);
+                }
             }
 
             void SetGUID(uint64 guid, int32 /*id*/ = 0)
@@ -378,8 +404,7 @@ class boss_flame_leviathan : public CreatureScript
                 switch (spell->Id)
                 {
                     case SPELL_START_THE_ENGINE:
-                        vehicle->InstallAllAccessories(false);
-                        ClearSeats();
+                        HandleAccessorys(true);
                         break;
                     case SPELL_ELECTROSHOCK:
                         me->InterruptSpell(CURRENT_CHANNELED_SPELL);
@@ -463,10 +488,7 @@ class boss_flame_leviathan : public CreatureScript
                             break;
                         case EVENT_REPAIR:
                             me->MonsterTextEmote(EMOTE_REPAIR, 0, true);
-                            for (uint8 i = RAID_MODE<uint8>(2, 0); i < 4; ++i)
-                                if (Unit* seat = vehicle->GetPassenger(i))
-                                    if (seat->ToCreature())
-                                        seat->ToCreature()->DespawnOrUnsummon();
+                            HandleAccessorys(false);
                             break;
                         case EVENT_THORIMS_HAMMER:
                             for (uint8 i = 0; i < 15; ++i)
@@ -697,8 +719,8 @@ class npc_flame_leviathan_seat : public CreatureScript
 
                     if (apply)
                     {
-                        if (Unit* turret = _vehicle->GetPassenger(SEAT_TURRET))
-                            turret->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
+                        //if (Unit* turret = _vehicle->GetPassenger(SEAT_TURRET))
+                        //    turret->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
 
                         me->AddAura(SPELL_FORCE_REACTION, who);
                         DoScriptText(SAY_PLAYER_RIDING, me);
@@ -707,12 +729,10 @@ class npc_flame_leviathan_seat : public CreatureScript
                     {
                         who->RemoveAurasDueToSpell(SPELL_FORCE_REACTION);
                         who->CastSpell(who, SPELL_SMOKE_TRAIL, true);
-                        who->GetMotionMaster()->Clear(false);
-                        who->GetMotionMaster()->MoveJump(me->GetPositionX() + 20.0f, me->GetPositionY(), me->GetPositionZ() + 30.0f, 5.0f, 5.0f);
+                        //who->StopMoving();
+                        //who->GetMotionMaster()->MoveJump(me->GetPositionX() + 20.0f, me->GetPositionY(), me->GetPositionZ() + 30.0f, 5.0f, 5.0f);
                     }
                 }
-                else if (apply)
-                    who->UpdateObjectVisibility();
             }
 
             void UpdateAI(uint32 const diff)
@@ -750,6 +770,7 @@ class npc_flame_leviathan_defense_turret : public CreatureScript
         {
             npc_flame_leviathan_defense_turretAI(Creature* creature) : TurretAI(creature)
             {
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->setActive(true);
             }
 
