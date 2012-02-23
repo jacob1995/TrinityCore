@@ -213,8 +213,7 @@ class boss_drakkari_colossus : public CreatureScript
 
                 if (_phase == 1)
                 {
-                    me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MoveIdle();
+                    me->StopMoving();
                     DoAction(ACTION_FREEZE);
                     DoMoveMojo();
                     ++_phase;

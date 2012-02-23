@@ -1077,41 +1077,6 @@ public:
     }
 };
 
-class spell_q9361_purify_helboar_meat : public SpellScriptLoader
-{
-    public:
-        spell_q9361_purify_helboar_meat() : SpellScriptLoader("q9361_purify_helboar_meat") { }
-
-        class spell_q9361_purify_helboar_meat_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_q9361_purify_helboar_meat_SpellScript);
-
-            void HandleDummy(SpellEffIndex /*effIndex*/)
-            {
-                Unit* caster = GetCaster();
-                if (!caster || caster->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                uint32 spellId = roll_chance_i(50)
-                    ? 29277                             // Summon Purified Helboar Meat
-                    : 29278;                            // Summon Toxic Helboar Meat
-
-                caster->CastSpell(caster, spellId, true);
-            }
-
-            void Register()
-            {
-                OnEffectHit += SpellEffectFn(spell_q9361_purify_helboar_meat_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_q9361_purify_helboar_meat_SpellScript();
-        }
-};
-
-
 enum FlightOfTheWintergardeDefender
 {
     NPC_HELPLESS_VILLAGER_A     = 27315,
@@ -1329,7 +1294,6 @@ void AddSC_quest_spell_scripts()
     new spell_q12805_lifeblood_dummy();
     new spell_q13280_13283_plant_battle_standard();
     new spell_q14112_14145_chum_the_water();
-    new spell_q9361_purify_helboar_meat();
     new spell_q9452_cast_net();
     new spell_q12237_rescue_villager();
     new spell_q12237_drop_off_villager();

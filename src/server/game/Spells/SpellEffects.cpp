@@ -784,15 +784,8 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     if (!unitTarget)
                         return;
 
-                    // DEBUG
-                    int32 tempdmg = damage;
-
                     // apply percent damage mods
                     damage = m_caster->SpellDamageBonus(unitTarget, m_spellInfo, damage, SPELL_DIRECT_DAMAGE);
-
-                    // DEBUG
-                    if (damage > 15000 || damage < 1)
-                        sLog->outError("DW_DEBUG: damage after m_caster->SpellDamageBonus: %i, before: %i", damage, tempdmg);
 
                     switch (m_spellInfo->Id)
                     {
@@ -812,14 +805,6 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                         damage += aurEff->GetAmount() * (ticks - aurEff->GetTickNumber());
 
                     damage = damage / ticks;
-
-                    // DEBUG
-                    if (damage > 7500 || damage < 1)
-                    {
-                        sLog->outError("DW_DEBUG: final damage: %i, ticks: %u", damage, ticks);
-                        damage = 1;
-                    }
-
                     m_caster->CastCustomSpell(unitTarget, 12721, &damage, NULL, NULL, true);
                     return;
                 }
@@ -926,18 +911,18 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     if (unitTarget)
                         unitTarget->CastSpell(unitTarget, roll_chance_i(50) ? 39088 : 39091, true, NULL, NULL, m_caster->GetGUID());
                     break;
-                //case 29200:                                 // Purify Helboar Meat
-                //{
-                //    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                //        return;
+                case 29200:                                 // Purify Helboar Meat
+                {
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
+                        return;
 
-                //    spell_id = roll_chance_i(50)
-                //        ? 29277                             // Summon Purified Helboar Meat
-                //        : 29278;                            // Summon Toxic Helboar Meat
+                    spell_id = roll_chance_i(50)
+                        ? 29277                             // Summon Purified Helboar Meat
+                        : 29278;                            // Summon Toxic Helboar Meat
 
-                //    m_caster->CastSpell(m_caster, spell_id, true, NULL);
-                //    return;
-                //}
+                    m_caster->CastSpell(m_caster, spell_id, true, NULL);
+                    return;
+                }
                 case 29858:                                 // Soulshatter
                     if (unitTarget && unitTarget->CanHaveThreatList()
                         && unitTarget->getThreatManager().getThreat(m_caster) > 0.0f)

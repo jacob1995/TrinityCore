@@ -10840,10 +10840,6 @@ uint32 Unit::SpellDamageBonus(Unit* victim, SpellInfo const* spellProto, uint32 
 
     tmpDamage = (tmpDamage + TakenTotal) * TakenTotalMod;
 
-    // DEBUG
-    if ((spellProto->Id == 12162 || spellProto->Id == 12850 || spellProto->Id == 12868) && tmpDamage > 15000)
-        sLog->outError("DW_DEBUG: Unit::SpellDamageBonus - tmpDamage: %f, TakenAdvertisedBenefit: %i", tmpDamage, TakenAdvertisedBenefit ? TakenAdvertisedBenefit : 0);
-
     return uint32(std::max(tmpDamage, 0.0f));
 }
 
@@ -12686,9 +12682,8 @@ float Unit::GetSpeed(UnitMoveType mtype) const
 
 void Unit::SetSpeed(UnitMoveType mtype, float rate, bool forced)
 {
-    // TODO: replace with original when rate == 0.0f works for creatures
-    if (rate <= 0)        // if (rate < 0)
-        rate = 0.001f;    //     rate = 0.0f;
+    if (rate < 0)
+        rate = 0.0f;
 
     // Update speed only on change
     if (m_speed_rate[mtype] == rate)

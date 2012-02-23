@@ -3361,10 +3361,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectBasePoints[0] = 519;           // Some suggest a global multiplier is used for rep gain
                                                                 // but basepoints * 1,3 hard coded in the tooltip says
                 break;                                          // otherwise.
-            case 63163: // Apply Enchanted Bridle
-                spellInfo->EffectBasePoints[0] = 0;
-                spellInfo->EffectDieSides[0] = 0;
-                break;
             case 48278: // Paralyze
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
                 spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_TARGET_ENEMY;
@@ -3420,10 +3416,6 @@ void SpellMgr::LoadDbcDataCorrections()
                         // this needs research on modifier applying rules, does not seem to be in Attributes fields
                 spellInfo->EffectSpellClassMask[0] = flag96(0x00000040, 0x00000000, 0x00000000);
                 break;
-            //case 63163: // Apply Enchanted Bridle (Argent Tournament)
-            //    spellInfo->EffectDieSides[0] = 0; // was 1, that should probably mean seat 0, but instead it's treated as spell 1
-            //    spellInfo->EffectBasePoints[0] = 52391; // Ride Vehicle (forces seat 0)
-            //    break;
             case 19970: // Entangling Roots (Rank 6) -- Nature's Grasp Proc
             case 19971: // Entangling Roots (Rank 5) -- Nature's Grasp Proc
             case 19972: // Entangling Roots (Rank 4) -- Nature's Grasp Proc

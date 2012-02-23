@@ -91,7 +91,6 @@ enum Events
     EVENT_SHADOW_CRASH,
     EVENT_RESET_TARGET,
     EVENT_SEARING_FLAMES,
-    EVENT_RESET_IMMUNITY,
     EVENT_MARK_OF_THE_FACELESS
 };
 
@@ -309,14 +308,9 @@ class boss_general_vezax : public CreatureScript
                             DoCast(me, SPELL_BERSERK, true);
                             DoScriptText(SAY_BERSERK, me);
                             break;
-                        case EVENT_RESET_IMMUNITY: // called right after Searing Flames' UNIT_STAT_CASTING gets removed
-                            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_INTERRUPT, true);
-                            break;
                         case EVENT_SEARING_FLAMES:
-                            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_INTERRUPT, false);
                             DoCast(SPELL_SEARING_FLAMES);
                             events.ScheduleEvent(EVENT_SEARING_FLAMES, urand(10, 15) * IN_MILLISECONDS);
-                            events.ScheduleEvent(EVENT_RESET_IMMUNITY, 0);
                             return;
                     }
                 }
