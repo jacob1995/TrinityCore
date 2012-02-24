@@ -601,7 +601,6 @@ void AddSC_boss_thaddius()
     new mob_stalagg();
     new mob_feugen();
     new spell_thaddius_pos_neg_charge();
-    new achievement_shocking();
     new spell_thaddius_polarity_shift();
     new achievement_polarity_switch();
 }
