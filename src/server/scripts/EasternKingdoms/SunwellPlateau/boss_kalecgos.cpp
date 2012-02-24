@@ -154,7 +154,7 @@ public:
 
             me->setFaction(14);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE + UNIT_FLAG_NOT_SELECTABLE);
-            me->RemoveUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
+            me->SetLevitate(false);
             me->SetVisible(true);
             me->SetStandState(UNIT_STAND_STATE_SLEEP);
 
@@ -244,9 +244,8 @@ public:
                 TalkTimer = 10000;
                 break;
             case 3:
-                me->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
-                me->GetMotionMaster()->Clear();
-                me->GetMotionMaster()->MovePoint(1,FLY_X,FLY_Y,FLY_Z);
+                me->SetLevitate(true);
+                me->GetMotionMaster()->MovePoint(1, FLY_X, FLY_Y, FLY_Z);
                 TalkTimer = 600000;
                 break;
             default:
@@ -263,9 +262,8 @@ public:
                 TalkTimer = 3000;
                 break;
             case 2:
-                me->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
-                me->GetMotionMaster()->Clear();
-                me->GetMotionMaster()->MovePoint(1,FLY_X,FLY_Y,FLY_Z);
+                me->SetLevitate(true);
+                me->GetMotionMaster()->MovePoint(1, FLY_X, FLY_Y, FLY_Z);
                 TalkTimer = 600000;
                 break;
             case 3:

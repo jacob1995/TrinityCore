@@ -137,7 +137,7 @@ void WorldSession::HandleAuctionSellItem(WorldPacket & recv_data)
         SendAuctionCommandResult(0, AUCTION_SELL_ITEM, AUCTION_INTERNAL_ERROR);
         return;
     }
-    
+
     for (uint32 i = 0; i < itemsCount; ++i)
     {
         recv_data >> itemGUIDs[i];
@@ -197,7 +197,7 @@ void WorldSession::HandleAuctionSellItem(WorldPacket & recv_data)
             return;
         }
 
-        if (sAuctionMgr->GetAItem(item->GetGUIDLow()) || !item->CanBeTraded() || item->IsNotEmptyBag() || 
+        if (sAuctionMgr->GetAItem(item->GetGUIDLow()) || !item->CanBeTraded() || item->IsNotEmptyBag() ||
             item->GetTemplate()->Flags & ITEM_PROTO_FLAG_CONJURED || item->GetUInt32Value(ITEM_FIELD_DURATION) ||
             item->GetCount() < count[i])
         {
@@ -318,28 +318,28 @@ void WorldSession::HandleAuctionSellItem(WorldPacket & recv_data)
             sAuctionMgr->AddAItem(newItem);
             auctionHouse->AddAuction(AH);
 
-            for (uint32 i = 0; i < itemsCount; ++i)
+            for (uint32 j = 0; j < itemsCount; ++j)
             {
-                Item* item = items[i];
+                Item* item2 = items[j];
 
-                if (item->GetCount() == count[i])
+                if (item2->GetCount() == count[j])
                 {
-                    _player->MoveItemFromInventory(item->GetBagSlot(), item->GetSlot(), true);
+                    _player->MoveItemFromInventory(item2->GetBagSlot(), item2->GetSlot(), true);
 
                     SQLTransaction trans = CharacterDatabase.BeginTransaction();
-                    item->DeleteFromInventoryDB(trans);
-                    item->SaveToDB(trans);
+                    item2->DeleteFromInventoryDB(trans);
+                    item2->SaveToDB(trans);
                     CharacterDatabase.CommitTransaction(trans);
                 }
                 else
                 {
-                    item->SetCount(item->GetCount() - count[i]);
-                    item->SetState(ITEM_CHANGED, _player);
-                    _player->ItemRemovedQuestCheck(item->GetEntry(), count[i]);
-                    item->SendUpdateToPlayer(_player);
+                    item2->SetCount(item2->GetCount() - count[j]);
+                    item2->SetState(ITEM_CHANGED, _player);
+                    _player->ItemRemovedQuestCheck(item2->GetEntry(), count[j]);
+                    item2->SendUpdateToPlayer(_player);
 
                     SQLTransaction trans = CharacterDatabase.BeginTransaction();
-                    item->SaveToDB(trans);
+                    item2->SaveToDB(trans);
                     CharacterDatabase.CommitTransaction(trans);
                 }
             }

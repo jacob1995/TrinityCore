@@ -197,7 +197,7 @@ public:
             Timer[EVENT_BERSERK] = 600000;
             FlightCount = 0;
 
-            me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING + MOVEMENTFLAG_ONTRANSPORT);
+            me->SetLevitate(true);
             me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 10);
             me->SetFloatValue(UNIT_FIELD_COMBATREACH, 10);
 
@@ -539,8 +539,7 @@ public:
                 Timer[EVENT_FLIGHT_SEQUENCE] = 0;
                 break;
             case 10:
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_LEVITATING + MOVEMENTFLAG_ONTRANSPORT);
-                me->StopMoving();
+                me->SetLevitate(false);
                 me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
                 EnterPhase(PHASE_GROUND);
                 //me->AI()->AttackStart(SelectTarget(SELECT_TARGET_TOPAGGRO, 0));

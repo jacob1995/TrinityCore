@@ -375,7 +375,7 @@ public:
                 if(Sorcerer)
                 {
                     CAST_AI(mob_ashtongue_sorcerer::mob_ashtongue_sorcererAI,Sorcerer->AI())->ShadeGUID = me->GetGUID();
-                    Sorcerer->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                    Sorcerer->SetWalk(false);
                     Sorcerer->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
                     Sorcerer->SetTarget(me->GetGUID());
                     Sorcerers.push_back(Sorcerer->GetGUID());
@@ -395,7 +395,7 @@ public:
                     Creature* Spawn = me->SummonCreature(spawnEntries[i], X, Y, Z_SPAWN, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     if(Spawn)
                     {
-                        Spawn->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                        Spawn->SetWalk(false);
                         Spawn->GetMotionMaster()->MovePoint(0, AGGRO_X, AGGRO_Y, AGGRO_Z);
                         Unit *ptarget = SelectTarget(SELECT_TARGET_RANDOM, 1);
                         Spawn->AI()->AttackStart(ptarget);
@@ -458,7 +458,7 @@ public:
                     Creature* Defender = me->SummonCreature(CREATURE_DEFENDER, SpawnLocations[ran].x, SpawnLocations[ran].y, Z_SPAWN, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 25000);
                     if(Defender)
                     {
-                        Defender->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                        Defender->SetWalk(false);
                         bool move = true;
                         if(AkamaGUID)
                         {
@@ -773,7 +773,7 @@ public:
                         {
                             ShadeHasDied = true;
                             WayPointId = 0;
-                            me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                            me->SetWalk(true);
                             me->GetMotionMaster()->MovePoint(WayPointId, AkamaWP[0].x, AkamaWP[0].y, AkamaWP[0].z);
                         }
                         if(Shade && Shade->isAlive())

@@ -639,6 +639,8 @@ public:
         {
             GetHitUnit()->ExitVehicle();
             GetHitUnit()->GetMotionMaster()->MoveJump(1756.25f + irand(-3, 3), -8.3f + irand(-3, 3), 449.0f, 10, 10);
+                //! Proper exit position does not work currently,
+                //! See documentation in void Unit::ExitVehicle(Position const* exitPosition)
         }
 
         void Register()

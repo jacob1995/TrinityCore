@@ -32,6 +32,7 @@
 #include "SpellScript.h"
 #include "Vehicle.h"
 #include "ulduar.h"
+#include "Spell.h"
 
 
 enum Spells
@@ -2118,6 +2119,71 @@ class spell_shield_generator : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_shield_generator_AuraScript();
+        }
+};
+
+class spell_vehicle_throw_passenger : public SpellScriptLoader
+{
+    public:
+        spell_vehicle_throw_passenger() : SpellScriptLoader("spell_vehicle_throw_passenger") {}
+
+        class spell_vehicle_throw_passenger_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_vehicle_throw_passenger_SpellScript);
+            void HandleScript(SpellEffIndex effIndex)
+            {
+                Spell* baseSpell = GetSpell();
+                SpellCastTargets targets = baseSpell->m_targets;
+                int32 damage = GetEffectValue();
+                if (targets.HasTraj())
+                    if (Vehicle* vehicle = GetCaster()->GetVehicleKit())
+                        if (Unit* passenger = vehicle->GetPassenger(damage - 1))
+                        {
+                            // use 99 because it is 3d search
+                            std::list<WorldObject*> targetList;
+                            Trinity::WorldObjectSpellAreaTargetCheck check(99, GetTargetDest(), GetCaster(), GetCaster(), GetSpellInfo(), TARGET_CHECK_DEFAULT, NULL);
+                            Trinity::WorldObjectListSearcher<Trinity::WorldObjectSpellAreaTargetCheck> searcher(GetCaster(), targetList, check);
+                            GetCaster()->GetMap()->VisitAll(GetCaster()->m_positionX, GetCaster()->m_positionY, 99, searcher);
+                            float minDist = 99 * 99;
+                            Unit* target = NULL;
+                            for (std::list<WorldObject*>::iterator itr = targetList.begin(); itr != targetList.end(); ++itr)
+                            {
+                                if (Unit* unit = (*itr)->ToUnit())
+                                    if (unit->GetEntry() == NPC_SEAT)
+                                        if (Vehicle* seat = unit->GetVehicleKit())
+                                            if (!seat->GetPassenger(0))
+                                                if (Unit* device = seat->GetPassenger(2))
+                                                    if (!device->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
+                                                    {
+                                                        float dist = unit->GetExactDistSq(targets.GetDst());
+                                                        if (dist < minDist)
+                                                        {
+                                                            minDist = dist;
+                                                            target = unit;
+                                                        }
+                                                    }
+                            }
+                            if (target && target->IsWithinDist2d(targets.GetDst(), GetSpellInfo()->Effects[effIndex].CalcRadius() * 2)) // now we use *2 because the location of the seat is not correct
+                                passenger->EnterVehicle(target, 0);
+                            else
+                            {
+                                passenger->ExitVehicle();
+                                float x, y, z;
+                                targets.GetDst()->GetPosition(x, y, z);
+                                passenger->GetMotionMaster()->MoveJump(x, y, z, targets.GetSpeedXY(), targets.GetSpeedZ());
+                            }
+                        }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_vehicle_throw_passenger_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_vehicle_throw_passenger_SpellScript();
         }
 };
 

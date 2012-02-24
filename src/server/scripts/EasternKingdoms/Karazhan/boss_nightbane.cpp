@@ -120,8 +120,8 @@ public:
             Flying = false;
 
             me->SetSpeed(MOVE_RUN, 2.0f);
-            me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
-            me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+            me->SetLevitate(true);
+            me->SetWalk(false);
             me->setActive(true);
 
             if (instance)
@@ -217,7 +217,7 @@ public:
             me->SetReactState(REACT_PASSIVE);
             me->InterruptSpell(CURRENT_GENERIC_SPELL);
             me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
-            me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
+            me->SetLevitate(true);
             me->GetMotionMaster()->Clear(false);
             me->GetMotionMaster()->MovePoint(8, IntroWay[2][0], IntroWay[2][1], IntroWay[2][2]);
 

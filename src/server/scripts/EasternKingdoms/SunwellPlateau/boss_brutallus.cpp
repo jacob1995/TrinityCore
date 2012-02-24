@@ -216,7 +216,9 @@ public:
                     break;
                 case 3:
                     DoCast(me, SPELL_INTRO_FROST_BLAST);
-                    Madrigosa->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
+                    Madrigosa->SetLevitate(true);
+                    me->AttackStop();
+                    Madrigosa->AttackStop();
                     IntroFrostBoltTimer = 3000;
                     IntroPhaseTimer = 28000;
                     ++IntroPhase;

@@ -306,7 +306,7 @@ class boss_urom : public CreatureScript
             {
                 Talk(SAY_DEATH);
                 _JustDied();
-                DoCast(me, SPELL_DEATH_SPELL, true);
+                DoCast(me, SPELL_DEATH_SPELL, true); // we cast the spell as triggered or the summon effect does not occur
             }
 
             void LeaveCombat()
