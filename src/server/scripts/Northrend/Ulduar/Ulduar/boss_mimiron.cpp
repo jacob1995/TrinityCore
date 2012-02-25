@@ -1233,25 +1233,26 @@ public:
             {
                 if (spinTimer <= diff)
                 {
+                    float orient = me->GetOrientation();
+                    orient += direction ? M_PI/60 : -M_PI/60;
+
                     if (Creature* leviathan = me->GetVehicleCreatureBase())
                     {
-                        float orient = leviathan->GetOrientation();
-                        leviathan->SetFacingTo(orient + (direction ? M_PI/60 : -M_PI/60));
-                        me->SetOrientation(orient + (direction ? M_PI/60 : -M_PI/60));
+                        leviathan->SetFacingTo(orient);
+                        me->SetOrientation(orient);
                     }
                     else
-                    {
-                        float orient = me->GetOrientation();
-                        me->SetFacingTo(orient + (direction ? M_PI/60 : -M_PI/60));
-                        float x, y, z;
-                        z = me->GetPositionZ();
-                        me->GetNearPoint2D(x, y, 10.0f, me->GetOrientation());
-                        if (Creature* temp = me->SummonCreature(NPC_BURST_TARGET, x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 250))
-                            me->SetTarget(temp->GetGUID());
-                    }
+                        me->SetFacingTo(orient);
+
+                    float x, y;
+                    me->GetNearPoint2D(x, y, 10.0f, me->GetOrientation());
+                    if (Creature* temp = me->SummonCreature(NPC_BURST_TARGET, x, y, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 500))
+                        me->SetTarget(temp->GetGUID());
+
                     spinTimer = 250;
                 }
-                else spinTimer -= diff;
+                else
+                    spinTimer -= diff;
             }
 
             _DoAggroPulse(diff);
@@ -1279,13 +1280,12 @@ public:
                                 float orient = float(2*M_PI * rand_norm());
                                 leviathan->CastSpell(leviathan, 14821, true); // temporary
                                 leviathan->SetFacingTo(orient);
-                                leviathan->SetOrientation(orient);
                                 me->SetOrientation(orient);
                             }
                             direction = urand(0, 1);
                             spinning = true;
                             DoCast(SPELL_SPINNING_UP);
-                            events.DelayEvents(14500);
+                            events.DelayEvents(15000);
                             events.RescheduleEvent(EVENT_LASER_BARRAGE, 60000);
                             events.RescheduleEvent(EVENT_LASER_BARRAGE_END, 14000);
                             break;

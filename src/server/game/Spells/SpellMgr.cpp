@@ -3580,11 +3580,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 64444: // Mimiron - Magnetic Core
                 spellInfo->rangeIndex = 6; // 100yd
                 break;
-            case 63414: // Mimiron - Spinning Up
-            case 63274: // Mimiron - Laser Barrage
-                // temporary remove channeled flag due to facing issues when casting on self
-                spellInfo->AttributesEx &= ~SPELL_ATTR1_CHANNELED_1;
-                break;
             case 63241: // Mangrove Ent 10 - Tranquility
             case 63554: // Mangrove Ent 25 - Tranquility
                 spellInfo->EffectImplicitTargetA[0] = TARGET_SRC_CASTER;
