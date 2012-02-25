@@ -1303,7 +1303,6 @@ class npc_hover_disc : public CreatureScript
             {
                 _move = false;
                 _checkTimer = 1*IN_MILLISECONDS;
-                _relocateTimer = 1*IN_MILLISECONDS;
                 me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_ARCANE_BOMB_KNOCKBACK, true);
             }
 
@@ -1356,14 +1355,6 @@ class npc_hover_disc : public CreatureScript
                         _count = 16;
                 }
 
-                if (_relocateTimer <= diff)
-                {
-                    me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                    _relocateTimer = 1*IN_MILLISECONDS;
-                }
-                else
-                    _relocateTimer -= diff;
-
                 if (!UpdateVictim())
                     return;
 
@@ -1393,7 +1384,6 @@ class npc_hover_disc : public CreatureScript
             bool _move;
             uint32 _count;
             uint32 _checkTimer;
-            uint32 _relocateTimer;
         };
 
         CreatureAI* GetAI(Creature* creature) const

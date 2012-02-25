@@ -2758,7 +2758,7 @@ const Position BlackKnightGryphonWaypoints[19] =
     {8374.00f, 798.35f, 547.93f, 0.0f},
     {8376.43f, 858.33f, 548.00f, 0.0f},
     {8388.22f, 868.56f, 547.78f, 0.0f},
-    {8465.58f, 871.45f, 547.30f, 0.0f},
+    {8473.82f, 875.34f, 547.30f, 0.0f},
     {8478.29f, 1014.63f, 547.30f, 0.0f},
     {8530.86f, 1037.65f, 547.30f, 0.0f},
     {8537.69f, 1078.33f, 554.80f, 0.0f},
@@ -2793,14 +2793,12 @@ public:
         bool isInUse;
         bool wpReached;
         uint8 count;
-        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
             wpReached = false;
             isInUse = false;
-            relocateTimer = 1000;
         }
 
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
@@ -2809,9 +2807,7 @@ public:
             {
                 isInUse = apply;
                 wpReached = true;
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                me->SetSpeed(MOVE_RUN, 2.0f);
-                me->SetSpeed(MOVE_FLIGHT, 3.5f);
+                me->SetWalk(true);
             }
         }
 
@@ -2824,9 +2820,8 @@ public:
             {
                 if (id > 11)
                 {
-                    me->SetUnitMovementFlags(MOVEMENTFLAG_LEVITATING);
-                    me->SetSpeed(MOVE_RUN, 5.0f);
-                    //me->SetFlying(true);
+                    DoCast(54422);
+                    me->SetSpeed(MOVE_FLIGHT, 4.0f);
                 }
 
                 ++count;
@@ -2844,22 +2839,13 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const diff)
+        void UpdateAI(uint32 const /*diff*/)
         {
             if (!me->IsVehicle())
                 return;
 
             if (!isInUse)
                 return;
-
-            // TODO: fix passenger relocation
-            if (relocateTimer <= diff)
-            {
-                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                relocateTimer = 1000;
-            }
-            else
-                relocateTimer -= diff;
 
             if (wpReached)
             {

@@ -32,7 +32,6 @@
 #include "SpellScript.h"
 #include "Vehicle.h"
 #include "ulduar.h"
-#include "Spell.h"
 
 
 enum Spells
@@ -466,8 +465,6 @@ class boss_flame_leviathan : public CreatureScript
                             break;
                         case EVENT_MISSILE:
                             DoCast(me, SPELL_MISSILE_BARRAGE, true);
-                            // temporary update passengers
-                            me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                             events.ScheduleEvent(EVENT_MISSILE, 1500);
                             break;
                         case EVENT_VENT:
@@ -481,9 +478,8 @@ class boss_flame_leviathan : public CreatureScript
                         case EVENT_SHUTDOWN:
                             DoScriptText(RAND(SAY_OVERLOAD_1, SAY_OVERLOAD_2, SAY_OVERLOAD_3), me);
                             me->MonsterTextEmote(EMOTE_OVERLOAD, 0, true);
-                            me->GetMotionMaster()->Clear(false);
-                            me->GetMotionMaster()->MoveIdle();
-                            me->CastSpell(me, SPELL_SYSTEMS_SHUTDOWN, true);
+                            me->StopMoving();
+                            DoCast(me, SPELL_SYSTEMS_SHUTDOWN, true);
                             events.DelayEvents(20*IN_MILLISECONDS);
                             events.ScheduleEvent(EVENT_REPAIR, 4*IN_MILLISECONDS);
                             break;
@@ -695,8 +691,6 @@ class npc_flame_leviathan_seat : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisplayId(me->GetCreatureInfo()->Modelid1);
                 me->setActive(true);
-                _loaded = false;
-                _relocateTimer = 1000;
             }
 
             void SetImmunitys(Unit* target, bool apply)
@@ -715,7 +709,6 @@ class npc_flame_leviathan_seat : public CreatureScript
             {
                 if (seatId == SEAT_PLAYER)
                 {
-                    _loaded = apply;
                     SetImmunitys(who, apply);
 
                     if (apply)
@@ -736,24 +729,8 @@ class npc_flame_leviathan_seat : public CreatureScript
                 }
             }
 
-            void UpdateAI(uint32 const diff)
-            {
-                if (!_loaded)
-                    return;
-
-                if (_relocateTimer <= diff)
-                {
-                    me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                    _relocateTimer = 1000;
-                }
-                else
-                    _relocateTimer -= diff;
-            }
-
         private:
             Vehicle* _vehicle;
-            uint32 _relocateTimer;
-            bool _loaded;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -2119,71 +2096,6 @@ class spell_shield_generator : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_shield_generator_AuraScript();
-        }
-};
-
-class spell_vehicle_throw_passenger : public SpellScriptLoader
-{
-    public:
-        spell_vehicle_throw_passenger() : SpellScriptLoader("spell_vehicle_throw_passenger") {}
-
-        class spell_vehicle_throw_passenger_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_vehicle_throw_passenger_SpellScript);
-            void HandleScript(SpellEffIndex effIndex)
-            {
-                Spell* baseSpell = GetSpell();
-                SpellCastTargets targets = baseSpell->m_targets;
-                int32 damage = GetEffectValue();
-                if (targets.HasTraj())
-                    if (Vehicle* vehicle = GetCaster()->GetVehicleKit())
-                        if (Unit* passenger = vehicle->GetPassenger(damage - 1))
-                        {
-                            // use 99 because it is 3d search
-                            std::list<WorldObject*> targetList;
-                            Trinity::WorldObjectSpellAreaTargetCheck check(99, GetTargetDest(), GetCaster(), GetCaster(), GetSpellInfo(), TARGET_CHECK_DEFAULT, NULL);
-                            Trinity::WorldObjectListSearcher<Trinity::WorldObjectSpellAreaTargetCheck> searcher(GetCaster(), targetList, check);
-                            GetCaster()->GetMap()->VisitAll(GetCaster()->m_positionX, GetCaster()->m_positionY, 99, searcher);
-                            float minDist = 99 * 99;
-                            Unit* target = NULL;
-                            for (std::list<WorldObject*>::iterator itr = targetList.begin(); itr != targetList.end(); ++itr)
-                            {
-                                if (Unit* unit = (*itr)->ToUnit())
-                                    if (unit->GetEntry() == NPC_SEAT)
-                                        if (Vehicle* seat = unit->GetVehicleKit())
-                                            if (!seat->GetPassenger(0))
-                                                if (Unit* device = seat->GetPassenger(2))
-                                                    if (!device->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
-                                                    {
-                                                        float dist = unit->GetExactDistSq(targets.GetDst());
-                                                        if (dist < minDist)
-                                                        {
-                                                            minDist = dist;
-                                                            target = unit;
-                                                        }
-                                                    }
-                            }
-                            if (target && target->IsWithinDist2d(targets.GetDst(), GetSpellInfo()->Effects[effIndex].CalcRadius() * 2)) // now we use *2 because the location of the seat is not correct
-                                passenger->EnterVehicle(target, 0);
-                            else
-                            {
-                                passenger->ExitVehicle();
-                                float x, y, z;
-                                targets.GetDst()->GetPosition(x, y, z);
-                                passenger->GetMotionMaster()->MoveJump(x, y, z, targets.GetSpeedXY(), targets.GetSpeedZ());
-                            }
-                        }
-            }
-
-            void Register()
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_vehicle_throw_passenger_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_vehicle_throw_passenger_SpellScript();
         }
 };
 

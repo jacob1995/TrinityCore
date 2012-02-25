@@ -627,14 +627,12 @@ public:
         uint8 count;
         bool wpReached;
         bool movementStarted;
-        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
             wpReached = false;
             movementStarted = false;
-            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
@@ -671,7 +669,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const diff)
+        void UpdateAI(uint32 const /*diff*/)
         {
             if (!me->isCharmed() && !movementStarted)
             {
@@ -679,15 +677,6 @@ public:
                 movementStarted = true;
                 wpReached = true;
             }
-
-            // TODO: fix passenger relocation
-            if (relocateTimer <= diff)
-            {
-                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                relocateTimer = 1000;
-            }
-            else
-                relocateTimer -= diff;
 
             if (wpReached)
             {
@@ -867,14 +856,12 @@ public:
         uint8 count;
         bool wpReached;
         bool movementStarted;
-        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
             wpReached = false;
             movementStarted = false;
-            relocateTimer = 1000;
         }
 
         void MovementInform(uint32 type, uint32 id)
@@ -898,22 +885,13 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const diff)
+        void UpdateAI(uint32 const /*diff*/)
         {
             if (!me->isCharmed() && !movementStarted)
             {
                 movementStarted = true;
                 wpReached = true;
             }
-
-            // TODO: fix passenger relocation
-            if (relocateTimer <= diff)
-            {
-                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                relocateTimer = 1000;
-            }
-            else
-                relocateTimer -= diff;
 
             if (wpReached)
             {
@@ -965,13 +943,11 @@ public:
 
         uint8 count;
         bool wpReached;
-        uint32 relocateTimer;
 
         void Reset()
         {
             count = 0;
             wpReached = false;
-            relocateTimer = 1000;
         }
 
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
@@ -1007,17 +983,8 @@ public:
             }
         }
 
-        void UpdateAI(uint32 const diff)
+        void UpdateAI(uint32 const /*diff*/)
         {
-            // TODO: fix passenger relocation
-            if (relocateTimer <= diff)
-            {
-                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                relocateTimer = 1000;
-            }
-            else
-                relocateTimer -= diff;
-
             if (wpReached)
             {
                 wpReached = false;
@@ -1200,7 +1167,7 @@ public:
 ## npc_archivist_mechaton
 ######*/
 
-enum eMechaton
+enum Mechaton
 {
     NPC_ARCHIVIST_MECHATON  = 29775,
     SPELL_ARCHIVISTS_SCAN   = 55224,
@@ -1224,9 +1191,9 @@ public:
 
     struct npc_archivist_mechatonAI : public ScriptedAI
     {
-        npc_archivist_mechatonAI(Creature* pCreature) : ScriptedAI(pCreature)
+        npc_archivist_mechatonAI(Creature* creature) : ScriptedAI(creature)
         {
-            if(me->isSummon())
+            if (me->isSummon())
             {
                 me->SummonGameObject(GO_FLOOR_GLYPH, 7991.89f, -827.66f, 968.156f, -2.33874f, 0, 0, 0, 0, 27);
                 me->SummonGameObject(GO_ENERGY_COLUMN, 7991.8f, -827.639f, 968.16f, 0.90757f, 0, 0, 0, 0, 27);
@@ -1235,15 +1202,15 @@ public:
             FirstTime = true;
         }
 
-        uint8   saycount;
-        uint32  saytimer;
-        bool    FirstTime;
+        uint8 saycount;
+        uint32 saytimer;
+        bool FirstTime;
 
         void Reset()
         {
             saytimer = 0;
 
-            if(FirstTime)
+            if (FirstTime)
                 saycount = 1;
             else
             {
@@ -1260,11 +1227,11 @@ public:
 
         void UpdateAI(uint32 const diff)
         {
-            if(saytimer <= diff)
+            if (saytimer <= diff)
             {
-                Unit* pSummoner = me->ToTempSummon()->GetSummoner();
+                Unit* summoner = me->ToTempSummon()->GetSummoner();
 
-                switch(saycount)
+                switch (saycount)
                 {
                     case 1:
                         Talk(SAY_1);
@@ -1280,7 +1247,7 @@ public:
                         break;
                     case 4:
                         Talk(SAY_4);
-                        me->CastSpell(pSummoner, SPELL_ARCHIVISTS_SCAN, true);
+                        me->CastSpell(summoner, SPELL_ARCHIVISTS_SCAN, true);
                         DoNextText(1100);
                         break;
                     case 5:
@@ -1300,23 +1267,25 @@ public:
                         Talk(SAY_7);
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         me->SetReactState(REACT_AGGRESSIVE);
-                        me->AI()->AttackStart(pSummoner);
+                        AttackStart(summoner);
                         DoNextText(0);
                         FirstTime = false;
                         break;
                 }
-            }else saytimer -= diff;
-
-            DoMeleeAttackIfReady();
+            }
+            else
+                saytimer -= diff;
 
             if (!UpdateVictim())
                 return;
+
+            DoMeleeAttackIfReady();
         }
     };
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new npc_archivist_mechatonAI(pCreature);
+        return new npc_archivist_mechatonAI(creature);
     }
 };
 
@@ -1349,18 +1318,18 @@ class npc_item_branns_communicator : public CreatureScript
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_INCOMPLETE
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_COMPLETE
                 || player->GetQuestStatus(QUEST_CATCHING_UP_WITH_BRANN) == QUEST_STATUS_REWARDED))
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+0);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_COMMUNICATOR_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 0);
 
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 uiAction)
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
         {
             player->PlayerTalkClass->ClearMenus();
-            switch (uiAction)
+            switch (action)
             {
-                case GOSSIP_ACTION_INFO_DEF+0:
+                case GOSSIP_ACTION_INFO_DEF + 0:
                     player->AddItem(ITEM_BRANNS_COMMUNICATOR, 1);
                     player->CLOSE_GOSSIP_MENU();
                     break;
