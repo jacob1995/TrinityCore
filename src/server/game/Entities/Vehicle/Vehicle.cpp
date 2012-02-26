@@ -48,7 +48,12 @@ Vehicle::Vehicle(Unit* unit, VehicleEntry const* vehInfo, uint32 creatureEntry) 
 Vehicle::~Vehicle()
 {
     for (SeatMap::const_iterator itr = Seats.begin(); itr != Seats.end(); ++itr)
+    {
+        if (itr->second.Passenger)
+            sLog->outError("Vehicle::~Vehicle() | passenger (%s), Base (%s), BaseEntry (%u), MapId (%u)", ObjectAccessor::GetUnit(*GetBase(), itr->second.Passenger) ? ObjectAccessor::GetUnit(*GetBase(), itr->second.Passenger)->GetName() : "n/a", GetBase()->GetName(), GetBase()->GetEntry(), GetBase()->GetMapId());
+
         ASSERT(!itr->second.Passenger);
+    }
 }
 
 void Vehicle::Install()
@@ -460,6 +465,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
         if (Unit* passenger = ObjectAccessor::GetUnit(*GetBase(), itr->second.Passenger))
         {
             ASSERT(passenger->IsInWorld());
+
+            if (!passenger->IsOnVehicle(GetBase()))
+                sLog->outError("Vehicle::RelocatePassengers() | passenger (%s) Base (%s) BaseEntry (%u) MapId (%u)", passenger->GetName(), GetBase()->GetName(), GetBase()->GetEntry(), passenger->GetMapId());
+
             ASSERT(passenger->IsOnVehicle(GetBase()));
             ASSERT(GetSeatForPassenger(passenger));
 

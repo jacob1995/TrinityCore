@@ -302,7 +302,7 @@ class boss_kologarn : public CreatureScript
                 // Victim gets 67351
                 if (eyebeamTarget)
                 {
-                    if (Unit* target = Unit::GetUnit(*summon, eyebeamTarget))
+                    if (Unit* target = ObjectAccessor::GetUnit(*summon, eyebeamTarget))
                     {
                         summon->Attack(target, false);
                         summon->GetMotionMaster()->MoveChase(target);
@@ -431,7 +431,7 @@ class npc_kologarn_arm : public CreatureScript
 
         struct npc_kologarn_armAI : public ScriptedAI
         {
-            npc_kologarn_armAI(Creature* c) : ScriptedAI(c) { }
+            npc_kologarn_armAI(Creature* creature) : ScriptedAI(creature) { }
 
             void Reset()
             {
@@ -495,12 +495,12 @@ class StoneGripTargetSelector : public std::unary_function<Unit *, bool>
     public:
         StoneGripTargetSelector(Creature* me, const Unit* victim) : _me(me), _victim(victim) {}
 
-        bool operator() (Unit* pTarget)
+        bool operator() (Unit* target)
         {
-            if (pTarget == _victim && _me->getThreatManager().getThreatList().size() > 1)
+            if (target == _victim && _me->getThreatManager().getThreatList().size() > 1)
                 return true;
 
-            if (pTarget->GetTypeId() != TYPEID_PLAYER)
+            if (target->GetTypeId() != TYPEID_PLAYER)
                 return true;
 
             return false;
@@ -529,7 +529,7 @@ class spell_ulduar_stone_grip_cast_target : public SpellScriptLoader
             void FilterTargetsInitial(std::list<Unit*>& unitList)
             {
                 // Remove "main tank" and non-player targets
-                unitList.remove_if (StoneGripTargetSelector(GetCaster()->ToCreature(), GetCaster()->getVictim()));
+                unitList.remove_if(StoneGripTargetSelector(GetCaster()->ToCreature(), GetCaster()->getVictim()));
                 // Maximum affected targets per difficulty mode
                 uint32 maxTargets = 1;
                 if (GetSpellInfo()->Id == 63981)
@@ -554,16 +554,15 @@ class spell_ulduar_stone_grip_cast_target : public SpellScriptLoader
 
             void HandleForceCast(SpellEffIndex i)
             {
-                Player* plr = GetHitPlayer();
+                Player* player = GetHitPlayer();
 
-                if (!plr)
+                if (!player)
                     return;
 
                 // Don't send m_originalCasterGUID param here or underlying AuraEffect::HandleAuraControlVehicle will fail on caster == target
-                plr->CastSpell(GetTargetUnit(), GetSpellInfo()->Effects[i].TriggerSpell, true);
+                player->CastSpell(GetTargetUnit(), GetSpellInfo()->Effects[i].TriggerSpell, true);
                 PreventHitEffect(i);
             }
-
 
             void Register()
             {
@@ -628,31 +627,31 @@ class spell_ulduar_cancel_stone_grip : public SpellScriptLoader
 
 class spell_ulduar_squeezed_lifeless : public SpellScriptLoader
 {
-public:
-    spell_ulduar_squeezed_lifeless() : SpellScriptLoader("spell_ulduar_squeezed_lifeless") { }
+    public:
+        spell_ulduar_squeezed_lifeless() : SpellScriptLoader("spell_ulduar_squeezed_lifeless") { }
 
-    class spell_ulduar_squeezed_lifeless_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_ulduar_squeezed_lifeless_SpellScript);
-
-        void MoveCorpse()
+        class spell_ulduar_squeezed_lifeless_SpellScript : public SpellScript
         {
-            GetHitUnit()->ExitVehicle();
-            GetHitUnit()->GetMotionMaster()->MoveJump(1756.25f + irand(-3, 3), -8.3f + irand(-3, 3), 449.0f, 10, 10);
+            PrepareSpellScript(spell_ulduar_squeezed_lifeless_SpellScript);
+
+            void MoveCorpse()
+            {
+                GetHitUnit()->ExitVehicle();
+                GetHitUnit()->GetMotionMaster()->MoveJump(1756.25f + irand(-3, 3), -8.3f + irand(-3, 3), 448.8f, 10.0f, 10.0f);
                 //! Proper exit position does not work currently,
                 //! See documentation in void Unit::ExitVehicle(Position const* exitPosition)
-        }
+            }
 
-        void Register()
+            void Register()
+            {
+                AfterHit += SpellHitFn(spell_ulduar_squeezed_lifeless_SpellScript::MoveCorpse);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
         {
-            AfterHit += SpellHitFn(spell_ulduar_squeezed_lifeless_SpellScript::MoveCorpse);
+            return new spell_ulduar_squeezed_lifeless_SpellScript();
         }
-    };
-
-    SpellScript* GetSpellScript() const
-    {
-        return new spell_ulduar_squeezed_lifeless_SpellScript();
-    }
 };
 
 class spell_ulduar_stone_grip_absorb : public SpellScriptLoader
@@ -710,27 +709,17 @@ class spell_ulduar_stone_grip : public SpellScriptLoader
                 }
             }
 
-            void OnRemoveVehicle(AuraEffect const* /*aurEff*/, AuraEffectHandleModes mode)
+            void OnRemoveVehicle(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                if (!(mode & AURA_EFFECT_HANDLE_REAL))
+                if (!GetCaster())
                     return;
 
-                if (GetOwner()->GetTypeId() != TYPEID_UNIT)
-                    return;
-
-                Player* pCaster = GetCaster() ? GetCaster()->ToPlayer() : NULL;
-                if (!pCaster || !pCaster->IsOnVehicle(GetOwner()->ToUnit()))
-                    return;
-
-                pCaster->RemoveAurasDueToSpell(GetId());
-                pCaster->ExitVehicle();
-                pCaster->GetMotionMaster()->MoveJump(1756.25f + irand(-3, 3), -8.3f + irand(-3, 3), 448.8f, 5.0f, 5.0f);
-                PreventDefaultAction();
+                GetCaster()->GetMotionMaster()->MoveJump(1756.25f + irand(-3, 3), -8.3f + irand(-3, 3), 448.8f, 10.0f, 10.0f);
             }
 
             void Register()
             {
-                OnEffectRemove += AuraEffectRemoveFn(spell_ulduar_stone_grip_AuraScript::OnRemoveVehicle, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_ulduar_stone_grip_AuraScript::OnRemoveVehicle, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
                 AfterEffectRemove += AuraEffectRemoveFn(spell_ulduar_stone_grip_AuraScript::OnRemoveStun, EFFECT_2, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
             }
         };
@@ -783,11 +772,6 @@ class achievement_with_open_arms : public AchievementCriteriaScript
         }
 };
 
-/*
-DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (32930);
-INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES
-(32930,46598,0,0,0,1,0,0,0); -- Kologarn - Arm - Ride Vehicle Hardcoded
-*/
 void AddSC_boss_kologarn()
 {
     new boss_kologarn();
