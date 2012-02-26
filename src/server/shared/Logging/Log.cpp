@@ -170,7 +170,7 @@ void Log::Initialize()
     arenaLogFile = openLogFile("ArenaLogFile", NULL, "a");
     sqlLogFile = openLogFile("SQLDriverLogFile", NULL, "a");
     sqlDevLogFile = openLogFile("SQLDeveloperLogFile", NULL, "a");
-    wardenLogFile = openLogFile("Warden.LogFile",NULL,"a");
+    wardenLogFile = openLogFile("Warden.LogFile", "WardenLogTimestamp", "a");
 
     // Main log file settings
     m_logLevel     = ConfigMgr::GetIntDefault("LogLevel", LOGL_NORMAL);
