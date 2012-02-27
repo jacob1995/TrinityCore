@@ -3400,9 +3400,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 61367: // Windfury, TODO: remove this when spell 32910 works as supposed
                 spellInfo->EffectTriggerSpell[0] = 65976;
                 break;
-            case 56278: // Read Pronouncement, missing EffectApplyAuraName
-                spellInfo->Effect[0] = SPELL_EFFECT_DUMMY;
-                break;
             case 53241: // Marked for Death (Rank 1)
             case 53243: // Marked for Death (Rank 2)
             case 53244: // Marked for Death (Rank 3)
