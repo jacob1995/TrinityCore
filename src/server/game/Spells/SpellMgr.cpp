@@ -3496,9 +3496,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 65077: // Flame Leviathan - Tower of Frost
                 spellInfo->Effect[0] = SPELL_EFFECT_APPLY_AURA;
                 break;
-            //case 62374: // Pursued (Flame Leviathan)
-                //spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_50000_YARDS;   // 50000yd
-                //break;
             case 62017: // Thorim - Lightning Shock
             case 62042: // Thorim - Stormhammer
                 spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;

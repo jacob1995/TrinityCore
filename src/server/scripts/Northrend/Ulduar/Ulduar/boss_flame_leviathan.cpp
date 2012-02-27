@@ -391,7 +391,6 @@ class boss_flame_leviathan : public CreatureScript
                     DoResetThreat();
                     me->AddThreat(target, 9999999.0f);
                     me->GetMotionMaster()->MoveChase(target);
-
                     _pursueTarget = target->GetGUID();
 
                     if (Player* player = target->GetCharmerOrOwnerPlayerOrPlayerItself())
@@ -611,7 +610,7 @@ class boss_flame_leviathan : public CreatureScript
                     if (me->isAttackReady())
                     {
                         Unit* target = ObjectAccessor::GetUnit(*me, _pursueTarget);
-                        if (me->IsWithinCombatRange(target, 15.0f))
+                        if (me->IsWithinCombatRange(target, 10.0f))
                         {
                             DoCast(target, SPELL_BATTERING_RAM);
                             me->resetAttackTimer();
@@ -1735,6 +1734,47 @@ class spell_anti_air_rocket : public SpellScriptLoader
         }
 };
 
+class FlameLeviathanPursuedTargetSelector
+{
+    public:
+        bool operator() (Unit* unit)
+        {
+            // check area
+            if (unit->GetAreaId() != AREA_FORMATION_GROUNDS)
+                return true;
+
+            // ignore players loaded on leviathan seats
+            if (unit->GetVehicleBase() && unit->GetVehicleBase()->GetEntry() == NPC_SEAT)
+                return true;
+
+            // if target is creature
+            Creature* creatureTarget = unit->ToCreature();
+            if (creatureTarget)
+            {
+                // needs to be one of the 3 vehicles
+                if (creatureTarget->GetEntry() != VEHICLE_DEMOLISHER &&
+                    creatureTarget->GetEntry() != VEHICLE_SIEGE &&
+                    creatureTarget->GetEntry() != VEHICLE_CHOPPER)
+                    return true;
+
+                // must be a valid vehicle installation
+                Vehicle* vehicle = creatureTarget->GetVehicleKit();
+                if (!vehicle)
+                    return true;
+
+                // vehicle must be in use by player
+                bool playerFound = false;
+                for (SeatMap::const_iterator itr = vehicle->Seats.begin(); itr != vehicle->Seats.end() && !playerFound; ++itr)
+                    if (IS_PLAYER_GUID(itr->second.Passenger))
+                        playerFound = true;
+
+                return !playerFound;
+            }
+
+            return false;
+        }
+};
+
 class spell_pursued : public SpellScriptLoader
 {
     public:
@@ -1752,11 +1792,14 @@ class spell_pursued : public SpellScriptLoader
 
             void SelectTarget(std::list<Unit*>& unitList)
             {
+                unitList.remove_if(FlameLeviathanPursuedTargetSelector());
                 if (unitList.empty())
+                {
+                    GetCaster()->ToCreature()->AI()->EnterEvadeMode();
                     return;
+                }
 
                 std::list<Unit*> tempList;
-
                 // try to find demolisher or siege engine first (not the current target)
                 for (std::list<Unit*>::iterator itr = unitList.begin(); itr != unitList.end(); ++itr)
                 {
@@ -1786,17 +1829,15 @@ class spell_pursued : public SpellScriptLoader
 
                 if (!tempList.empty())
                 {
-                    // found one or more vehicles, select a random one
+                    // found one or more vehicles, select one
                     _target = SelectRandomContainerElement(tempList);
-                    unitList.clear();
-                    unitList.push_back(_target);
+                    SetTarget(unitList);
                 }
                 else
                 {
-                    // found no vehicles, select a random player or pet
+                    // found no vehicles, select a random target
                     _target = SelectRandomContainerElement(unitList);
-                    unitList.clear();
-                    unitList.push_back(_target);
+                    SetTarget(unitList);
                 }
             }
 
@@ -1860,7 +1901,7 @@ class spell_load_into_catapult : public SpellScriptLoader
 {
     enum Spells
     {
-        SPELL_PASSENGER_LOADED = 62340,
+        SPELL_PASSENGER_LOADED = 62340
     };
 
     public:

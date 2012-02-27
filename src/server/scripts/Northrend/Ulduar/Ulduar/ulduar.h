@@ -305,6 +305,11 @@ enum UlduarWorldstates
     WORLDSTATE_ALGALON_SHOW = 4132
 };
 
+enum Area
+{
+    AREA_FORMATION_GROUNDS = 4652
+};
+
 class PlayerOrPetCheck
 {
     public:

@@ -240,8 +240,35 @@ public:
                     if (i < TYPE_ALGALON)
                         uiPlayerDeathFlag |= UlduarBossDeadFlags(TypeToDeadFlag(i));
                     else if (i == TYPE_ALGALON)
-                        uiAlgalonKillCount++; // He feeds on your tears
+                        ++uiAlgalonKillCount; // He feeds on your tears
                 }
+            }
+        }
+
+        void OnCreatureDeath(Creature* creature)
+        {
+            // reward leviathan kill all over the formation grounds area
+            if (creature->GetEntry() == NPC_LEVIATHAN)
+            {
+                Map::PlayerList const &playerList = instance->GetPlayers();
+
+                if (playerList.isEmpty())
+                    return;
+
+                for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
+                    if (Player* player = i->getSource())
+                    {
+                        // has been rewarded
+                        if (player->IsAtGroupRewardDistance(creature))
+                            continue;
+
+                        // is somewhere else
+                        if (player->GetAreaId() != AREA_FORMATION_GROUNDS)
+                            continue;
+
+                        if (player->isAlive() || !player->GetCorpse())
+                            player->KilledMonsterCredit(NPC_LEVIATHAN, 0);
+                    }
             }
         }
 

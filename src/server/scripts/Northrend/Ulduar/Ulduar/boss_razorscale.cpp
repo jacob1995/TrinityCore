@@ -307,9 +307,10 @@ class go_razorscale_harpoon : public GameObjectScript
 
         bool OnGossipHello(Player* /*player*/, GameObject* go)
         {
-            InstanceScript* instance = go->GetInstanceScript();
-            if (ObjectAccessor::GetCreature(*go, instance ? instance->GetData64(TYPE_RAZORSCALE) : 0))
-                go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+            if (go->HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE))
+                return true;
+
+            go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
             return false;
         }
 };
@@ -383,11 +384,19 @@ class boss_razorscale : public CreatureScript
 
             void MovementInform(uint32 type, uint32 id)
             {
-                if (type == POINT_MOTION_TYPE && id == 1)
+                if (type != POINT_MOTION_TYPE)
+                    return;
+
+                switch (id)
                 {
-                    phase = PHASE_GROUND;
-                    events.SetPhase(PHASE_GROUND);
-                    events.ScheduleEvent(EVENT_LAND, 0, 0, PHASE_GROUND);
+                    case 1:
+                        phase = PHASE_GROUND;
+                        events.SetPhase(PHASE_GROUND);
+                        events.ScheduleEvent(EVENT_LAND, 0, 0, PHASE_GROUND);
+                        break;
+                    case 2:
+                        me->SetFacingTo(RazorFlight.GetOrientation());
+                        break;
                 }
             }
 
@@ -440,7 +449,7 @@ class boss_razorscale : public CreatureScript
                                 me->RemoveAllAuras();
                                 me->SetReactState(REACT_PASSIVE);
                                 me->AttackStop();
-                                me->GetMotionMaster()->MovePoint(0, RazorFlight);
+                                me->GetMotionMaster()->MovePoint(2, RazorFlight);
                                 events.ScheduleEvent(EVENT_FIREBALL, 7000, 0, PHASE_FLIGHT);
                                 events.ScheduleEvent(EVENT_DEVOURING, 10000, 0, PHASE_FLIGHT);
                                 events.ScheduleEvent(EVENT_SUMMON, 5000, 0, PHASE_FLIGHT);
