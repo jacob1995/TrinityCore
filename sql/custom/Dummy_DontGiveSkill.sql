@@ -1,2 +1,0 @@
-UPDATE creature_template SET `flags_extra` = `flags_extra` | "262144" WHERE scriptname = "npc_training_dummy";
-UPDATE creature_template SET `flags_extra` = `flags_extra` | "262144" WHERE scriptname = "npc_wyrm_training_dummy";
