@@ -1342,7 +1342,7 @@ class npc_defense_system : public CreatureScript
         {
             npc_defense_systemAI(Creature* c) : Scripted_NoMovementAI(c)
             {
-                me->SetDisplayId(me->GetCreatureInfo()->Modelid2);
+                me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
             }
 
             void Reset()

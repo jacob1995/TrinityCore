@@ -345,6 +345,7 @@ void WorldSession::HandleAuctionSellItem(WorldPacket & recv_data)
             }
 
             SQLTransaction trans = CharacterDatabase.BeginTransaction();
+            newItem->SaveToDB(trans);
             AH->SaveToDB(trans);
             _player->SaveInventoryAndGoldToDB(trans);
             CharacterDatabase.CommitTransaction(trans);

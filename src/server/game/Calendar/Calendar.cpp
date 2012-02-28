@@ -16,6 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Player.h"
 #include "Calendar.h"
 
 std::string CalendarInvite::GetDebugString() const
@@ -40,8 +41,8 @@ void CalendarInvite::Init()
     _invitee = 0;
     _senderGUID = 0;
     _statusTime = 0;
-    _status = 0;
-    _rank = 0;
+    _status = CALENDAR_STATUS_INVITED; // default (0)?
+    _rank = CALENDAR_RANK_PLAYER;
     _text = "";
 }
 
@@ -88,7 +89,7 @@ std::string CalendarAction::GetDebugString() const
 
     data << "CalendarAction::"
         << " Action: " << GetAction()
-        << " Guid: " << GetGUID()
+        << " Guid: " << GetPlayer()->GetGUID()
         << " Invite Id: " << GetInviteId()
         << " Extra data: " << GetExtraData()
         << " Event: " << Event.GetDebugString()

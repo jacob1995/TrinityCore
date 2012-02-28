@@ -37,6 +37,9 @@ enum WarlockSpells
     WARLOCK_FELHUNTER_SHADOWBITE_R1         = 54049,
     WARLOCK_FELHUNTER_SHADOWBITE_R2         = 54050,
     WARLOCK_FELHUNTER_SHADOWBITE_R3         = 54051,
+    WARLOCK_DEMONIC_CIRCLE_SUMMON           = 48018,
+    WARLOCK_DEMONIC_CIRCLE_TELEPORT         = 48020,
+    WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST       = 62388,
     WARLOCK_FELHUNTER_SHADOWBITE_R4         = 54052,
     WARLOCK_FELHUNTER_SHADOWBITE_R5         = 54053,
     WARLOCK_IMPROVED_FELHUNTER_R1           = 54037,
@@ -411,11 +414,7 @@ class spell_warl_soulshatter : public SpellScriptLoader
                 if (Unit* target = GetHitUnit())
                 {
                     if (target->CanHaveThreatList() && target->getThreatManager().getThreat(caster) > 0.0f)
-                    {
-                        sLog->outString("THREATREDUCTION");
                         caster->CastSpell(target, SPELL_SOULSHATTER, true);
-                    } else
-                        sLog->outString("can have threat? %u . threat number? %f ",target->CanHaveThreatList(),target->getThreatManager().getThreat(caster));
                 }
             }
 
@@ -527,6 +526,90 @@ class spell_warl_life_tap : public SpellScriptLoader
         }
 };
 
+class spell_warl_demonic_circle_summon : public SpellScriptLoader
+{
+    public:
+        spell_warl_demonic_circle_summon() : SpellScriptLoader("spell_warl_demonic_circle_summon") { }
+
+        class spell_warl_demonic_circle_summon_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_demonic_circle_summon_AuraScript);
+
+            void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes mode)
+            {
+                // If effect is removed by expire remove the summoned demonic circle too.
+                if (!(mode & AURA_EFFECT_HANDLE_REAPPLY))
+                    GetTarget()->RemoveGameObject(GetId(), true);
+
+                GetTarget()->RemoveAura(WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST);
+            }
+
+            void HandleDummyTick(AuraEffect const* /*aurEff*/)
+            {
+                if (GameObject* circle = GetTarget()->GetGameObject(GetId()))
+                {
+                    // Here we check if player is in demonic circle teleport range, if so add 
+                    // WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST; allowing him to cast the WARLOCK_DEMONIC_CIRCLE_TELEPORT.
+                    // If not in range remove the WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST.
+
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(WARLOCK_DEMONIC_CIRCLE_TELEPORT);
+
+                    if (GetTarget()->IsWithinDist(circle, spellInfo->GetMaxRange(true)))
+                    {
+                        if (!GetTarget()->HasAura(WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST))
+                            GetTarget()->CastSpell(GetTarget(), WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST, true);
+                    }
+                    else
+                        GetTarget()->RemoveAura(WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectRemove += AuraEffectApplyFn(spell_warl_demonic_circle_summon_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_warl_demonic_circle_summon_AuraScript::HandleDummyTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_demonic_circle_summon_AuraScript();
+        }
+};
+
+class spell_warl_demonic_circle_teleport : public SpellScriptLoader
+{
+    public:
+        spell_warl_demonic_circle_teleport() : SpellScriptLoader("spell_warl_demonic_circle_teleport") { }
+
+        class spell_warl_demonic_circle_teleport_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_demonic_circle_teleport_AuraScript);
+
+            void HandleTeleport(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetTarget()->ToPlayer())
+                {
+                    if (GameObject* circle = player->GetGameObject(WARLOCK_DEMONIC_CIRCLE_SUMMON))
+                    {
+                        player->NearTeleportTo(circle->GetPositionX(), circle->GetPositionY(), circle->GetPositionZ(), circle->GetOrientation());
+                        player->RemoveMovementImpairingAuras();
+                    }
+                }
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_warl_demonic_circle_teleport_AuraScript::HandleTeleport, EFFECT_0, SPELL_AURA_MECHANIC_IMMUNITY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_demonic_circle_teleport_AuraScript();
+        }
+};
+
 void AddSC_warlock_spell_scripts()
 {
     new spell_warl_demonic_empowerment();
@@ -538,4 +621,6 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_banish();
     new spell_warl_soulshatter();
     new spell_warl_life_tap();
+    new spell_warl_demonic_circle_summon();
+    new spell_warl_demonic_circle_teleport();
 }

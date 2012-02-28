@@ -2036,7 +2036,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
         else
             parry_chance -= GetTotalAuraModifier(SPELL_AURA_MOD_EXPERTISE) * 25;
 
-        if (victim->GetTypeId() == TYPEID_PLAYER || !(victim->ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_PARRY))
+        if (victim->GetTypeId() == TYPEID_PLAYER || !(victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_PARRY))
         {
             int32 tmp2 = int32(parry_chance);
             if (tmp2 > 0                                         // check if unit _can_ parry
@@ -2048,7 +2048,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
             }
         }
 
-        if (victim->GetTypeId() == TYPEID_PLAYER || !(victim->ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_BLOCK))
+        if (victim->GetTypeId() == TYPEID_PLAYER || !(victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_BLOCK))
         {
             tmp = block_chance;
             if (tmp > 0                                          // check if unit _can_ block
@@ -2067,7 +2067,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
     if (tmp > 0 && roll < (sum += tmp))
     {
         sLog->outStaticDebug ("RollMeleeOutcomeAgainst: CRIT <%d, %d)", sum-tmp, sum);
-        if (GetTypeId() == TYPEID_UNIT && (ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_CRIT))
+        if (GetTypeId() == TYPEID_UNIT && (ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_CRIT))
             sLog->outStaticDebug ("RollMeleeOutcomeAgainst: CRIT DISABLED)");
         else
             return MELEE_HIT_CRIT;
@@ -2097,7 +2097,7 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
     if (getLevelForTarget(victim) >= victim->getLevelForTarget(this) + 4 &&
         // can be from by creature (if can) or from controlled player that considered as creature
         !IsControlledByPlayer() &&
-        !(GetTypeId() == TYPEID_UNIT && ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_CRUSH))
+        !(GetTypeId() == TYPEID_UNIT && ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_CRUSH))
     {
         // when their weapon skill is 15 or more above victim's defense skill
         tmp = victimDefenseSkill;
@@ -2211,7 +2211,7 @@ bool Unit::isSpellBlocked(Unit* victim, SpellInfo const* spellProto, WeaponAttac
     {
         // Check creatures flags_extra for disable block
         if (victim->GetTypeId() == TYPEID_UNIT &&
-            victim->ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_BLOCK)
+            victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_BLOCK)
                 return false;
 
         float blockChance = victim->GetUnitBlockChance();
@@ -2349,7 +2349,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spell)
     // Check creatures flags_extra for disable parry
     if (victim->GetTypeId() == TYPEID_UNIT)
     {
-        uint32 flagEx = victim->ToCreature()->GetCreatureInfo()->flags_extra;
+        uint32 flagEx = victim->ToCreature()->GetCreatureTemplate()->flags_extra;
         if (flagEx & CREATURE_FLAG_EXTRA_NO_PARRY)
             canParry = false;
         // Check creatures flags_extra for disable block
@@ -9206,7 +9206,7 @@ FactionTemplateEntry const* Unit::getFactionTemplateEntry() const
             if (Player const* player = ToPlayer())
                 sLog->outError("Player %s has invalid faction (faction template id) #%u", player->GetName(), getFaction());
             else if (Creature const* creature = ToCreature())
-                sLog->outError("Creature (template id: %u) has invalid faction (faction template id) #%u", creature->GetCreatureInfo()->Entry, getFaction());
+                sLog->outError("Creature (template id: %u) has invalid faction (faction template id) #%u", creature->GetCreatureTemplate()->Entry, getFaction());
             else
                 sLog->outError("Unit (name=%s, type=%u) has invalid faction (faction template id) #%u", GetName(), uint32(GetTypeId()), getFaction());
 
@@ -10336,7 +10336,7 @@ uint32 Unit::SpellDamageBonus(Unit* victim, SpellInfo const* spellProto, uint32 
     // ..done
     // Pet damage?
     if (GetTypeId() == TYPEID_UNIT && !ToCreature()->isPet())
-        DoneTotalMod *= ToCreature()->GetSpellDamageMod(ToCreature()->GetCreatureInfo()->rank);
+        DoneTotalMod *= ToCreature()->GetSpellDamageMod(ToCreature()->GetCreatureTemplate()->rank);
 
     AuraEffectList const& mModDamagePercentDone = GetAuraEffectsByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
     for (AuraEffectList::const_iterator i = mModDamagePercentDone.begin(); i != mModDamagePercentDone.end(); ++i)
@@ -12153,7 +12153,7 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
             UpdateSpeed(MOVE_FLIGHT, true);
         }
 
-        if (!(creature->GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_MOUNTED_COMBAT))
+        if (!(creature->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_MOUNTED_COMBAT))
             Dismount();
     }
 
@@ -12172,12 +12172,12 @@ void Unit::ClearInCombat()
     // Player's state will be cleared in Player::UpdateContestedPvP
     if (Creature* creature = ToCreature())
     {
-        if (creature->GetCreatureInfo() && creature->GetCreatureInfo()->unit_flags & UNIT_FLAG_IMMUNE_TO_PC)
+        if (creature->GetCreatureTemplate() && creature->GetCreatureTemplate()->unit_flags & UNIT_FLAG_IMMUNE_TO_PC)
             SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC); // set immunity state to the one from db on evade
 
         ClearUnitState(UNIT_STATE_ATTACK_PLAYER);
         if (HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED))
-            SetUInt32Value(UNIT_DYNAMIC_FLAGS, creature->GetCreatureInfo()->dynamicflags);
+            SetUInt32Value(UNIT_DYNAMIC_FLAGS, creature->GetCreatureTemplate()->dynamicflags);
 
         if (creature->isPet())
         {
@@ -12292,7 +12292,7 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell) co
     }
 
     Creature const* creatureAttacker = ToCreature();
-    if (creatureAttacker && creatureAttacker->GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_UNK26)
+    if (creatureAttacker && creatureAttacker->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_UNK26)
         return false;
 
     Player const* playerAffectingAttacker = HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) ? GetAffectingPlayer() : NULL;
@@ -12379,7 +12379,7 @@ bool Unit::_IsValidAssistTarget(Unit const* target, SpellInfo const* bySpell) co
     // can't assist non-friendly targets
     if (GetReactionTo(target) <= REP_NEUTRAL
         && target->GetReactionTo(this) <= REP_NEUTRAL
-        && (!ToCreature() || !(ToCreature()->GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_UNK26)))
+        && (!ToCreature() || !(ToCreature()->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_UNK26)))
         return false;
 
     // PvP case
@@ -12413,7 +12413,7 @@ bool Unit::_IsValidAssistTarget(Unit const* target, SpellInfo const* bySpell) co
         && !((target->GetByteValue(UNIT_FIELD_BYTES_2, 1) & UNIT_BYTE2_FLAG_PVP)))
     {
         if (Creature const* creatureTarget = target->ToCreature())
-            return creatureTarget->GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_UNK26 || creatureTarget->GetCreatureInfo()->type_flags & CREATURE_TYPEFLAGS_AID_PLAYERS;
+            return creatureTarget->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_UNK26 || creatureTarget->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_AID_PLAYERS;
     }
     return true;
 }
@@ -12638,7 +12638,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         {
             // Set creature speed rate from CreatureInfo
             if (GetTypeId() == TYPEID_UNIT)
-                speed *= ToCreature()->GetCreatureInfo()->speed_walk;
+                speed *= ToCreature()->GetCreatureTemplate()->speed_walk;
 
             // Normalize speed by 191 aura SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED if need
             // TODO: possible affect only on MOVE_RUN
@@ -13328,7 +13328,7 @@ float Unit::ApplyDiminishingToDuration(DiminishingGroup group, int32 &duration, 
         Unit const* source = casterOwner ? casterOwner : caster;
 
         if ((target->GetTypeId() == TYPEID_PLAYER
-            || ((Creature*)target)->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_ALL_DIMINISH)
+            || ((Creature*)target)->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_ALL_DIMINISH)
             && source->GetTypeId() == TYPEID_PLAYER)
             duration = limitduration;
     }
@@ -13337,7 +13337,7 @@ float Unit::ApplyDiminishingToDuration(DiminishingGroup group, int32 &duration, 
 
     if (group == DIMINISHING_TAUNT)
     {
-        if (GetTypeId() == TYPEID_UNIT && (ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_TAUNT_DIMINISH))
+        if (GetTypeId() == TYPEID_UNIT && (ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_TAUNT_DIMINISH))
         {
             DiminishingLevels diminish = Level;
             switch (diminish)
@@ -13354,7 +13354,7 @@ float Unit::ApplyDiminishingToDuration(DiminishingGroup group, int32 &duration, 
     // Some diminishings applies to mobs too (for example, Stun)
     else if ((GetDiminishingReturnsGroupType(group) == DRTYPE_PLAYER
         && ((targetOwner ? (targetOwner->GetTypeId() == TYPEID_PLAYER) : (GetTypeId() == TYPEID_PLAYER))
-        || (GetTypeId() == TYPEID_UNIT && ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_ALL_DIMINISH)))
+        || (GetTypeId() == TYPEID_UNIT && ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_ALL_DIMINISH)))
         || GetDiminishingReturnsGroupType(group) == DRTYPE_ALL)
     {
         DiminishingLevels diminish = Level;
@@ -13438,7 +13438,7 @@ uint32 Unit::GetCreatureType() const
             return CREATURE_TYPE_HUMANOID;
     }
     else
-        return ToCreature()->GetCreatureInfo()->type;
+        return ToCreature()->GetCreatureTemplate()->type;
 }
 
 /*#######################################
@@ -14031,12 +14031,7 @@ void CharmInfo::InitCharmCreateSpells()
                 newstate = ACT_PASSIVE;
             else
             {
-                bool autocast = false;
-                for (uint32 i = 0; i < MAX_SPELL_EFFECTS && !autocast; ++i)
-                    if (spellInfo->Effects[i].TargetA.GetType() == TARGET_TYPE_UNIT_TARGET)
-                        autocast = true;
-
-                if (autocast)
+                if (spellInfo->NeedsExplicitUnitTarget())
                 {
                     newstate = ACT_ENABLED;
                     ToggleCreatureAutocast(spellInfo, true);
@@ -15526,11 +15521,11 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                 creature->lootForPickPocketed = false;
 
             loot->clear();
-            if (uint32 lootid = creature->GetCreatureInfo()->lootid)
+            if (uint32 lootid = creature->GetCreatureTemplate()->lootid)
                 loot->FillLoot(lootid, LootTemplates_Creature, looter, false, false, creature->GetLootMode());
 
             if (creature->GetLootMode()) // no lootmode, no money
-                loot->generateMoneyLoot(creature->GetCreatureInfo()->mingold, creature->GetCreatureInfo()->maxgold);
+                loot->generateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
         }
 
         player->RewardPlayerAndGroupAtKill(victim, false);
@@ -15634,7 +15629,7 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
         if (!creature->isPet())
         {
             creature->DeleteThreatList();
-            CreatureTemplate const* cInfo = creature->GetCreatureInfo();
+            CreatureTemplate const* cInfo = creature->GetCreatureTemplate();
             if (cInfo && (cInfo->lootid || cInfo->maxgold > 0))
                 creature->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
         }
@@ -15663,12 +15658,12 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
             {
                 if (instanceMap->IsRaidOrHeroicDungeon())
                 {
-                    if (creature->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_INSTANCE_BIND)
+                    if (creature->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_INSTANCE_BIND)
                     {
                         ((InstanceMap*)instanceMap)->PermBindAllPlayers(creditedPlayer);
                         /* World of Warcraft Armory */
                         if (sWorld->getBoolConfig(CONFIG_ARMORY_ENABLE))
-                            creditedPlayer->CreateWowarmoryFeed(3, creature->GetCreatureInfo()->Entry, 0, 0);
+                            creditedPlayer->CreateWowarmoryFeed(3, creature->GetCreatureTemplate()->Entry, 0, 0);
                         /* World of Warcraft Armory */
                     }
                 }
@@ -16078,7 +16073,7 @@ bool Unit::SetCharmedBy(Unit* charmer, CharmType type, AuraApplication const* au
             case CHARM_TYPE_CHARM:
                 if (GetTypeId() == TYPEID_UNIT && charmer->getClass() == CLASS_WARLOCK)
                 {
-                    CreatureTemplate const* cinfo = ToCreature()->GetCreatureInfo();
+                    CreatureTemplate const* cinfo = ToCreature()->GetCreatureTemplate();
                     if (cinfo && cinfo->type == CREATURE_TYPE_DEMON)
                     {
                         // to prevent client crash
@@ -16182,7 +16177,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
             case CHARM_TYPE_CHARM:
                 if (GetTypeId() == TYPEID_UNIT && charmer->getClass() == CLASS_WARLOCK)
                 {
-                    CreatureTemplate const* cinfo = ToCreature()->GetCreatureInfo();
+                    CreatureTemplate const* cinfo = ToCreature()->GetCreatureTemplate();
                     if (cinfo && cinfo->type == CREATURE_TYPE_DEMON)
                     {
                         SetByteValue(UNIT_FIELD_BYTES_0, 1, uint8(cinfo->unit_class));
@@ -16221,7 +16216,7 @@ void Unit::RestoreFaction()
             }
         }
 
-        if (CreatureTemplate const* cinfo = ToCreature()->GetCreatureInfo())  // normal creature
+        if (CreatureTemplate const* cinfo = ToCreature()->GetCreatureTemplate())  // normal creature
         {
             FactionTemplateEntry const* faction = getFactionTemplateEntry();
             setFaction((faction && faction->friendlyMask & 0x004) ? cinfo->faction_H : cinfo->faction_A);
