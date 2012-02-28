@@ -690,3 +690,13 @@ update gameobject_template set scriptname = 'go_ice_stone' where entry = 188049;
 DELETE FROM spell_script_names WHERE spell_id IN (-54049,54049,54050,54051,54052,54053);
 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (-54049, 'spell_warl_shadow_bite');
 
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (62775,62680,63472);
+INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES 
+(62680, 'spell_ignis_flame_jets'),
+(63472, 'spell_ignis_flame_jets');
+
+-- Paladin (Def)
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pal_righteous_defense';
+INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
+(31789, 'spell_pal_righteous_defense');
+
