@@ -67,7 +67,6 @@ void AddSC_gps_commandscript();
 #ifdef SCRIPTS
 void AddSC_lol_custom();
 void AddSC_lol_event();
-void AddSC_lol_codebox();
 //world
 void AddSC_areatrigger_scripts();
 void AddSC_emerald_dragons();
@@ -1271,6 +1270,5 @@ void AddCustomScripts()
     /* This is where custom scripts should be added. */
     AddSC_lol_custom();
     AddSC_lol_event();
-    AddSC_lol_codebox();
 #endif
 }

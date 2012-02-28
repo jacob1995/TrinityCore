@@ -1,33 +1,3 @@
-CREATE TABLE `chatticker` (
-  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `name` varchar(12) NOT NULL,
-  `race` tinyint(3) NOT NULL,
-  `text` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `timestamp` (`timestamp`)
-);
-
-CREATE TABLE `codes_item_loot` (
-	`group_id` MEDIUMINT(10) NOT NULL DEFAULT '0' COMMENT 'Group that the items belong to',
-	`item_id` MEDIUMINT(10) NOT NULL DEFAULT '0' COMMENT 'GUID of item',
-	`name` VARCHAR(25) NULL DEFAULT NULL COMMENT 'Name of Item',
-	PRIMARY KEY (`group_id`, `item_id`)
-);
-
-DROP TABLE IF EXISTS `codes`;
-CREATE TABLE `codes` (
-  `npc_id` MEDIUMINT(10) NOT NULL,
-  `code` VARCHAR(25) NOT NULL,
-  `uses` TINYINT(3) NOT NULL,
-  `item_id` MEDIUMINT(10) NOT NULL,
-  `account_id` BIGINT(20) NOT NULL,
-  `quantity` INT(20) NOT NULL,
-  `char_guid` BIGINT(20) NOT NULL,
-  `new_level` TINYINT(3) NOT NULL,
-  PRIMARY KEY (`npc_id`,`code`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
 CREATE TABLE `armory_character_stats` (
   `guid` int(11) NOT NULL,
   `data` longtext NOT NULL,

@@ -272,11 +272,6 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     //PREPARE_STATEMENT(CHAR_ANTICHEAT_GET_CHEATERS_BY_GUID,"SELECT count( * ) AS 'Repeticiones' FROM `characters` AS A, `cheat_reports` AS B WHERE A.`online` =1 AND A.`guid` = B.`guid` AND A.`guid`=? GROUP BY B.`guid` ORDER BY Repeticiones DESC LIMIT 0 , 1", CONNECTION_SYNCH);
     //PREPARE_STATEMENT(CHAR_ANTICHEAT_GET_REPORTS_TYPE_BY_GUID,"SELECT report FROM cheat_reports WHERE guid=?", CONNECTION_SYNCH);
 
-    //LOL-Custom
-    PREPARE_STATEMENT(CHAR_ADD_CHATTICKER_MESSAGE, "INSERT INTO chatticker (name, race, text) VALUES (?, ?, ?)", CONNECTION_ASYNC);
-    PREPARE_STATEMENT(CHAR_GET_CODEBOX_ITEM, "SELECT `item_id`, `quantity`, `uses`, `account_id`, `char_guid`, `new_level`, `code`  FROM `codes` WHERE `npc_id` = ? AND `account_id` = ?", CONNECTION_SYNCH);
-    PREPARE_STATEMENT(CHAR_GET_CODEBOX_ITEMGROUP, "SELECT `item_id` FROM `codes_item_loot` WHERE `group_id` = ? ORDER BY RAND() LIMIT 1", CONNECTION_SYNCH);
-    PREPARE_STATEMENT(CHAR_SET_CODEBOX_CODE_USED, "UPDATE `codes` SET `uses` = (`uses` - 1) WHERE  `npc_id` = ? AND `account_id` = ?", CONNECTION_ASYNC);
     
     // Game event condition saves
     PREPARE_STATEMENT(CHAR_DEL_ALL_GAME_EVENT_CONDITION_SAVE, "DELETE FROM game_event_condition_save WHERE eventEntry = ?", CONNECTION_ASYNC)
