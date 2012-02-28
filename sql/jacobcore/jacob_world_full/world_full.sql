@@ -680,4 +680,13 @@ values
 ('568003','186304','568','1','363.6'  ,'1057.5' ,'9.93311','1.55366','0','0','0.701021','0.71314' ,'25','0','0'), -- LynxEntrance
 ('568004','186303','568','1','307'    ,'1111.56','9.77776','3.1414' ,'0','0','1'       ,'0'       ,'25','0','1'); -- LynxExit
 
+-- Sommerwendfest
+update creature_template set scriptname = 'npc_midsummer_scorchling' where entry in (26520,26401);
+update creature_template set scriptname = 'npc_ice_caller_briatha' where entry = 25949;
+update gameobject_template set scriptname = 'go_ice_stone' where entry = 188049;
+
+-- shadow_bite
+
+DELETE FROM spell_script_names WHERE spell_id IN (-54049,54049,54050,54051,54052,54053);
+INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (-54049, 'spell_warl_shadow_bite');
 
