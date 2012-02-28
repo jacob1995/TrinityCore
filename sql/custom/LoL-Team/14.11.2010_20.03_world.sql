@@ -1,1 +1,0 @@
-REPLACE INTO spell_script_names (spell_id, ScriptName) VALUES (53031, 'spell_q12740_crusader_parachute');
