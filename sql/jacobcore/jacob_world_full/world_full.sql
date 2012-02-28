@@ -501,3 +501,183 @@ UPDATE creature_template SET flags_extra = flags_extra | 2 WHERE entry = 27607;
 UPDATE creature_template SET scriptname = 'npc_7th_legion_siege_engineer' WHERE entry = 27163;
 UPDATE creature_template SET scriptname = 'vehicle_alliance_steamtank' WHERE entry IN (27587);
 UPDATE `creature_template` SET `unit_flags`=0 WHERE `entry` = 27587;
+
+-- black temple
+update creature_template set scriptname = 'npc_xiri' where entry = 18528;
+UPDATE `creature_template` SET `modelid1` = 21349  , `modelid2` = 21349  , `minlevel` = 73  , `maxlevel` = 73  , `health_mod` = 500000  , `health_mod` = 500000  , `mindmg` = 3000  , `maxdmg` = 4000  , `attackpower` = 16125  , `baseattacktime` = 2000  , `faction_A` = 1866  , `faction_H` = 1866 , `armor_mod` = 6000 , `equipment_id` = 2182 , scriptname = 'npc_preeven_maiev' WHERE `entry` = 22989;
+
+
+update creature_template set scriptname = 'npc_black_temple' where entry = 22878;
+UPDATE `creature_template` SET `mechanic_immune_mask` = 648249343 WHERE `entry` = 22878;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22883;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22873;
+UPDATE `creature_template` SET `mechanic_immune_mask` = 111362047 WHERE `entry` = 22873;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22877;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22884;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22875;
+UPDATE `creature_template` SET `mechanic_immune_mask` = 33561923 WHERE `entry` = 22875;
+update creature_template set minlevel = 73  , maxlevel = 73  , faction_A = 1813  , faction_H = 1813  , unit_flags = 33554434, scriptname = 'mob_coilskar_geyser' where entry = 23080;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22876;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22885;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22874;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23028;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22963;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23030;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23330;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22960;
+UPDATE `creature_template` SET `mechanic_immune_mask` = 614678523 WHERE `entry` = 22960;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22954;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22855;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22844;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22849;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22847;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22845;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22896;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22894;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23374;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22846;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22848;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23337;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22853;
+UPDATE `creature_template` SET `mechanic_immune_mask` = 33554689 WHERE `entry` = 22853;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23339;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22869;
+update creature_template set scriptname = "npc_black_temple" where entry = 22957;
+update `creature_template` SET `minlevel` = 72  , `maxlevel` = 72  , `faction_A` = 1813  , `faction_H` = 1813 WHERE `entry` = 23436;
+update creature_template set scriptname = "npc_black_temple" where entry = 22962;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22956;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22964;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22955;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22939;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22965;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22959;
+
+update creature_template set scriptname = 'npc_black_temple' where entry = 23399;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23398;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23401;
+
+update creature_template set scriptname = 'npc_black_temple' where entry = 23402;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23397;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23403;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23400;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23394;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23429;
+update `creature_template` SET `minlevel` = 72  , `maxlevel` = 72  , `faction_A` = 16  , `faction_H` = 16, `unit_flags` = 33554818 WHERE `entry` = 23429;
+
+update creature_template set scriptname = 'npc_black_temple' where entry = 23172;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22945;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23047;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22879;
+update spell_proc_event set procFlags = 131072, procEx = 0 where entry = 41034;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22882;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22880;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23369;
+update `creature_template` SET `minlevel` = 72  , `maxlevel` = 72  , `faction_A` = 1813  , `faction_H` = 1813 WHERE `entry` = 23436;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23018;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23083;
+update creature_template set scriptname = 'npc_black_temple' where entry = 22953;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23049;
+delete from creature_loot_template where item in (32609,32592,32591,32590,32589,32526) and entry = 23147;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23196;
+delete from spell_scripts where id = 41213;
+insert into spell_scripts (id,delay,command,datalong) values (41213,0,15,41214);
+update creature_template set scriptname = 'npc_black_temple' where entry = 23236;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23235;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23237;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23232;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23222;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23239;
+update creature_template set scriptname = 'npc_black_temple' where entry = 23223;
+
+-- Magtheridon
+delete from creature_addon where guid in (select guid from creature where id = 17257);
+delete from creature_addon where guid in (select guid from creature where id = 17256);
+delete from creature where id = 17256;
+delete from creature where id = 17376;
+update creature_template set unit_flags = 0 and type_flags = 0 where entry = 17257;
+update gameobject_template set flags = 0 where entry = 181713;
+
+update creature_template set scriptname = "boss_magtheridon" where entry = 17257;
+update creature_template set scriptname = "mob_hellfire_channeler" where entry = 17256;
+update creature_template set scriptname = "go_manticron_cube" where entry = 181713;
+update creature_template set scriptname = "mob_abyssal" where entry = 17454;
+
+-- Sunwell
+-- AI Scripts Trashmobs
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25367;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25363;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25371;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25370;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25369;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25867;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25368;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25507;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25372;
+
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25484;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25506;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25483;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25373;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25486;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25837;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25485;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25508;
+
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25593;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25599;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25595;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25592;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25948;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25597;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25591;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25509;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25851;
+update creature_template set scriptname = 'mob_sunwell_plateau_tash' where entry = 25598;
+
+-- Felmyst spawn
+
+
+insert into `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`) 
+values('580000','25038','580','1','1','0','0','1463.83','611.512','51.57','1.62316','604800','0','0','1000000','0','0');
+
+-- ZulAman Scripts
+
+update creature_template set scriptname = 'mob_amanishi_lookout'       where entry = 24175;
+update creature_template set scriptname = 'mob_amanishi_warrior'       where entry = 24225;
+update creature_template set scriptname = 'mob_amanishi_tempest'       where entry = 24549;
+update creature_template set scriptname = 'mob_amani_eagle'            where entry = 24159;
+update creature_template set scriptname = 'npc_zulaman_harrison_jones' where entry = 24358;
+update creature_template set scriptname = 'mob_amanishi_scout'         where entry = 23586;
+update creature_template set scriptname = 'mob_amani_protective_ward'  where entry = 23822;
+update creature_template set scriptname = 'boss_akilzon'               where entry = 23574;
+UPDATE creature_template SET scriptname = 'mob_amanishi_guardian' WHERE entry =23597;
+UPDATE creature_template SET scriptname = 'mob_amanishi_wind_walker' WHERE entry =24179;
+UPDATE creature_template SET scriptname = 'mob_amanishi_protector' WHERE entry =24180;
+UPDATE creature_template SET scriptname = 'mob_amanishi_medicine_man' WHERE entry =23581;
+UPDATE creature_template SET scriptname = 'mob_amanishi_warrior' WHERE entry =24225;
+UPDATE creature_template SET scriptname = 'mob_amanishi_tribesman' WHERE entry =23582;
+UPDATE creature_template SET scriptname = 'mob_amanishi_axe_thrower' WHERE entry =23542;
+UPDATE creature_template SET scriptname = 'mob_amanishi_warbringer' WHERE entry =23580;
+UPDATE creature_template SET scriptname = 'mob_amani_bear' WHERE entry =23584;
+UPDATE creature_template SET scriptname = 'mob_amanishi_flame_caster' WHERE entry =23596;
+UPDATE creature_template SET scriptname = 'mob_amanishi_trainer' WHERE entry =23774;
+UPDATE creature_template SET scriptname = 'mob_amani_dragonhawk' WHERE entry =23834;
+UPDATE creature_template SET scriptname = 'mob_amanishi_handler' WHERE entry =24065;
+UPDATE creature_template SET scriptname = 'mob_amanishi_beast_tamer' WHERE entry =24059;
+UPDATE creature_template SET scriptname = 'mob_amani_elder_lynx' WHERE entry =24530;
+UPDATE creature_template SET scriptname = 'mob_amani_lynx' WHERE entry =24043;
+UPDATE creature_template SET scriptname = 'mob_amani_lynx_cub' WHERE entry =24064;
+UPDATE creature_template SET scriptname = 'mob_amani_crocolist' WHERE entry in (24138,24047);
+
+-- Doors
+delete from `gameobject` where id in (186728,186858,186859,186304,186303) and map = 568;
+insert into `gameobject` 
+(`guid`, `id`, `map`, `spawnMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) 
+values
+('568000','186728','568','1','121.152','1605.26','61'     ,'3.1415' ,'0','0','1'       ,'0'       ,'25','0','1'), -- ZulAman Main Doors 
+('568001','186858','568','1','337.056','1395.87','74.45'  ,'3.42177','0','0','0.990204','-0.13963','25','0','0'), -- AkilzonDoor
+('568002','186859','568','1','120.435','733.884','45.1122','1.5707' ,'0','0','0.697245','0.716833','25','0','0'), -- ZulJin Door
+('568003','186304','568','1','363.6'  ,'1057.5' ,'9.93311','1.55366','0','0','0.701021','0.71314' ,'25','0','0'), -- LynxEntrance
+('568004','186303','568','1','307'    ,'1111.56','9.77776','3.1414' ,'0','0','1'       ,'0'       ,'25','0','1'); -- LynxExit
+
+
