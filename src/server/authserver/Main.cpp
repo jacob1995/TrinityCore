@@ -102,6 +102,10 @@ extern int main(int argc, char **argv)
     sLog->outString("%s (authserver)", _FULLVERSION);
     sLog->outString("<Ctrl-C> to stop.\n");
     sLog->outString("Using configuration file %s.", cfg_file);
+	sLog->outString("JacobCore Developrs Team      ");
+    sLog->outString("JacobCore Developrs Team      ");
+    sLog->outString("Skype Developers: wenter681      ");
+    sLog->outString("Fork https://github.com/jacob1995/TrinityCore      ");
 
     sLog->outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
 
@@ -196,7 +200,7 @@ extern int main(int argc, char **argv)
         if (Prio)
         {
             if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS))
-                sLog->outString("The auth server process priority class has been set to HIGH");
+                sLog->outString("The auth server process priority class has been set to HIGH by jacob SPECIAL FOR wow.yourgame.kz");
             else
                 sLog->outError("Can't set auth server process priority class.");
             sLog->outString();

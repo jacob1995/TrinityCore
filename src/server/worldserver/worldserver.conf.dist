@@ -1,5 +1,5 @@
 ################################################
-# Trinity Core World Server configuration file #
+# Jacob Core World Server configuration file #
 ################################################
 [worldserver]
 
@@ -57,7 +57,7 @@ RealmID = 1
 #    DataDir
 #        Description: Data directory setting.
 #        Important:   DataDir needs to be quoted, as the string might contain space characters.
-#        Example:     "@prefix@/share/trinitycore"
+#        Example:     "@prefix@/share/jacobcore"
 #        Default:     "."
 
 DataDir = "."
@@ -82,13 +82,13 @@ LogsDir = ""
 #                                                                 section my.ini)
 #                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
 #                                                                           Unix/Linux)
-#        Default:     "127.0.0.1;3306;trinity;trinity;auth"       - (LoginDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
+#        Default:     "127.0.0.1;3306;root;;auth"       - (LoginDatabaseInfo)
+#                     "127.0.0.1;3306;root;;world"      - (WorldDatabaseInfo)
+#                     "127.0.0.1;3306;root;;characters" - (CharacterDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+LoginDatabaseInfo     = "127.0.0.1;3306;root;;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;root;;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;root;;characters"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -639,7 +639,7 @@ SQLDriverQueryLogging = 0
 #        Example:     "13 11 9 5" - (Enabled)
 #        Default:     ""          - (Disabled)
 
-LogColors = ""
+LogColors = "13 11 7 9 5"
 
 #
 #    EnableLogDB
@@ -1377,10 +1377,10 @@ BeepAtStart = 1
 #    Motd
 #        Description: Message of the Day, displayed at login.
 #                     Use '@' for a newline and be sure to escape special characters.
-#        Example:     "Welcome to John\'s Server@This server runs on Trinity Core."
-#        Default:     "Welcome to a Trinity Core server."
+#        Example:     "Welcome to John\'s Server@This server runs on Jacob Core."
+#        Default:     "Welcome to a Jacob Core server."
 
-Motd = "Welcome to a Trinity Core server."
+Motd = "Welcome to a Jacob Core server."
 
 #
 #    Server.LoginInfo

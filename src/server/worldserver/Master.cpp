@@ -181,15 +181,10 @@ int Master::Run()
     sLog->outString("%s (worldserver-daemon)", _FULLVERSION);
     sLog->outString("<Ctrl-C> to stop.\n");
 
-    sLog->outString(" ______                       __");
-    sLog->outString("/\\__  _\\       __          __/\\ \\__");
-    sLog->outString("\\/_/\\ \\/ _ __ /\\_\\    ___ /\\_\\ \\, _\\  __  __");
-    sLog->outString("   \\ \\ \\/\\`'__\\/\\ \\ /' _ `\\/\\ \\ \\ \\/ /\\ \\/\\ \\");
-    sLog->outString("    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
-    sLog->outString("     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
-    sLog->outString("      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
-    sLog->outString("                                 C O R E  /\\___/");
-    sLog->outString("http://TrinityCore.org                    \\/__/\n");
+    sLog->outString("JacobCore Developrs Team      ");
+    sLog->outString("JacobCore Developrs Team      ");
+    sLog->outString("Skype Developers: wenter681      ");
+    sLog->outString("Fork https://github.com/jacob1995/TrinityCore      ");
 
 #ifdef USE_SFMT_FOR_RNG
     sLog->outString("\n");
@@ -305,7 +300,7 @@ int Master::Run()
         if (Prio)
         {
             if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS))
-                sLog->outString("worldserver process priority class set to HIGH");
+                sLog->outString("worldserver process priority class set to HIGH by jacob SPECIAL FOR wow.yourgame.kz");
             else
                 sLog->outError("Can't set worldserver process priority class.");
             sLog->outString("");
