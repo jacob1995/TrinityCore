@@ -2400,55 +2400,6 @@ private:
     }
 };
 
-class global_chatticker_playerscript : PlayerScript
-{
-public:
-    global_chatticker_playerscript() : PlayerScript("global_chatticker_playerscript")
-    {
-        channelName = ConfigMgr::GetStringDefault("Chatticker.Channel", "global");
-    }
-
-    void OnChat(Player* player, uint32 type, uint32 lang, std::string& message, Channel* channel)
-    {
-        if(player && !stricmp(channel->GetName().c_str(), channelName.c_str()))
-        {
-            std::string stripped = message;   // create private copy
-
-            //stripLinks(stripped);
-
-            PreparedStatement *stmt = CharacterDatabase.GetPreparedStatement(CHAR_ADD_CHATTICKER_MESSAGE);
-            stmt->setString(0, player->GetName());
-            stmt->setUInt8(1, player->getRace());
-            stmt->setString(2, stripped);
-            CharacterDatabase.Execute(stmt);
-        }
-    }
-private:
-    std::string channelName;
-
-
-    // link format: |c<color code>|H<type>:<id>[:<parameter>[:<parameter>]]|h[<name>]|h|r
-    void stripLinks(std::string& message)
-    {
-        while(true)
-        {
-            std::string::size_type startPosLink = message.find("|c");
-            if(startPosLink == message.npos)
-                return;
-
-            std::string::size_type startPosName = message.find("|h", startPosLink + 2);
-            if(startPosName == message.npos)
-                return;
-
-            std::string::size_type endPos       = message.find("|h|r", startPosName + 2);
-            if(endPos == message.npos)
-                return;
-
-            message.erase(endPos, 4);
-            message.erase(startPosLink, startPosName - startPosLink + 2);
-        }
-    }
-};
 
 #include "ScriptPCH.h"
 
@@ -2578,6 +2529,4 @@ void AddSC_lol_custom()
     new npc_item_quest_giver();
     new SurprisePlayerScript();
 
-    if(ConfigMgr::GetBoolDefault("Chatticker.Enabled", false))
-        new global_chatticker_playerscript();
 }
